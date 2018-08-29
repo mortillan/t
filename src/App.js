@@ -43,9 +43,9 @@ class App extends Component {
           <rect x='0' y='1.5' width='864' height='20' fill='#e4e4e4' />
           <text x='0' y={27} fontFamily="sans-serif" fontSize='5px'>12AM</text>
           <text x={864 / 2} y={27} fontFamily="sans-serif" fontSize='5px'>12PM</text>
-          <rect x={this.state.markerX} y='1.5' width='1' height='20' fill='red' />
           <rect x={this.state.markerX + 0.01} y='1.5' width={864 - this.state.markerX + 0.01 } height='20' fill='white' />
           {this.state.tasks.map((task, index) => <TaskBar key={index} length={task.length} start={task.start} />)}
+          <rect x={this.state.markerX} y='0' width='0.5' height='25' fill='red' />
         </svg>
         <button onClick={this.addTask}>Add Task</button>
       </div>
