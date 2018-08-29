@@ -9,12 +9,16 @@ class App extends Component {
     this.state = {
       markerX: 0,
       tasks: [],
+      currentTaskEnd: 0,
     };
     this.addTask = this.addTask.bind(this);
   }
 
   addTask() {
-    this.setState({tasks: [...this.state.tasks, {length: '25', start: this.state.markerX}]});
+    this.setState({
+      tasks: [...this.state.tasks, {length: '25', start: this.state.currentTaskEnd === 0 ? this.state.markerX : this.state.currentTaskEnd }],
+      currentTaskEnd: this.state.currentTaskEnd === 0 ? this.state.markerX + 25 : this.state.currentTaskEnd + 25,
+    });
   }
 
   componentDidMount() {
