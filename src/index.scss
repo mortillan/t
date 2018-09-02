@@ -9,8 +9,13 @@ body {
   height: 100%;
 }
 
+$slider-thumb-background: #212529;
+$slider-track-background: #212529;
+
 @import "bulma/bulma.sass";
 @import "bulma-slider/src/sass/index.sass";
+
+$slider-thumb-radius: 2rem;
 
 .footer {
   padding: 1rem;

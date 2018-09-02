@@ -14,14 +14,22 @@ class App extends Component {
       markerX: 0,
       tasks: [],
       currentTaskEnd: 0,
+      slider: 0,
     };
     this.addTask = this.addTask.bind(this);
+    this.onChangeSliderValue = this.onChangeSliderValue.bind(this);
   }
 
   addTask() {
     this.setState({
       tasks: [...this.state.tasks, {length: '25', start: this.state.currentTaskEnd === 0 ? this.state.markerX : this.state.currentTaskEnd }],
       currentTaskEnd: this.state.currentTaskEnd === 0 ? this.state.markerX + 25 : this.state.currentTaskEnd + 25,
+    });
+  }
+
+  onChangeSliderValue(e) {
+    this.setState({
+      slider: e.target.value
     });
   }
 
@@ -42,11 +50,19 @@ class App extends Component {
 
     setInterval(() => {
       this.setState((prevState) => {
-        console.log(prevState.markerX + 0.01 );
-
         const currentDateTime = new Date();
         const hours = currentDateTime.getHours();
         const minutes = currentDateTime.getMinutes();
+
+        if(prevState.markerX + 0.01 > 864) {
+          return { 
+            markerX: 0,
+            remainingHours: 23 - hours,
+            remainingMins: 60 - minutes,
+          };  
+        }
+
+        console.log(prevState.markerX + 0.01);
 
         return { 
           markerX: prevState.markerX + 0.01,
@@ -67,7 +83,7 @@ class App extends Component {
               <div>Legato</div>
             </a>
           </div>
-          <div id="navbarExampleTransparentExample" class="navbar-menu">
+          <div id="navbarExampleTransparentExample" className="navbar-menu">
             <div className='navbar-start'>
             </div>
             <div style={{margin: 'auto', display: 'flex', alignItems: 'strect'}}>
@@ -96,13 +112,13 @@ class App extends Component {
                 You have {this.state.remainingHours} hours, {this.state.remainingMins} minutes. Enjoy the day.
               </div>
               <div className='column is-12'>
-                <svg viewBox='0 0 864 15'>
+                <svg viewBox='0 0 864 30'>
                   <TimeBar />
                   {/* <text x='0' y={27} fontFamily='sans-serif' fontSize='5px'>12AM</text> */}
                   {/* <text x={864 / 2} y={27} fontFamily='sans-serif' fontSize='5px'>12PM</text> */}
                   {/* <rect x={this.state.markerX + 0.01} y='1.5' width={864 - this.state.markerX + 0.01 } height='20' fill='white' /> */}
                   {this.state.tasks.map((task, index) => <TaskBar key={index} length={task.length} start={task.start} />)}
-                  <rect x={this.state.markerX} y='1.5' width='0.5' height='20' fill='red' />
+                  <rect x={this.state.markerX} y='2.5' width='0.75' height='25' fill='#212529' />
                 </svg>
               </div>
               <div className='column is-12'>
@@ -120,7 +136,7 @@ class App extends Component {
               Copyright {new Date().getFullYear()} <strong>Godspeed</strong>. All rights reserverd.
             </div>
             <div style={{width: '240px'}}>
-              <input className="slider is-fullwidth" step="1" min="0" max="100" value="50" type="range" style={{margin: '0'}} />
+              <input onChange={this.onChangeSliderValue} className="slider is-fullwidth is-circle" step="1" min="0" max="100" value={this.state.slider} type="range" style={{margin: '0'}} />
             </div>
             <div>
               <button className='button btn-circle'></button>
@@ -137,13 +153,13 @@ class App extends Component {
 
 const TaskBar = (props) => {
   return (
-    <rect x={props.start} y='1.5' width={props.length} height='20' fill='blue' />
+    <rect x={props.start} y='5' width={props.length} height='20' fill='#212529' style={{fillOpacity: '.38'}} />
   );
 }
 
 const TimeBar = (props) => {
   return (
-    <rect x='0' y='1.5' width='864' height='20' fill='#212529' style={{fillOpacity: '.16'}} />
+    <rect x='0' y='5' width='864' height='20' fill='#212529' style={{fillOpacity: '.16'}} />
   );
 }
 
