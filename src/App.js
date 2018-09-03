@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 // import { select, path } from 'd3';
 import 'bulma-slider/dist/js/bulma-slider';
+import Slider from './component/Slider';
 
 class App extends Component {
   constructor() {
@@ -136,7 +137,7 @@ class App extends Component {
               Copyright {new Date().getFullYear()} <strong>Godspeed</strong>. All rights reserverd.
             </div>
             <div style={{width: '240px'}}>
-              <input onChange={this.onChangeSliderValue} className="slider is-fullwidth is-circle" step="1" min="0" max="100" value={this.state.slider} type="range" style={{margin: '0'}} />
+              <Slider onChange={this.onChangeSliderValue} slider={this.state.slider} />
             </div>
             <div>
               <button className='button btn-circle'></button>
@@ -162,5 +163,7 @@ const TimeBar = (props) => {
     <rect x='0' y='5' width='864' height='20' fill='#212529' style={{fillOpacity: '.16'}} />
   );
 }
+
+
 
 export default App;
