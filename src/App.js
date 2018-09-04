@@ -15,16 +15,42 @@ class App extends Component {
       markerX: 0,
       tasks: [],
       currentTaskEnd: 0,
-      slider: 0,
+      slider: 5,
+      focuseMode: false,
     };
     this.addTask = this.addTask.bind(this);
     this.onChangeSliderValue = this.onChangeSliderValue.bind(this);
   }
 
-  addTask() {
+  addTask(e) {
+    const { target } = e;
+
+    const { type }  = target.dataset;
+
+    let color;
+
+    switch(type) {
+      case 'work':
+        color = 'red';
+        break;
+      case 'play':
+        color = 'blue';
+        break;
+      default:
+      case 'break':
+        color ='gray';
+        break;
+    }
+
     this.setState({
-      tasks: [...this.state.tasks, {length: '25', start: this.state.currentTaskEnd === 0 ? this.state.markerX : this.state.currentTaskEnd }],
+      tasks: [...this.state.tasks, {
+        length: this.state.slider * 3600, 
+        start: this.state.currentTaskEnd === 0 ? this.state.markerX : this.state.currentTaskEnd,
+        color: color,
+        type: type,
+      }],
       currentTaskEnd: this.state.currentTaskEnd === 0 ? this.state.markerX + 25 : this.state.currentTaskEnd + 25,
+      focuseMode: !this.state.focuseMode,
     });
   }
 
@@ -41,7 +67,7 @@ class App extends Component {
     const seconds = currentDateTime.getSeconds();
     const total = ((hours * 60 * 60) + (minutes * 60) + seconds) / 100;
 
-    console.log(total);
+    // console.log(total);
 
     this.setState({
       markerX: total,
@@ -118,15 +144,14 @@ class App extends Component {
                   {/* <text x='0' y={27} fontFamily='sans-serif' fontSize='5px'>12AM</text> */}
                   {/* <text x={864 / 2} y={27} fontFamily='sans-serif' fontSize='5px'>12PM</text> */}
                   {/* <rect x={this.state.markerX + 0.01} y='1.5' width={864 - this.state.markerX + 0.01 } height='20' fill='white' /> */}
-                  {this.state.tasks.map((task, index) => <TaskBar key={index} length={task.length} start={task.start} />)}
+                  {this.state.tasks.map((task, index) => <TaskBar key={index} length={task.length} fill={task.color} start={task.start} />)}
                   <rect x={this.state.markerX} y='2.5' width='0.75' height='25' fill='#212529' />
                 </svg>
               </div>
               <div className='column is-12'>
-                <button className='button is-outlined' onClick={this.addTask}>#work</button>
-                <button className='button is-outlined' onClick={this.addTask}>#play</button>
-                <button className='button is-outlined' onClick={this.addTask}>#break</button>
-                <button className='button is-outlined' onClick={this.addTask}>+</button>
+                <button className='button is-outlined' data-type='work' onClick={this.addTask}>#work</button>
+                <button className='button is-outlined' data-type='play' onClick={this.addTask}>#play</button>
+                <button className='button is-outlined' data-type='break' onClick={this.addTask}>#break</button>
               </div>
             </div>
           </div>
@@ -137,7 +162,8 @@ class App extends Component {
               Copyright {new Date().getFullYear()} <strong>Godspeed</strong>. All rights reserverd.
             </div>
             <div style={{width: '240px'}}>
-              <Slider onChange={this.onChangeSliderValue} slider={this.state.slider} />
+              <div>{this.state.slider} minutes</div>
+              <Slider onChange={this.onChangeSliderValue} slider={this.state.slider} min='5' max='90' />
             </div>
             <div>
               <button className='button btn-circle'></button>
@@ -154,7 +180,7 @@ class App extends Component {
 
 const TaskBar = (props) => {
   return (
-    <rect x={props.start} y='5' width={props.length} height='20' fill='#212529' style={{fillOpacity: '.38'}} />
+    <rect x={props.start} y='5' width={props.length} height='20' fill={props.fill} style={{fillOpacity: '.38'}} />
   );
 }
 
