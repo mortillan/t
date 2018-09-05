@@ -42,14 +42,16 @@ class App extends Component {
         break;
     }
 
+    const length = (this.state.slider * 60) / 100;
+
     this.setState({
       tasks: [...this.state.tasks, {
-        length: this.state.slider * 3600, 
+        length: length, 
         start: this.state.currentTaskEnd === 0 ? this.state.markerX : this.state.currentTaskEnd,
         color: color,
         type: type,
       }],
-      currentTaskEnd: this.state.currentTaskEnd === 0 ? this.state.markerX + 25 : this.state.currentTaskEnd + 25,
+      currentTaskEnd: this.state.currentTaskEnd === 0 ? this.state.markerX + length : this.state.currentTaskEnd + length,
       focuseMode: !this.state.focuseMode,
     });
   }
@@ -61,6 +63,15 @@ class App extends Component {
   }
 
   componentDidMount() {
+    document.addEventListener('keydown', event => {
+      if(this.state.focuseMode) {
+        //TODO stop current task on curren time
+        this.setState({
+          focuseMode: !this.state.focuseMode,
+        });
+      }
+    });
+
     const currentDateTime = new Date();
     const hours = currentDateTime.getHours();
     const minutes = currentDateTime.getMinutes();
@@ -104,23 +115,23 @@ class App extends Component {
     return (
       <div className='vfull'>
         <nav className='navbar is-fixed-top' role='navigation' aria-label='main navigation'>
-          <div className='navbar-brand'>
+          <div className={this.state.focuseMode ? 'navbar-brand invisible' : 'navbar-brand'}>
             <a className='navbar-item' href='https://bulma.io'>
               <img src='https://via.placeholder.com/40x40' alt='' width='40' height='40' />
               <div>Legato</div>
             </a>
           </div>
-          <div id="navbarExampleTransparentExample" className="navbar-menu">
-            <div className='navbar-start'>
+          <div className="navbar-menu">
+            <div className={this.state.focuseMode ? 'navbar-start invisible' : 'navbar-start'}>
             </div>
             <div style={{margin: 'auto', display: 'flex', alignItems: 'strect'}}>
               <div>4,999 online users</div>
             </div>
-            <div className='navbar-end'>
+            <div className={this.state.focuseMode ? 'navbar-end invisible' : 'navbar-end'}>
               <div className='navbar-item'>
                 <div className='field is-grouped'>
                   <p className='control'>
-                    <a className='button' href="#">Login</a>
+                    <a className='button not-outlined' href="#">Login</a>
                   </p>
                   <p className='control'>
                     <a className='button is-outlined' href='#'>
@@ -135,7 +146,7 @@ class App extends Component {
         <section className='section vfull' style={{paddingLeft: '6rem', paddingRight: '6rem'}}>
           <div className='columns is-vcentered vfull'>
             <div className='column columns is-multiline'>
-              <div className='column is-12 is-size-3'>
+              <div className='column is-12 is-size-2'>
                 You have {this.state.remainingHours} hours, {this.state.remainingMins} minutes. Enjoy the day.
               </div>
               <div className='column is-12'>
@@ -148,16 +159,19 @@ class App extends Component {
                   <rect x={this.state.markerX} y='2.5' width='0.75' height='25' fill='#212529' />
                 </svg>
               </div>
-              <div className='column is-12'>
-                <button className='button is-outlined' data-type='work' onClick={this.addTask}>#work</button>
-                <button className='button is-outlined' data-type='play' onClick={this.addTask}>#play</button>
-                <button className='button is-outlined' data-type='break' onClick={this.addTask}>#break</button>
+              <div className='column is-12'>              
+                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks' : 'button is-outlined btn-tasks hide'} data-type='work' onClick={this.addTask}>#work</button>
+                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks' : 'button is-outlined btn-tasks hide'} data-type='play' onClick={this.addTask}>#play</button>
+                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks' : 'button is-outlined btn-tasks hide'} data-type='break' onClick={this.addTask}>#break</button>
+                <div className={this.state.focuseMode ? '' : 'hide'}>
+                  <span className='icon'><i className='ion-ionic ion-md-close'></i></span>Press "Esc" to stop
+                </div>
               </div>
             </div>
           </div>
         </section>
-        <footer className='footer'>
-          <div className='content' style={{display: 'flex', justifyContent: 'space-between'}}>
+        <footer className={this.state.focuseMode ? 'footer invisible' : 'footer'}>
+          <div className='content' style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
             <div>
               Copyright {new Date().getFullYear()} <strong>Godspeed</strong>. All rights reserverd.
             </div>
@@ -167,9 +181,9 @@ class App extends Component {
             </div>
             <div>
               <button className='button btn-circle'></button>
-              <span className="icon">
-                <i className='ion-ionic ion-help'></i>
-              </span>
+              <a className="icon button" href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
+                <i className='ion-ionic ion-md-help'></i>
+              </a>
             </div>
           </div>
         </footer>
@@ -180,7 +194,7 @@ class App extends Component {
 
 const TaskBar = (props) => {
   return (
-    <rect x={props.start} y='5' width={props.length} height='20' fill={props.fill} style={{fillOpacity: '.38'}} />
+    <rect x={props.start} y='5' width={props.length} height='20' fill={props.fill} />
   );
 }
 

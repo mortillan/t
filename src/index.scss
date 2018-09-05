@@ -9,8 +9,19 @@ body {
   height: 100%;
 }
 
-$slider-thumb-background: #212529;
-$slider-track-background: #212529;
+$primary-color: #212529;
+
+$slider-thumb-background: $primary-color;
+$slider-track-background: $primary-color;
+
+$family-primary: Arial, sans-serif;
+$text: #000000;
+
+$button-border-color: $primary-color;
+$button-border-width: 2px;
+
+$button-text-hover-background-color: rgba(33, 37, 41, 0.16);
+$button-hover-border-color: $primary-color;
 
 @import "bulma/bulma.sass";
 @import "bulma-slider/src/sass/index.sass";
@@ -22,6 +33,7 @@ $slider-thumb-radius: 2rem;
   position: absolute;
   bottom: 0;
   width: 100%;
+  background-color: inherit;
 }
 
 .vfull {
@@ -33,4 +45,28 @@ $slider-thumb-radius: 2rem;
   width: 1.5rem;
   height: 1.5rem;
   background-color: #212529;
+}
+
+.btn-tasks {
+  margin-right: 1rem;
+}
+
+.not-outlined {
+  border-color: transparent;
+  &:hover {
+    border-color: $primary-color;
+  }
+}
+
+.button {
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.hide {
+  display: none;
 }
