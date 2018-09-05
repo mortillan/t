@@ -14,12 +14,14 @@ class App extends Component {
       remainingSec: 0,
       markerX: 0,
       tasks: [],
+      currentTask: null,
       currentTaskEnd: 0,
       slider: 5,
       focuseMode: false,
     };
     this.addTask = this.addTask.bind(this);
     this.onChangeSliderValue = this.onChangeSliderValue.bind(this);
+    this.onClickStopFocusMode = this.onClickStopFocusMode.bind(this);
   }
 
   addTask(e) {
@@ -56,6 +58,15 @@ class App extends Component {
     });
   }
 
+  onClickStopFocusMode(e) {
+    if(this.state.focuseMode) {
+      //TODO stop current task on curren time
+      this.setState({
+        focuseMode: !this.state.focuseMode,
+      });
+    }
+  }
+
   onChangeSliderValue(e) {
     this.setState({
       slider: e.target.value
@@ -63,14 +74,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', event => {
-      if(this.state.focuseMode) {
-        //TODO stop current task on curren time
-        this.setState({
-          focuseMode: !this.state.focuseMode,
-        });
-      }
-    });
+    document.addEventListener('keydown', this.onClickStopFocusMode);
 
     const currentDateTime = new Date();
     const hours = currentDateTime.getHours();
@@ -155,7 +159,8 @@ class App extends Component {
                   {/* <text x='0' y={27} fontFamily='sans-serif' fontSize='5px'>12AM</text> */}
                   {/* <text x={864 / 2} y={27} fontFamily='sans-serif' fontSize='5px'>12PM</text> */}
                   {/* <rect x={this.state.markerX + 0.01} y='1.5' width={864 - this.state.markerX + 0.01 } height='20' fill='white' /> */}
-                  {this.state.tasks.map((task, index) => <TaskBar key={index} length={task.length} fill={task.color} start={task.start} />)}
+                  {/* {this.state.tasks.map((task, index) => <TaskBar key={index} length={task.length} fill={task.color} start={task.start} />)} */}
+                  {this.state.currentTask ? <TaskBar length={this.state.currentTask.length} fill={this.state.currentTask.color} start={this.state.currentTask.start} /> : null}
                   <rect x={this.state.markerX} y='2.5' width='0.75' height='25' fill='#212529' />
                 </svg>
               </div>
@@ -164,7 +169,7 @@ class App extends Component {
                 <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks' : 'button is-outlined btn-tasks hide'} data-type='play' onClick={this.addTask}>#play</button>
                 <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks' : 'button is-outlined btn-tasks hide'} data-type='break' onClick={this.addTask}>#break</button>
                 <div className={this.state.focuseMode ? '' : 'hide'}>
-                  <span className='icon'><i className='ion-ionic ion-md-close'></i></span>Press "Esc" to stop
+                  <span onClick={this.onClickStopFocusMode} className='icon'><i className='ion-ionic ion-md-close'></i></span> Press "Esc" to stop
                 </div>
               </div>
             </div>
