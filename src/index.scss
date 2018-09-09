@@ -70,3 +70,27 @@ $slider-thumb-radius: 2rem;
 .hide {
   display: none;
 }
+
+.stop {
+  @extend .is-large;
+  &:hover {
+    cursor: pointer;
+  }
+  & > i {
+    font-size: 1.5rem;
+  }
+}
+
+.focus-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-item img {
+  max-height: none;
+}
+
+.control {
+  height: 2.85em;
+}
