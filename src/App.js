@@ -139,11 +139,11 @@ class App extends Component {
     });
 
     setInterval(() => {
-      if(this.state.currentTask && this.state.markerX === this.state.currentTask.start + this.state.currentTask.length) {
-        this.onClickStopFocusMode();
-      }
-
       this.setState((prevState) => {
+        if(this.state.currentTask && this.state.markerX >= this.state.currentTask.start + this.state.currentTask.length) {
+          return this.onClickStopFocusMode();
+        }
+
         const currentDateTime = new Date();
         const hours = currentDateTime.getHours();
         const minutes = currentDateTime.getMinutes();
@@ -208,10 +208,6 @@ class App extends Component {
               <div className='column is-12'>
                 <svg viewBox='0 0 864 30'>
                   <TimeBar />
-                  {/* <text x='0' y={27} fontFamily='sans-serif' fontSize='5px'>12AM</text> */}
-                  {/* <text x={864 / 2} y={27} fontFamily='sans-serif' fontSize='5px'>12PM</text> */}
-                  {/* <rect x={this.state.markerX + 0.01} y='1.5' width={864 - this.state.markerX + 0.01 } height='20' fill='white' /> */}
-                  {/* {this.state.tasks.map((task, index) => <TaskBar key={index} length={task.length} fill={task.color} start={task.start} />)} */}
                   {this.state.currentTask ? <TaskBar length={this.state.currentTask.length} fill={this.state.currentTask.color} start={this.state.currentTask.start} /> : null}
                   <rect x={this.state.markerX} y='2.5' width='0.75' height='25' fill='#212529' />
                 </svg>
@@ -243,7 +239,7 @@ class App extends Component {
               <Slider onChange={this.onChangeSliderValue} slider={this.state.slider} min='5' max='90' />
             </div>
             <div>
-              <button className='button btn-circle'></button>
+              <button className='button btn-circle' style={{ marginRight: '1rem' }}></button>
               <a className="icon button" href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
                 <i className='ion-ionic ion-md-help'></i>
               </a>

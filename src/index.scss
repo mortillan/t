@@ -15,7 +15,7 @@ $slider-thumb-background: $primary-color;
 $slider-track-background: $primary-color;
 
 $family-primary: Arial, sans-serif;
-$text: #000000;
+$text: $primary-color;
 
 $button-border-color: $primary-color;
 $button-border-width: 2px;
@@ -27,6 +27,20 @@ $button-hover-border-color: $primary-color;
 @import "bulma-slider/src/sass/index.sass";
 
 $slider-thumb-radius: 2rem;
+
+.slider {
+  &::-webkit-slider-runnable-track {
+    height: 1px;
+  }
+    
+  &::-moz-range-track{
+    height: 1px;
+  }
+  
+  &::-ms-track {
+    height: 1px;
+  }
+}
 
 .footer {
   padding: 1rem;
