@@ -71,14 +71,17 @@ class App extends Component {
 
     switch(type) {
       case 'work':
-        color = 'red';
+        color = '#339AF0';
         break;
       case 'play':
-        color = 'blue';
+        color = '#FCC419';
+        break;
+      case 'learn':
+        color = '#51CF66';
         break;
       default:
       case 'break':
-        color ='gray';
+        color ='#FA5252';
         break;
     }
 
@@ -139,11 +142,11 @@ class App extends Component {
     });
 
     setInterval(() => {
-      if(this.state.currentTask &&  this.state.markerX === this.state.currentTask.start + this.state.currentTask.length) {
-        this.onClickStopFocusMode();
-      }
-
       this.setState((prevState) => {
+        if(prevState.currentTask &&  prevState.markerX >= prevState.currentTask.start + prevState.currentTask.length) {
+          this.onClickStopFocusMode();
+        }
+
         const currentDateTime = new Date();
         const hours = currentDateTime.getHours();
         const minutes = currentDateTime.getMinutes();
@@ -175,7 +178,7 @@ class App extends Component {
             <a className='navbar-item' href='https://bulma.io'>
               <img src='https://via.placeholder.com/40x40' alt='' width='40' height='40' />
             </a>
-            <span>Legato</span>
+            <span className='is-size-4 has-text-weight-bold' style={{margin: 'auto'}}>Laegato</span>
           </div>
           <div className="navbar-menu">
             <div className={this.state.focuseMode ? 'navbar-start invisible' : 'navbar-start'}>
@@ -202,24 +205,26 @@ class App extends Component {
         <section className='section vfull' style={{paddingLeft: '6rem', paddingRight: '6rem'}}>
           <div className='columns is-vcentered vfull'>
             <div className='column columns is-multiline'>
-              <div className='column is-12 is-size-2'>
-                You have {this.state.remainingHours} hours, {this.state.remainingMins} minutes. Enjoy the day.
+              <div className='column is-12'>
+                <h1 className='is-size-2 has-text-weight-bold'>You have {this.state.remainingHours} hours, {this.state.remainingMins} minutes. Enjoy the day.</h1>
+                {this.state.currentTask && <h1 className='is-size-2 has-text-weight-bold'>You have {this.state.currentTask.length * 100 / 60}  minutes {(this.state.currentTask.length * 100) % 60} seconds to #{this.state.mode}</h1>}
               </div>
               <div className='column is-12'>
                 <svg viewBox='0 0 864 30'>
                   <TimeBar />
-                  {/* <text x='0' y={27} fontFamily='sans-serif' fontSize='5px'>12AM</text> */}
-                  {/* <text x={864 / 2} y={27} fontFamily='sans-serif' fontSize='5px'>12PM</text> */}
-                  {/* <rect x={this.state.markerX + 0.01} y='1.5' width={864 - this.state.markerX + 0.01 } height='20' fill='white' /> */}
-                  {/* {this.state.tasks.map((task, index) => <TaskBar key={index} length={task.length} fill={task.color} start={task.start} />)} */}
                   {this.state.currentTask ? <TaskBar length={this.state.currentTask.length} fill={this.state.currentTask.color} start={this.state.currentTask.start} /> : null}
-                  <rect x={this.state.markerX} y='2.5' width='0.75' height='25' fill='#212529' />
+                  <rect x={this.state.markerX} y='1' width='0.75' height='30' fill='#212529' />
                 </svg>
               </div>
               <div className='column is-12' style={{ minHeight: '75px'}}>              
-                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks' : 'button is-outlined btn-tasks hide'} data-type='work' onClick={this.startTime}>#work</button>
-                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks' : 'button is-outlined btn-tasks hide'} data-type='play' onClick={this.startTime}>#play</button>
-                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks' : 'button is-outlined btn-tasks hide'} data-type='break' onClick={this.startTime}>#break</button>
+                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks btn-work' : 'button is-outlined btn-tasks btn-work hide'} 
+                data-type='work' onClick={this.startTime}>#work</button>
+                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks btn-play' : 'button is-outlined btn-tasks btn-play hide'} 
+                data-type='play' onClick={this.startTime}>#play</button>
+                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks btn-learn' : 'button is-outlined btn-tasks btn-learn hide'} 
+                data-type='learn' onClick={this.startTime}>#learn</button>
+                <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks btn-break' : 'button is-outlined btn-tasks btn-break hide'} 
+                data-type='break' onClick={this.startTime}>#break</button>
                 <div className={this.state.focuseMode ? 'focus-controls' : 'hide'}>
                   <div>
                     <span onClick={this.onClickStopFocusMode} className='icon stop'><i className='ion-ionic ion-md-close'></i></span>

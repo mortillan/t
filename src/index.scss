@@ -108,3 +108,75 @@ $slider-thumb-radius: 2rem;
 .control {
   height: 2.85em;
 }
+
+.btn-work {
+  background-color: $white;
+  border-color: #339AF0;
+  color: #339AF0;
+
+  &:hover {
+    border-color: #339AF0;
+    background-color:rgba(51, 154, 240, 0.16);
+    color: #339AF0;
+  }
+
+  &:active, &:focus {
+    border-color: #339AF0;
+    background-color:#339AF0;
+    color: $white;
+  }
+}
+
+.btn-play {
+  background-color: $white;
+  border-color: #FCC419;
+  color: #FCC419;
+
+  &:hover {
+    border-color: #FCC419;
+    background-color:rgba(252, 196, 25, 0.16);
+    color: #FCC419;
+  }
+
+  &:active, &:focus {
+    border-color: #FCC419;
+    background-color:#FCC419;
+    color: $white;
+  }
+}
+
+.btn-learn {
+  background-color: $white;
+  border-color: #51CF66;
+  color: #51CF66;
+
+  &:hover {
+    border-color: #51CF66;
+    background-color:rgba(81, 207, 102, 0.16);
+    color: #51CF66;
+  }
+
+  &:active, &:focus {
+    border-color: #51CF66;
+    background-color:#51CF66;
+    color: $white;
+  }
+}
+
+.btn-break {
+  background-color: $white;
+  border-color: #FA5252;
+  color: #FA5252;
+
+  &:hover {
+    border-color: #FA5252;
+    background-color:rgba(250, 82, 82, 0.16);
+    color: #FA5252;
+  }
+
+  &:active, &:focus {
+    border-color: #FA5252;
+    background-color:#FA5252;
+    color: $white;
+  }
+}
