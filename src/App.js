@@ -19,47 +19,12 @@ class App extends Component {
       slider: 5,
       focuseMode: false,
       mode: '',
+      taskTimer: null,
     };
-    this.addTask = this.addTask.bind(this);
     this.onChangeSliderValue = this.onChangeSliderValue.bind(this);
     this.onClickStopFocusMode = this.onClickStopFocusMode.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.startTime = this.startTime.bind(this);
-  }
-
-  addTask(e) {
-    const { target } = e;
-
-    const { type }  = target.dataset;
-
-    let color;
-
-    switch(type) {
-      case 'work':
-        color = 'red';
-        break;
-      case 'play':
-        color = 'blue';
-        break;
-      default:
-      case 'break':
-        color ='gray';
-        break;
-    }
-
-    const length = (this.state.slider * 60) / 100;
-
-    this.setState({
-      tasks: [...this.state.tasks, {
-        length: length, 
-        start: this.state.currentTaskEnd === 0 ? this.state.markerX : this.state.currentTaskEnd,
-        color: color,
-        type: type,
-      }],
-      currentTaskEnd: this.state.currentTaskEnd === 0 ? this.state.markerX + length : this.state.currentTaskEnd + length,
-      focuseMode: !this.state.focuseMode,
-      mode: type,
-    });
   }
 
   startTime(e) {
@@ -87,25 +52,39 @@ class App extends Component {
 
     const length = (this.state.slider * 60) / 100;
 
+    const intervalId = setInterval(() => {
+      this.setState({
+        currentTask: {
+          ...this.state.currentTask,
+          remainingSec: this.state.currentTask.remainingSec - 1
+        }
+      });
+    }, 1000);
+
     this.setState({
       currentTask: {
         length: length, 
         start: this.state.markerX,
         color: color,
         type: type,
+        remainingSec: this.state.slider * 60,
       },
       currentTaskEnd: this.state.currentTaskEnd === 0 ? this.state.markerX + length : this.state.currentTaskEnd + length,
       focuseMode: !this.state.focuseMode,
       mode: type,
+      taskTimer: intervalId,
     });
   }
 
   onClickStopFocusMode() {
     if(this.state.focuseMode) {
+      clearInterval(this.state.taskTimer);
+
       //TODO stop current task on curren time
       this.setState({
         focuseMode: !this.state.focuseMode,
         currentTask: null,
+        taskTimer: null,
       });
     }
   }
@@ -156,7 +135,7 @@ class App extends Component {
             markerX: 0,
             remainingHours: 23 - hours,
             remainingMins: 60 - minutes,
-          };  
+          }
         }
 
         //console.log(prevState.markerX + 0.01);
@@ -165,7 +144,7 @@ class App extends Component {
           markerX: prevState.markerX + 0.01,
           remainingHours: 23 - hours,
           remainingMins: 60 - minutes,
-        };
+        }
       });
     }, 1000);
   }
@@ -206,8 +185,8 @@ class App extends Component {
           <div className='columns is-vcentered vfull'>
             <div className='column columns is-multiline'>
               <div className='column is-12'>
-                <h1 className='is-size-2 has-text-weight-bold'>You have {this.state.remainingHours} hours, {this.state.remainingMins} minutes. Enjoy the day.</h1>
-                {this.state.currentTask && <h1 className='is-size-2 has-text-weight-bold'>You have {this.state.currentTask.length * 100 / 60}  minutes {(this.state.currentTask.length * 100) % 60} seconds to #{this.state.mode}</h1>}
+                <h1 className={!this.state.focuseMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>You have {this.state.remainingHours} hours, {this.state.remainingMins} minutes. Enjoy the day.</h1>
+                {this.state.currentTask && <h1 className={this.state.focuseMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>You have {Math.trunc(this.state.currentTask.remainingSec / 60)}  minutes {this.state.currentTask.remainingSec % 60} seconds to #{this.state.mode}</h1>}
               </div>
               <div className='column is-12'>
                 <svg viewBox='0 0 864 30'>

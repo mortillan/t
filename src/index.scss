@@ -86,12 +86,12 @@ $slider-thumb-radius: 2rem;
 }
 
 .stop {
-  @extend .is-large;
+  @extend .is-medium;
   &:hover {
     cursor: pointer;
   }
   & > i {
-    font-size: 1.5rem;
+    font-size: 1.325rem;
   }
 }
 
