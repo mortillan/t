@@ -155,9 +155,9 @@ class App extends Component {
         <nav className='navbar is-fixed-top' role='navigation' aria-label='main navigation'>
           <div className={this.state.focuseMode ? 'navbar-brand invisible' : 'navbar-brand'}>
             <a className='navbar-item' href='https://bulma.io'>
-              <img src='https://via.placeholder.com/40x40' alt='' width='40' height='40' />
+              <img src='/img/logo-laegato.png' alt='' width='110' />
             </a>
-            <span className='is-size-4 has-text-weight-bold' style={{margin: 'auto'}}>Laegato</span>
+            {/* <span className='is-size-4 has-text-weight-bold' style={{margin: 'auto'}}>Laegato</span> */}
           </div>
           <div className="navbar-menu">
             <div className={this.state.focuseMode ? 'navbar-start invisible' : 'navbar-start'}>
@@ -205,11 +205,11 @@ class App extends Component {
                 <button className={!this.state.focuseMode ? 'button is-outlined btn-tasks btn-break' : 'button is-outlined btn-tasks btn-break hide'} 
                 data-type='break' onClick={this.startTime}>#break</button>
                 <div className={this.state.focuseMode ? 'focus-controls' : 'hide'}>
-                  <div>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
                     <span onClick={this.onClickStopFocusMode} className='icon stop'><i className='ion-ionic ion-md-close'></i></span>
-                    <span>Press "Esc" to stop</span>
+                    <span className='is-size-5 has-text-weight-bold' style={{ color: '#000000', opacity: '0.54' }}>Press "Esc" to stop</span>
                   </div>
-                  <div>
+                  <div className='is-size-5 has-text-weight-bold' style={{display: 'flex', alignItems: 'center', color: '#000000', opacity: '0.54'}}>
                     { '#' + this.state.mode }
                   </div>
                 </div>
@@ -222,9 +222,10 @@ class App extends Component {
             <div>
               Copyright {new Date().getFullYear()} <strong>Godspeed</strong>. All rights reserverd.
             </div>
-            <div style={{width: '240px'}}>
+            <div className='has-text-weight-bold is-size-5' style={{width: '240px'}}>
               <div>{this.state.slider} minutes</div>
-              <Slider onChange={this.onChangeSliderValue} slider={this.state.slider} min='5' max='90' />
+              {/* <Slider onChange={this.onChangeSliderValue} slider={this.state.slider} min='5' max='90' /> */}
+              <input className='slider is-fullwidth' onChange={this.onChangeSliderValue} slider={this.state.slider} min='5' max='90' step='1' type='range' />
             </div>
             <div>
               <button className='button btn-circle' style={{ marginRight: '1rem' }}></button>
