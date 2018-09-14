@@ -53,6 +53,10 @@ class App extends Component {
     const length = (this.state.slider * 60) / 100;
 
     const intervalId = setInterval(() => {
+      if(this.state.currentTask.remainingSec <= 0){
+        return clearInterval(this.state.taskTimer);
+      }
+      
       this.setState({
         currentTask: {
           ...this.state.currentTask,
@@ -122,9 +126,9 @@ class App extends Component {
 
     setInterval(() => {
       this.setState((prevState) => {
-        if(prevState.currentTask &&  prevState.markerX >= prevState.currentTask.start + prevState.currentTask.length) {
-          this.onClickStopFocusMode();
-        }
+        // if(prevState.currentTask &&  prevState.markerX >= prevState.currentTask.start + prevState.currentTask.length) {
+        //   this.onClickStopFocusMode();
+        // }
 
         const currentDateTime = new Date();
         const hours = currentDateTime.getHours();
