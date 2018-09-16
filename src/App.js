@@ -13,13 +13,14 @@ class App extends Component {
       remainingMins: 0,
       remainingSec: 0,
       markerX: 0,
-      tasks: [],
+      tasksLog: [],
       currentTask: null,
       currentTaskEnd: 0,
       slider: 5,
       focuseMode: false,
       mode: '',
       taskTimer: null,
+      nightMode: false,
     };
     this.onChangeSliderValue = this.onChangeSliderValue.bind(this);
     this.onClickStopFocusMode = this.onClickStopFocusMode.bind(this);
@@ -89,6 +90,10 @@ class App extends Component {
         focuseMode: !this.state.focuseMode,
         currentTask: null,
         taskTimer: null,
+        tasksLog: [
+          ...this.state.tasksLog,
+          this.state.currentTask
+        ]
       });
     }
   }
@@ -195,7 +200,8 @@ class App extends Component {
               <div className='column is-12'>
                 <svg viewBox='0 0 864 30'>
                   <TimeBar />
-                  {this.state.currentTask ? <TaskBar length={this.state.currentTask.length} fill={this.state.currentTask.color} start={this.state.currentTask.start} /> : null}
+                  {this.state.tasksLog && this.state.tasksLog.map(task => <TaskBar length={task.length} fill={task.color} start={task.start} />)}
+                  {this.state.currentTask && <TaskBar length={this.state.currentTask.length} fill={this.state.currentTask.color} start={this.state.currentTask.start} />}
                   <rect x={this.state.markerX} y='1' width='0.75' height='30' fill='#212529' />
                 </svg>
               </div>
@@ -229,7 +235,7 @@ class App extends Component {
             <div className='has-text-weight-bold is-size-5' style={{width: '240px'}}>
               <div>{this.state.slider} minutes</div>
               {/* <Slider onChange={this.onChangeSliderValue} slider={this.state.slider} min='5' max='90' /> */}
-              <input className='slider is-fullwidth' onChange={this.onChangeSliderValue} slider={this.state.slider} min='5' max='90' step='1' type='range' />
+              <input className='slider is-fullwidth' onChange={this.onChangeSliderValue} value={this.state.slider} min='5' max='90' step='1' type='range' />
             </div>
             <div>
               <button className='button btn-circle' style={{ marginRight: '1rem' }}></button>
