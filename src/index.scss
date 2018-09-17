@@ -274,3 +274,13 @@ input[type=range] {
     color: $white;
   }
 }
+
+.dark {
+  background-color: $primary-color;
+  color: $white;
+  &button {
+    background-color: $primary-color;
+    border-color: $white;
+    color: $white;
+  }
+}
