@@ -52,7 +52,7 @@ class App extends Component {
         break;
     }
 
-    const length = (this.state.slider * 60) / 100;
+    const length = (this.state.slider * 60);
 
     //create timer for task
     const intervalId = setInterval(() => {
@@ -68,7 +68,7 @@ class App extends Component {
           remainingSec: sec,
         }
       });
-      document.title = `${Math.trunc(sec / 60)}:${sec % 60}`;
+      document.title = `${Math.trunc(sec / 60)}`.padStart(2, '0') + ':' + `${sec % 60}`.padStart(2, '0');
     }, 1000);
 
     //save task to state
@@ -77,7 +77,7 @@ class App extends Component {
       start: this.state.markerX,
       color: color,
       type: type,
-      remainingSec: this.state.slider * 60,
+      remainingSec: length,
     };
 
     const { tasksLog } = this.state;
@@ -149,7 +149,7 @@ class App extends Component {
     const hours = currentDateTime.getHours();
     const minutes = currentDateTime.getMinutes();
     const seconds = currentDateTime.getSeconds();
-    const total = ((hours * 60 * 60) + (minutes * 60) + seconds) / 100;
+    const total = ((hours * 60 * 60) + (minutes * 60) + seconds);
 
     // console.log(total);
 
@@ -165,7 +165,7 @@ class App extends Component {
         const hours = currentDateTime.getHours();
         const minutes = currentDateTime.getMinutes();
 
-        if(prevState.markerX + 0.01 > 864) {
+        if(prevState.markerX + 1 > 86400) {
           return { 
             markerX: 0,
             remainingHours: 23 - hours,
@@ -176,7 +176,7 @@ class App extends Component {
         //console.log(prevState.markerX + 0.01);
 
         return { 
-          markerX: prevState.markerX + 0.01,
+          markerX: prevState.markerX + 1,
           remainingHours: 23 - hours,
           remainingMins: 60 - minutes,
         }
@@ -229,18 +229,24 @@ class App extends Component {
                 </h1>
                 {this.state.currentTask && 
                 <h1 className={this.state.focusMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>
-                You have {Math.trunc(this.state.currentTask.remainingSec / 60)} minutes {this.state.currentTask.remainingSec % 60} seconds to #{this.state.mode}</h1>}
+                You have {`${Math.trunc(this.state.currentTask.remainingSec / 60)}`.padStart(2, '0')} minutes {`${this.state.currentTask.remainingSec % 60}`.padStart(2, '0')} seconds to #{this.state.mode}</h1>}
               </div>
               <div className='column is-12'>
-                <svg viewBox='0 0 864'>
+                <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
                   <TimeBar />
                   {tasksToday && 
                     tasksToday.map(task => <TaskBar length={task.length} fill={task.color} start={task.start} />)}
+                  <Marker x={this.state.markerX} />
                   {this.state.currentTask && 
-                    <TaskBar length={this.state.currentTask.length} fill={this.state.currentTask.color} start={this.state.currentTask.start} />}
-                  <rect x='0' y='5' width='864' height='20' fill='#339AF0' />
-                  {/* <rect x={this.state.markerX} y='1' width='0.75' height='30' fill='#212529' /> */}
-                  <rect x='0' y='5' width='864' height='40' fill='#339AF0' />
+                    // <TaskBar length={this.state.currentTask.length} fill={this.state.currentTask.color} start={this.state.currentTask.start} />
+                    // <g>
+                    //   <rect x='0' y='0' width='86400' fill={this.state.currentTask.color} height='2320' />
+                    //   <Marker x={86400 - ((86400 / 300) * this.state.currentTask.remainingSec)} />
+                    //   <text x='0' y='1460' font-size='1160' fill='#ffffff'>12:58am</text>
+                    //   <text x='81600' y='1460' font-size='1160' fill='#ffffff'>02:58am</text>
+                    // </g>
+                    <CountBar fill={this.state.currentTask.color} 
+                    marker={<Marker x={(this.state.currentTask.length - this.state.currentTask.remainingSec) * (86400 / this.state.currentTask.length)} />} />}
                 </svg>
               </div>
               <div className='column is-12' style={{ minHeight: '75px'}}>              
@@ -272,10 +278,7 @@ class App extends Component {
             </div>
             <div className='has-text-weight-bold is-size-5' style={{width: '240px'}}>
               <div>{this.state.slider} minutes</div>
-              {/* <Slider onChange={this.onChangeSliderValue} slider={this.state.slider} min='5' max='90' /> */}
-              <input className='slider is-fullwidth' 
-              onChange={this.onChangeSliderValue} 
-              value={this.state.slider} min='5' max='90' step='1' type='range' />
+              <Slider onChange={this.onChangeSliderValue} val={this.state.slider} min='5' max='90' step='1' />
             </div>
             <div>
               <button onClick={this.toggleTheme} className='button btn-circle' style={{ marginRight: '1rem' }}></button>
@@ -292,19 +295,35 @@ class App extends Component {
 
 const TaskBar = (props) => {
   return (
-    <rect x={props.start} y='5' width={props.length} height='20' fill={props.fill} />
+    <rect x={props.start} y='0' width={props.length} height='2320' fill={props.fill} />
   );
 }
 
 const TimeBar = (props) => {
   return (
-    <rect x='0' y='5' width='864' height='20' fill='#212529' style={{fillOpacity: '.16'}} />
+    <rect x='0' y='0' width='86400' height='2320' fill='#212529' fill-opacity='.16' />
+  );
+}
+
+const Marker = (props) => {
+  return (
+    <rect x={props.x} y='0' width='100' height='2320' fill='#212529' />
+  );
+}
+
+const CountBar = (props) => {
+  return (
+    <g>
+      <rect x='0' y='0' width='86400' fill={props.fill} height='2320' />
+      {props.marker}
+      <text x='0' y='1460' font-size='1160' fill='#ffffff'>12:58am</text>
+      <text x='81600' y='1460' font-size='1160' fill='#ffffff'>02:58am</text>
+    </g>
   );
 }
 
 const taskKey = (date) => {
   return date.toISOString().slice(0, 10).replace(/-/g, '');
 }
-
 
 export default App;
