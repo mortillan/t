@@ -9,31 +9,88 @@ body {
   height: 100%;
 }
 
-$primary-color: #212529;
+@import "bulma/sass/utilities/initial-variables.sass";
 
-$slider-thumb-background: $primary-color;
-$slider-track-background: $primary-color;
+$laegato-black: #212529;
 
 $family-primary: Arial, sans-serif;
-$text: $primary-color;
+$text: $laegato-black;
 
-$button-border-color: $primary-color;
+$button-border-color: $laegato-black;
 $button-border-width: 2px;
 
 $button-text-hover-background-color: rgba(33, 37, 41, 0.16);
-$button-hover-border-color: $primary-color;
+$button-hover-border-color: $laegato-black;
 
-@import "bulma/bulma.sass";
-//@import "bulma-slider/src/sass/index.sass";
+.grey-text {
+  color: #000000; 
+  opacity: 0.54;
+}
+
+body.dark {
+  color: $white;
+  background-color: $laegato-black;
+
+  $slider-track-background: $laegato-black;
+
+  & * {
+    background-color: $laegato-black;
+    color: $white;
+  }
+
+  & a.button:not(.not-outlined) {
+    border-color: $white;
+    color: $white;
+  }
+
+  & a.not-outlined:hover {
+    border-color: $white;
+    color: $white;
+  }
+
+  & input[type=range]::-ms-track, input[type=range]::-moz-range-track, input[type=range]::-webkit-slider-runnable-track {
+    $slider-track-background: #ffffff;
+  }
+
+  & input[type=range] {
+    &::-webkit-slider-thumb, ::-moz-range-thumb, ::-ms-thumb {
+      background: #ffffff;
+    }
+  }
+
+  & .grey-text {
+    color: #ffffff; 
+    opacity: 1;
+  }
+
+  & .theme {
+    background: #ffffff;
+  }
+  // $body-background-color: #000000;//$laegato-black;
+  // $text: $white;
+  // $slider-thumb-background: $white;
+  // $slider-track-background: $white;
+}
+
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/grid/_all.sass";
+@import "bulma/sass/elements/_all.sass";
+@import "bulma/sass/layout/footer.sass";
+@import "bulma/sass/components/_all.sass";
+
+
+// @import "bulma/bulma.sass";
 
 $slider-radius: 2rem;
 $slider-thumb-radius: 2rem;
 $slider-thumb-shadow: none;
-$slider-track-background: $primary-color;
+$slider-track-background: $laegato-black;
 $slider-track-radius: 2rem;
 $slider-track-border: 0px solid $grey;
 $slider-track-shadow: 0px 0px 0px $grey;
-$slider-thumb-border: 1px solid $primary-color;
+$slider-thumb-border: 1px solid $laegato-black;
+$slider-thumb-background: $laegato-black;
 $track-height: 2px;
 $thumb-size: 1.5rem;
 
@@ -162,7 +219,7 @@ input[type=range] {
 .not-outlined {
   border-color: transparent;
   &:hover {
-    border-color: $primary-color;
+    border-color: $laegato-black;
   }
 }
 
@@ -271,16 +328,6 @@ input[type=range] {
   &:active, &:focus {
     border-color: #FA5252;
     background-color:#FA5252;
-    color: $white;
-  }
-}
-
-.dark {
-  background-color: $primary-color;
-  color: $white;
-  &button {
-    background-color: $primary-color;
-    border-color: $white;
     color: $white;
   }
 }

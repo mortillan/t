@@ -23,17 +23,14 @@ class App extends Component {
       nightMode: false,
     }
     this.onChangeSliderValue = this.onChangeSliderValue.bind(this)
+    this.onClickTaskType = this.onClickTaskType.bind(this)
     this.stopTimer = this.stopTimer.bind(this)
-    this.handleKeyPress = this.handleKeyPress.bind(this)
-    this.startTime = this.startTime.bind(this)
+    this.onKeypress = this.onKeypress.bind(this)
+    this.startTimer = this.startTimer.bind(this)
     this.toggleTheme = this.toggleTheme.bind(this)
   }
 
-  startTime(e) {
-    const { target } = e
-
-    const { type }  = target.dataset
-
+  startTimer(type) {
     let color
 
     switch(type) {
@@ -130,12 +127,20 @@ class App extends Component {
     }
   }
 
-  handleKeyPress(e) {
+  onKeypress(e) {
     const { key } = e
 
     if(key === 'Escape') {
       this.stopTimer()
-    }
+    } 
+  }
+
+  onClickTaskType(e) {
+    const { target } = e
+
+    const { type }  = target.dataset
+
+    this.startTimer(type);
   }
 
   onChangeSliderValue(e) {
@@ -157,7 +162,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyPress)
+    document.addEventListener('keydown', this.onKeypress)
 
     const currentDateTime = new Date()
     const hours = currentDateTime.getHours()
@@ -199,7 +204,7 @@ class App extends Component {
   }
 
   render() {
-    const { tasksLog } = this.state
+    const { tasksLog, nightMode } = this.state
     const key = taskKey(new Date())
     const tasksToday = tasksLog[key] || null
 
@@ -225,7 +230,7 @@ class App extends Component {
                     <a className='button not-outlined' href="#">Login</a>
                   </p>
                   <p className='control'>
-                    <a className='button is-outlined' href='#'>
+                    <a className='button' href='#'>
                       Create a free account
                     </a>
                   </p>
@@ -239,7 +244,7 @@ class App extends Component {
             <div className='column columns is-multiline'>
               <div className='column is-12'>
                 <h1 className={!this.state.focusMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>
-                You have {this.state.remainingHours} hours, {this.state.remainingMins} minutes. Enjoy the day.
+                You have {this.state.remainingHours} hours {this.state.remainingMins} minutes today.
                 </h1>
                 {this.state.currentTask && 
                 <h1 className={this.state.focusMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>
@@ -247,37 +252,30 @@ class App extends Component {
               </div>
               <div className='column is-12'>
                 <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
-                  <TimeBar />
+                  <TimeBar fill={nightMode ? '#FFFFFF' : '#212529'} />
                   {tasksToday && 
                     tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} length={task.length} fill={task.color} start={task.start} />)}
-                  <Marker x={this.state.markerX} />
+                  <Marker x={this.state.markerX} fill={nightMode ? '#FFFFFF' : '#212529'} />
                   {this.state.currentTask && 
-                    // <TaskBar length={this.state.currentTask.length} fill={this.state.currentTask.color} start={this.state.currentTask.start} />
-                    // <g>
-                    //   <rect x='0' y='0' width='86400' fill={this.state.currentTask.color} height='2320' />
-                    //   <Marker x={86400 - ((86400 / 300) * this.state.currentTask.remainingSec)} />
-                    //   <text x='0' y='1460' font-size='1160' fill='#ffffff'>12:58am</text>
-                    //   <text x='81600' y='1460' font-size='1160' fill='#ffffff'>02:58am</text>
-                    // </g>
                     <CountBar task={this.state.currentTask}
-                    marker={<Marker x={(this.state.currentTask.length - this.state.currentTask.remainingSec) * (86400 / this.state.currentTask.length)} />} />}
+                    marker={<Marker x={(this.state.currentTask.length - this.state.currentTask.remainingSec) * (86400 / this.state.currentTask.length)} fill={nightMode ? '#FFFFFF' : '#212529'}   />} />}
                 </svg>
               </div>
               <div className='column is-12' style={{ minHeight: '75px'}}>              
                 <button className={!this.state.focusMode ? 'button is-outlined btn-tasks btn-work' : 'button is-outlined btn-tasks btn-work hide'} 
-                data-type='work' onClick={this.startTime}>#work</button>
+                data-type='work' onClick={this.onClickTaskType}>work</button>
                 <button className={!this.state.focusMode ? 'button is-outlined btn-tasks btn-play' : 'button is-outlined btn-tasks btn-play hide'} 
-                data-type='play' onClick={this.startTime}>#play</button>
+                data-type='play' onClick={this.onClickTaskType}>play</button>
                 <button className={!this.state.focusMode ? 'button is-outlined btn-tasks btn-learn' : 'button is-outlined btn-tasks btn-learn hide'} 
-                data-type='learn' onClick={this.startTime}>#learn</button>
+                data-type='learn' onClick={this.onClickTaskType}>learn</button>
                 <button className={!this.state.focusMode ? 'button is-outlined btn-tasks btn-break' : 'button is-outlined btn-tasks btn-break hide'} 
-                data-type='break' onClick={this.startTime}>#break</button>
+                data-type='break' onClick={this.onClickTaskType}>break</button>
                 <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
                   <div style={{display: 'flex', alignItems: 'center'}}>
                     <span onClick={this.stopTimer} className='icon stop'><i className='ion-ionic ion-md-close'></i></span>
-                    <span className='is-size-5 has-text-weight-bold' style={{ color: '#000000', opacity: '0.54' }}>Press "Esc" to stop</span>
+                    <span className='is-size-5 has-text-weight-bold grey-text'>Press "Esc" to stop</span>
                   </div>
-                  <div className='is-size-5 has-text-weight-bold' style={{display: 'flex', alignItems: 'center', color: '#000000', opacity: '0.54'}}>
+                  <div className='is-size-5 has-text-weight-bold grey-text' style={{display: 'flex', alignItems: 'center'}}>
                     { '#' + this.state.mode }
                   </div>
                 </div>
@@ -285,18 +283,18 @@ class App extends Component {
             </div>
           </div>
         </section>
-        <footer className={this.state.focusMode ? 'footer invisible' : 'footer'}>
+        <footer className='footer'>
           <div className='content' style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
             <div>
-              Copyright {new Date().getFullYear()} <strong>Godspeed</strong>. All rights reserverd.
+              Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
             </div>
-            <div className='has-text-weight-bold is-size-5' style={{width: '240px'}}>
+            <div className={this.state.focusMode ? 'has-text-weight-bold is-size-5 invisible' : 'has-text-weight-bold is-size-5'} style={{width: '240px'}}>
               <div>{this.state.slider} minutes</div>
               <Slider onChange={this.onChangeSliderValue} val={this.state.slider} min='5' max='90' step='1' />
             </div>
             <div>
-              <button onClick={this.toggleTheme} className='button btn-circle' style={{ marginRight: '1rem' }}></button>
-              <a className="icon button" href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
+              <button onClick={this.toggleTheme} className='button btn-circle theme' style={{ marginRight: '1rem' }}></button>
+              <a className={this.state.focusMode ? 'icon button theme hide' : 'icon button theme'} href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
                 <i className='ion-ionic ion-md-help'></i>
               </a>
             </div>
@@ -315,13 +313,13 @@ const TaskBar = (props) => {
 
 const TimeBar = (props) => {
   return (
-    <rect x='0' y='0' width='86400' height='2320' fill='#212529' fillOpacity='.16' />
+    <rect x='0' y='0' width='86400' height='2320' fill={props.fill} fillOpacity='.16' />
   )
 }
 
 const Marker = (props) => {
   return (
-    <rect x={props.x} y='0' width='100' height='2320' fill='#212529' />
+    <rect x={props.x} y='0' width='100' height='2320' fill={props.fill} />
   )
 }
 
