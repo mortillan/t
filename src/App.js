@@ -132,7 +132,15 @@ class App extends Component {
 
     if(key === 'Escape') {
       this.stopTimer()
-    } 
+    } else if (key === 'b') {
+      this.startTimer('break')
+    } else if (key === 'w') {
+      this.startTimer('work')
+    } else if (key === 'l') {
+      this.startTimer('learn')
+    } else if (key === 'p') {
+      this.startTimer('play')
+    }
   }
 
   onClickTaskType(e) {
