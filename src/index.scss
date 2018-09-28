@@ -48,12 +48,33 @@ body.dark {
     color: $white;
   }
 
-  & input[type=range]::-ms-track, input[type=range]::-moz-range-track, input[type=range]::-webkit-slider-runnable-track {
-    $slider-track-background: #ffffff;
-  }
+  // * input[type=range]::-ms-track, * input[type=range]::-moz-range-track, * input[type=range]::-webkit-slider-runnable-track {
+  //   background: #ffffff;
+  // }
 
   & input[type=range] {
-    &::-webkit-slider-thumb, ::-moz-range-thumb, ::-ms-thumb {
+
+    &::-ms-track {
+      background: #ffffff;
+    }
+
+    &::-moz-range-track {
+      background: #ffffff;
+    }
+
+    &::-webkit-slider-runnable-track {
+      background: #ffffff;
+    }
+
+    &::-webkit-slider-thumb {
+      background: #ffffff;
+    }
+
+    &::moz-range-thumb {
+      background: #ffffff;
+    }
+
+    &::-ms-thumb {
       background: #ffffff;
     }
   }
