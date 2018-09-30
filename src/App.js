@@ -14,6 +14,7 @@ class App extends Component {
       remainingSec: 0,
       markerX: 0,
       tasksLog: JSON.parse(localStorage.getItem('logs')) || {},
+      taskKey: taskKey(new Date()),
       currentTask: null,
       currentTaskEnd: 0,
       slider: 5,
@@ -187,34 +188,52 @@ class App extends Component {
     })
 
     setInterval(() => {
-      this.setState((prevState) => {
-        const currentDateTime = new Date()
-        const hours = currentDateTime.getHours()
-        const minutes = currentDateTime.getMinutes()
+      const currentDateTime = new Date()
+      const hours = currentDateTime.getHours()
+      const minutes = currentDateTime.getMinutes()
 
-        if(prevState.markerX + 1 > 86400) {
-          return { 
-            markerX: 0,
-            remainingHours: 23 - hours,
-            remainingMins: 60 - minutes,
-          }
-        }
-
-        //console.log(prevState.markerX + 0.01)
-
-        return { 
-          markerX: prevState.markerX + 1,
+      if(this.state.markerX + 1 > 86400) {
+        this.setState({ 
+          markerX: 0,
           remainingHours: 23 - hours,
-          remainingMins: 60 - minutes,
-        }
-      })
+          remainingMins: 59 - minutes,
+          taskKey: taskKey(new Date()),
+        })
+      } else {
+        this.setState({ 
+          markerX: this.state.markerX + 1,
+          remainingHours: 23 - hours,
+          remainingMins: 59 - minutes,
+        })
+      }
+
+      // this.setState((prevState) => {
+      //   const currentDateTime = new Date()
+      //   const hours = currentDateTime.getHours()
+      //   const minutes = currentDateTime.getMinutes()
+
+      //   if(prevState.markerX + 1 > 86400) {
+          
+      //     return { 
+      //       markerX: 0,
+      //       remainingHours: 23 - hours,
+      //       remainingMins: 59 - minutes,
+      //       taskKey: taskKey(new Date()),
+      //     }
+      //   }
+
+      //   return { 
+      //     markerX: prevState.markerX + 1,
+      //     remainingHours: 23 - hours,
+      //     remainingMins: 59 - minutes,
+      //   }
+      // })
     }, 1000)
   }
 
   render() {
-    const { tasksLog, nightMode } = this.state
-    const key = taskKey(new Date())
-    const tasksToday = tasksLog[key] || null
+    const { tasksLog, taskKey, nightMode } = this.state
+    const tasksToday = tasksLog[taskKey] || null
 
     return (
       <div className='vfull'>
