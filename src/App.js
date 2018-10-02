@@ -206,28 +206,6 @@ class App extends Component {
           remainingMins: 59 - minutes,
         })
       }
-
-      // this.setState((prevState) => {
-      //   const currentDateTime = new Date()
-      //   const hours = currentDateTime.getHours()
-      //   const minutes = currentDateTime.getMinutes()
-
-      //   if(prevState.markerX + 1 > 86400) {
-          
-      //     return { 
-      //       markerX: 0,
-      //       remainingHours: 23 - hours,
-      //       remainingMins: 59 - minutes,
-      //       taskKey: taskKey(new Date()),
-      //     }
-      //   }
-
-      //   return { 
-      //     markerX: prevState.markerX + 1,
-      //     remainingHours: 23 - hours,
-      //     remainingMins: 59 - minutes,
-      //   }
-      // })
     }, 1000)
   }
 
