@@ -188,22 +188,22 @@ class App extends Component {
     })
 
     setInterval(() => {
-      const currentDateTime = new Date()
-      const hours = currentDateTime.getHours()
-      const minutes = currentDateTime.getMinutes()
-
+      //const currentDateTime = new Date()
+      //const hours = currentDateTime.getHours()
+      //const minutes = currentDateTime.getMinutes()
+      
       if(this.state.markerX + 1 > 86400) {
-        this.setState({ 
+        this.setState({
           markerX: 0,
-          remainingHours: 23 - hours,
-          remainingMins: 59 - minutes,
-          taskKey: taskKey(new Date()),
+          remainingHours: 23 - (this.state.markerX / 3600),
+          remainingMins: 59 - (this.state.markerX / 60),
+          taskKey: taskKey(currentDateTime),
         })
       } else {
         this.setState({ 
           markerX: this.state.markerX + 1,
-          remainingHours: 23 - hours,
-          remainingMins: 59 - minutes,
+          remainingHours: 23 - (this.state.markerX / 3600),
+          remainingMins: 59 - (this.state.markerX / 60),
         })
       }
     }, 1000)
