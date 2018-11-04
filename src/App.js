@@ -4,117 +4,111 @@ import './App.css'
 // import { select, path } from 'd3'
 import 'bulma-slider/dist/js/bulma-slider'
 import Slider from './component/Slider'
+import worker from './workers/timer.worker'
+import HourCount from './component/HourCount'
+import MinCount from './component/MinCount'
+import TaskTimeRemaining from './component/TaskTimeRemaining'
+import { taskKey, calculateSecondsPastMidnight } from './lib/common'
+import { TASK_TYPES } from './lib/constants'
+
+const MAX_SECONDS = 86400
+const MS_IN_DAY = 86400000
+const LAEGATO = 'Laegato'
 
 class App extends Component {
   constructor() {
     super()
     this.state = {
-      remainingHours: 0,
-      remainingMins: 0,
-      remainingSec: 0,
-      markerX: 0,
+      tickHours: 0,
+      tickMins: 0,
+      tick: 0,
       tasksLog: JSON.parse(localStorage.getItem('logs')) || {},
       taskKey: taskKey(new Date()),
       currentTask: null,
-      currentTaskEnd: 0,
       slider: 5,
       focusMode: false,
       mode: '',
       taskTimer: null,
       nightMode: false,
     }
+    this.timerWorker = new Worker(URL.createObjectURL(new Blob([ '(' + worker.toString() + ')()'])));
     this.onChangeSliderValue = this.onChangeSliderValue.bind(this)
     this.onClickTaskType = this.onClickTaskType.bind(this)
-    this.stopTimer = this.stopTimer.bind(this)
-    this.onKeypress = this.onKeypress.bind(this)
     this.startTimer = this.startTimer.bind(this)
+    this.stopTimer = this.stopTimer.bind(this)
+    this.tickTimer = this.tickTimer.bind(this)
+    this.onKeypress = this.onKeypress.bind(this)
     this.toggleTheme = this.toggleTheme.bind(this)
+    this.onTimer = this.onTimer.bind(this)
   }
 
-  startTimer(type) {
-    let color
+  startTimer(type = 'break') {
+      const { tick, slider, focusMode} = this.state
+      const length = slider * 60
 
-    switch(type) {
-      case 'work':
-        color = '#339AF0'
-        break
-      case 'play':
-        color = '#FCC419'
-        break
-      case 'learn':
-        color = '#51CF66'
-        break
-      default:
-      case 'break':
-        color ='#FA5252'
-        break
-    }
+      //create timer for task
+      const intervalId = setInterval(this.tickTimer, 1000)
 
-    const length = (this.state.slider * 60)
-
-    //create timer for task
-    const intervalId = setInterval(() => {
-      if(this.state.currentTask.remainingSec <= 0){
-        return this.stopTimer()
+      //save task to state
+      const newTask = {
+        length: length, 
+        start: tick,
+        end: tick + length,
+        color: TASK_TYPES[type].color,
+        type: type,
+        tick: length,
+        key: taskKey(new Date())
       }
 
-      const sec = this.state.currentTask.remainingSec - 1
-      
+      console.log(newTask)
+
+      localStorage.setItem('logs', JSON.stringify(this.state.tasksLog))
+
       this.setState({
-        currentTask: {
-          ...this.state.currentTask,
-          remainingSec: sec,
-        }
-      })
-      document.title = `${Math.trunc(sec / 60)}`.padStart(2, '0') + ':' + `${sec % 60}`.padStart(2, '0')
-    }, 1000)
-
-    //save task to state
-    const newTask = {
-      length: length, 
-      start: this.state.markerX,
-      color: color,
-      type: type,
-      remainingSec: length,
-    }
-
-    // console.log(newTask);
-
-    // const { tasksLog } = this.state
-    // const key = taskKey(new Date())
-    // if(!tasksLog[key]){
-    //   tasksLog[key] = []
-    // }
-    // tasksLog[key].push(newTask)
-
-    this.setState({
-      currentTask: newTask,
-      currentTaskEnd: this.state.currentTaskEnd === 0 ? this.state.markerX + length : this.state.currentTaskEnd + length,
-      focusMode: !this.state.focusMode,
-      mode: type,
-      taskTimer: intervalId,
-      //tasksLog: tasksLog,
-    })
-
-    localStorage.setItem('logs', JSON.stringify(this.state.tasksLog))
+        currentTask: newTask,
+        focusMode: !focusMode,
+        mode: type,
+        taskTimer: intervalId,
+      })   
   }
 
   stopTimer() {
-    const { focusMode, taskTimer, tasksLog, currentTask, markerX } = this.state
+    const { focusMode, taskTimer, tasksLog, currentTask, tick } = this.state
 
     if(focusMode) {
       clearInterval(taskTimer)
 
-      const length = markerX - currentTask.start
-
-      const key = taskKey(new Date())
+      let length;
+      const key = currentTask.key
       if(!tasksLog[key]){
         tasksLog[key] = []
       }
-      tasksLog[key].push({
-        ...currentTask,
-        length: length,
-      })
+
+      if(currentTask.end <= MAX_SECONDS) {
+        tasksLog[key].push({
+          ...currentTask,
+          length: length,
+        })
+      } else {        
+        tasksLog[key].push({
+          length: MAX_SECONDS - currentTask.start,
+          start: currentTask.start,
+          end: MAX_SECONDS,
+          color: currentTask.color,
+          type: currentTask.type,
+        })
+        const nextDay = new Date()
+        nextDay.setTime(new Date(currentTask.key).getTime() + MS_IN_DAY)
+        const nextKey = taskKey(nextDay)
+        tasksLog[nextKey] = []
+        tasksLog[nextKey].push({
+          length: tick - 0,
+          start: 0,
+          end: tick,
+          color: currentTask.color,
+          type: currentTask.type,
+        })
+      }      
 
       //TODO stop current task on current time
       this.setState({
@@ -124,8 +118,35 @@ class App extends Component {
         tasksLog: tasksLog,
       })
 
-      document.title = 'Laegato'
+      document.title = LAEGATO
     }
+  }
+
+  tickTimer() {
+    const { currentTask } = this.state
+
+    // const currentDateTime = new Date()
+    // currentDateTime.setHours(0, 0, 0, 0)
+    // currentDateTime.setSeconds()
+    // const hours = currentDateTime.getHours()
+    // const minutes = currentDateTime.getMinutes()
+    // const seconds = currentDateTime.getSeconds()
+    // const  = ((hours * 60 * 60) + (minutes * 60) + seconds) 
+    const total = calculateSecondsPastMidnight(new Date())
+    const tick = (total - currentTask.start) * (MAX_SECONDS / currentTask.length)
+    const remaining = ((currentTask.start + currentTask.length) - total)
+    // if(currentTask.tick <= 0){
+    //   return this.stopTimer()
+    // }
+       
+    this.setState({
+      currentTask: {
+        ...currentTask,
+        tick: tick,
+        remaining: remaining,
+      }
+    })
+    document.title = `${Math.trunc(remaining / 60)}`.padStart(2, '0') + ':' + `${remaining % 60}`.padStart(2, '0')
   }
 
   onKeypress(e) {
@@ -170,43 +191,34 @@ class App extends Component {
     this.setState({nightMode: !nightMode})
   }
 
+  onTimer(e) {
+    const { timestamp, hrs, min, sec } = e.data
+    const total = ((hrs * 60 * 60) + (min * 60) + sec)
+
+    this.setState({
+      tick: total,
+      tickHours: 23 - hrs,
+      tickMins: 59 - min,
+      taskKey: taskKey(new Date(timestamp)),
+    })
+  }
+
   componentDidMount() {
     document.addEventListener('keydown', this.onKeypress)
+
+    this.timerWorker.addEventListener('message', this.onTimer);
 
     const currentDateTime = new Date()
     const hours = currentDateTime.getHours()
     const minutes = currentDateTime.getMinutes()
     const seconds = currentDateTime.getSeconds()
     const total = ((hours * 60 * 60) + (minutes * 60) + seconds)
-
-    // console.log(total)
-
+    
     this.setState({
-      markerX: total,
-      remainingHours: 23 - hours,
-      remainingMins: 59 - minutes,
+      tick: total,
+      tickHours: 23 - hours,
+      tickMins: 59 - minutes,
     })
-
-    setInterval(() => {
-      //const currentDateTime = new Date()
-      //const hours = currentDateTime.getHours()
-      //const minutes = currentDateTime.getMinutes()
-      
-      if(this.state.markerX + 1 > 86400) {
-        this.setState({
-          markerX: 0,
-          remainingHours: 23 - (this.state.markerX / 3600),
-          remainingMins: 59 - (this.state.markerX / 60),
-          taskKey: taskKey(currentDateTime),
-        })
-      } else {
-        this.setState({ 
-          markerX: this.state.markerX + 1,
-          remainingHours: 23 - (this.state.markerX / 3600),
-          remainingMins: 59 - (this.state.markerX / 60),
-        })
-      }
-    }, 1000)
   }
 
   render() {
@@ -249,21 +261,20 @@ class App extends Component {
             <div className='column columns is-multiline'>
               <div className='column is-12'>
                 <h1 className={!this.state.focusMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>
-                You have {this.state.remainingHours} hours {this.state.remainingMins} minutes today.
+                You have <HourCount hr={this.state.tickHours} /> hours <MinCount min={this.state.tickMins} /> minutes today.
                 </h1>
-                {this.state.currentTask && 
-                <h1 className={this.state.focusMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>
-                You have {`${Math.trunc(this.state.currentTask.remainingSec / 60)}`.padStart(2, '0')} minutes {`${this.state.currentTask.remainingSec % 60}`.padStart(2, '0')} seconds to #{this.state.mode}</h1>}
+                {this.state.currentTask && <TaskTimeRemaining remaining={this.state.currentTask.remaining} focusMode={this.state.focusMode} mode={this.state.mode} />}
               </div>
               <div className='column is-12'>
                 <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
                   <TimeBar fill={nightMode ? '#FFFFFF' : '#212529'} />
                   {tasksToday && 
                     tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} length={task.length} fill={task.color} start={task.start} />)}
-                  <Marker x={this.state.markerX} fill={nightMode ? '#FFFFFF' : '#212529'} />
+                  <Marker x={this.state.tick} fill={nightMode ? '#FFFFFF' : '#212529'} />
                   {this.state.currentTask && 
                     <CountBar task={this.state.currentTask}
-                    marker={<Marker x={(this.state.currentTask.length - this.state.currentTask.remainingSec) * (86400 / this.state.currentTask.length)} fill={nightMode ? '#FFFFFF' : '#212529'}   />} />}
+                    marker={<Marker x={this.state.currentTask.tick} 
+                    fill={nightMode ? '#FFFFFF' : '#212529'}   />} />}
                 </svg>
               </div>
               <div className='column is-12' style={{ minHeight: '75px'}}>              
@@ -330,31 +341,34 @@ const Marker = (props) => {
 
 const CountBar = (props) => {
   const startTime = new Date()
-  startTime.setHours(0)
-  startTime.setMinutes(0)
-  startTime.setSeconds(0)
-  startTime.setMilliseconds(0)
+  startTime.setHours(0, 0, 0, 0)
   startTime.setSeconds(props.task.start);
   
   const endTime = new Date()
-  endTime.setHours(0)
-  endTime.setMinutes(0)
-  endTime.setSeconds(0)
-  endTime.setMilliseconds(0)
+  endTime.setHours(0, 0, 0, 0)
   endTime.setSeconds(props.task.start + props.task.length)
 
   return (
     <g>
       <rect x='0' y='0' width='86400' fill={props.task.color} height='2320' />
       {props.marker}
-      <text x='864' y='1560' fontSize='1160' fill='#ffffff'>{startTime.toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: 'numeric'})}</text>
-      <text x='81300' y='1560' fontSize='1160' fill='#ffffff'>{endTime.toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: 'numeric'})}</text>
+      <text x='864' y='1560' 
+      fontSize='1160' 
+      fill='#ffffff'>
+      {startTime.toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: 'numeric'})}
+      </text>
+      <text x='81300' 
+      y='1560' 
+      fontSize='1160' 
+      fill='#ffffff'>
+      {endTime.toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: 'numeric'})}
+      </text>
     </g>
   )
 }
 
-const taskKey = (date) => {
-  return date.toISOString().slice(0, 10).replace(/-/g, '')
-}
+// const taskKey = (date) => {
+//   return date.toLocaleDateString();
+// }
 
 export default App

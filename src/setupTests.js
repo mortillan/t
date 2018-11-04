@@ -20,4 +20,18 @@ class LocalStorageMock {
   }
 };
 
+class Worker {
+  constructor(stringUrl) {
+    this.url = stringUrl;
+    this.onmessage = () => {};
+    this.addEventListener = jest.fn();
+  }
+
+  postMessage(msg) {
+    this.onmessage(msg);
+  }
+}
+
+global.URL.createObjectURL = jest.fn();
+global.Worker = Worker;
 global.localStorage = new LocalStorageMock;
