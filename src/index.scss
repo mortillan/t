@@ -12,6 +12,7 @@ body {
 @import "bulma/sass/utilities/initial-variables.sass";
 
 $laegato-black: #212529;
+$black: $laegato-black;
 
 $family-primary: Arial, sans-serif;
 $text: $laegato-black;
@@ -244,11 +245,6 @@ input[type=range] {
   }
 }
 
-.button {
-  font-weight: bold;
-  font-size: 0.875rem;
-}
-
 .invisible {
   visibility: hidden;
 }
@@ -350,5 +346,26 @@ input[type=range] {
     border-color: #FA5252;
     background-color:#FA5252;
     color: $white;
+  }
+}
+
+input.black {
+  border: 2px solid $laegato-black;
+  
+  &::-webkit-input-placeholder { 
+    /* Chrome/Opera/Safari */
+    color: $laegato-black;
+  }
+  &::-moz-placeholder { 
+    /* Firefox 19+ */
+    color: $laegato-black;
+  }
+  &:-ms-input-placeholder { 
+    /* IE 10+ */
+    color: $laegato-black;
+  }
+  &:-moz-placeholder { 
+    /* Firefox 18- */
+    color: $laegato-black;
   }
 }
