@@ -12,6 +12,8 @@ import HourCount from '../component/HourCount'
 import MinCount from '../component/MinCount'
 import CountBar from '../component/CountBar'
 import Marker from '../component/Marker'
+import TimeBar from '../component/TimeBar'
+import TaskBar from '../component/TaskBar'
 import TaskTimeRemaining from '../component/TaskTimeRemaining'
 
 import { taskKey, calculateSecondsPastMidnight } from '../lib/common'
@@ -331,17 +333,17 @@ const Navigation = ({ focusMode }) => {
   )
 }
 
-const TaskBar = (props) => {
-  return (
-    <rect x={props.start} y='0' width={props.length} height='2320' fill={props.fill} />
-  )
-}
+// const TaskBar = (props) => {
+//   return (
+//     <rect x={props.start} y='0' width={props.length} height='2320' fill={props.fill} />
+//   )
+// }
 
-const TimeBar = (props) => {
-  return (
-    <rect x='0' y='0' width='86400' height='2320' fill={props.fill} fillOpacity='.16' />
-  )
-}
+// const TimeBar = (props) => {
+//   return (
+//     <rect x='0' y='0' width='86400' height='2320' fill={props.fill} fillOpacity='.16' />
+//   )
+// }
 
 // const Marker = (props) => {
 //   return (
