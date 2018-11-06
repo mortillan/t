@@ -1,9 +1,6 @@
 import React from 'react'
 
-const CountBar = (props) => {
-  // console.log(this)
-  const { task, marker } = props
-
+export default function CountBar({ task, marker}) {
   const startTime = new Date()
   startTime.setHours(0, 0, 0, 0)
   startTime.setSeconds(task.start);
@@ -17,12 +14,9 @@ const CountBar = (props) => {
 
   return (
     <g>
-      <rect x='0' y='0' width='8CountBar6400' fill={task.color} height='2320' />
-      {marker}
+      <rect x='0' y='0' width='86400' height='2320' fill={task.color} />
       <text x='864' y='1560' fontSize='1160' fill='#ffffff'>{startTime.toLocaleTimeString(locale, settings)}</text>
       <text x='81300' y='1560' fontSize='1160' fill='#ffffff'>{endTime.toLocaleTimeString(locale, settings)}</text>
     </g>
   )
 }
-
-export default CountBar

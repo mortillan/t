@@ -1,10 +1,7 @@
 import React from 'react';
 
-const Marker = (props) => {
-  const { start, length, fill } = props
+export default function Marker({ start, length, fill }) {
   return (
-    <rect x={start} y='0' width={length} height='2320' fill={fill} />
+    <rect height='2320' y='0' x={start} width={length} fill={fill} />
   )
 }
-
-export default Marker
