@@ -5,7 +5,8 @@ import * as Yup from 'yup'
 
 import TopBar from '../component/TopBar'
 import Brand from '../component/Brand'
-import Footer from '../component/Footer';
+import Footer from '../component/Footer'
+import ThemeButton from '../component/ThemeButton'
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string()
@@ -55,7 +56,7 @@ class Login extends Component {
                       </div>
                       <div className='field'>
                         <div className='control'>
-                        <button type='submit' className='button is-black is-fullwidth'>Login</button>
+                        <button type='submit' className='button is-primary is-fullwidth'>Login</button>
                         </div>
                       </div>
                       <div className='columns'>
@@ -77,17 +78,17 @@ class Login extends Component {
           </div>
         </div>
         <Footer>
-          {/* <div className='content' style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
+          <div className='content' style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
             <div>
               Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
             </div>
             <div>
-              <button onClick={this.toggleTheme} className='button btn-circle theme' style={{ marginRight: '1rem' }}></button>
-              <a className={this.state.focusMode ? 'icon button theme hide' : 'icon button theme'} href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
+              <ThemeButton />
+              <a className='icon button theme' href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
                 <i className='ion-ionic ion-md-help'></i>
               </a>
             </div>
-          </div> */}
+          </div>
         </Footer>
       </div>
     )
@@ -101,7 +102,7 @@ const Navigation = () => {
       <div className='navbar-item'>
         <div className='field is-grouped'>
           <p className='control'>
-            <Link to='/signup' className='button has-text-weight-bold'>Create a free account</Link>
+            <Link to='/signup' className='button has-text-weight-bold is-inverted is-outlined'>Create a free account</Link>
           </p>
         </div>
       </div>

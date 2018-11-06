@@ -10,6 +10,7 @@ import OnlineCount from '../component/OnlineCount'
 import worker from '../workers/timer.worker'
 import HourCount from '../component/HourCount'
 import MinCount from '../component/MinCount'
+import ThemeButton from '../component/ThemeButton'
 import CountBar from '../component/CountBar'
 import Marker from '../component/Marker'
 import TimeBar from '../component/TimeBar'
@@ -18,7 +19,6 @@ import TaskTimeRemaining from '../component/TaskTimeRemaining'
 
 import { taskKey, calculateSecondsPastMidnight } from '../lib/common'
 import { TASK_TYPES } from '../lib/constants'
-import { GlobalContext } from '../lib/context'
 
 import './Timer.css'
 
@@ -27,8 +27,6 @@ const MS_IN_DAY = 86400000
 const LAEGATO = 'Laegato'
 
 class Timer extends Component {
-  static contextType = GlobalContext
-
   constructor() {
     super()
     this.state = {
@@ -302,9 +300,7 @@ class Timer extends Component {
               <Slider onChange={this.onChangeSliderValue} val={this.state.slider} min='5' max='90' step='1' />
             </div>
             <div>
-            <GlobalContext.Consumer>
-              {({ toggleTheme }) => <button onClick={toggleTheme} className='button btn-circle theme' style={{ marginRight: '1rem' }}></button>}              
-              </GlobalContext.Consumer>
+              <ThemeButton />
               <a className={this.state.focusMode ? 'icon button theme hide' : 'icon button theme'} href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
                 <i className='ion-ionic ion-md-help'></i>
               </a>

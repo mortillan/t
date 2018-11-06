@@ -3,6 +3,7 @@
 * Add validation to Login form
 * Use Context API for handling themes
 * Refactor some code and create new components (Timebar, TaskBar)
+* Change mount() to shallow() in Timer test as mount produces error when using React Router. Context is not found.
 
 # (2018-11-05)
 * Add Login module

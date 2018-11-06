@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import TopBar from '../component/TopBar'
 import Brand from '../component/Brand'
+import Footer from '../component/Footer'
+import ThemeButton from '../component/ThemeButton'
 
 class SignUp extends Component {
   render() {
@@ -29,6 +32,19 @@ class SignUp extends Component {
             </div>
           </div>
         </div>
+        <Footer>
+          <div className='content' style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
+            <div>
+              Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
+            </div>
+            <div>
+              <ThemeButton />
+              <a className='icon button theme' href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
+                <i className='ion-ionic ion-md-help'></i>
+              </a>
+            </div>
+          </div>
+        </Footer>
       </div>
     )
   }
@@ -40,7 +56,7 @@ const Navigation = () => {
       <div className='navbar-item'>
         <div className='field is-grouped'>
           <p className='control'>
-            <a className='button not-outlined has-text-weight-bold' href='/'>Login</a>
+            <Link to='/login' className='button not-outlined has-text-weight-bold'>Login</Link>
           </p>
         </div>
       </div>

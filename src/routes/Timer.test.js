@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Timer from './Timer'
-import Enzyme, { shallow, mount } from 'enzyme'
+import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import moment from 'moment'
 import { log, taskKey } from '../lib/common'
+import { BrowserRouter } from 'react-router-dom'
 
 Enzyme.configure({ adapter: new Adapter() })
 jest.useFakeTimers()
@@ -24,7 +24,7 @@ afterAll(() => {
 describe('Timer', () => {
 
   it('componentDidMount', () => {
-    const wrapper = mount(<Timer /> )
+    const wrapper = shallow(<Timer />)
     const now = new Date()
     const hours = now.getHours()
     const minutes = now.getMinutes()
@@ -150,7 +150,9 @@ describe('Timer', () => {
 
   it('renders without crashing', () => {
     const div = document.createElement('div')
-    ReactDOM.render(<Timer />, div)
+    ReactDOM.render(<BrowserRouter>
+      <Timer />
+    </BrowserRouter>, div)
     ReactDOM.unmountComponentAtNode(div)
   })
 
