@@ -15,17 +15,18 @@ $black: #212529;
 
 $family-primary: Arial, sans-serif;
 $text: $black;
+$primary: $black;
 
 // $button-color: $white;
 // $button-background-color: $black;
 // $button-text-color: $white;
 // $button-text-hover-color: $white;
-// $button-border-color: $black;
-$primary: $black;
+$button-border-color: $black;
 $button-border-width: 2px;
-
-$button-text-hover-background-color: rgba(33, 37, 41, 0.16);
 $button-hover-border-color: $black;
+$button-text-hover-background-color: rgba(33, 37, 41, 0.16);
+$button-focus-border-color: $black;
+$button-focus-box-shadow-color: none;
 
 .grey-text {
   color: #000000; 
@@ -143,7 +144,7 @@ input[type=range] {
 
     &::-webkit-slider-runnable-track {
       cursor: pointer;
-      animate: 0.2s;
+      // animate: 0.2s;
       box-shadow: $slider-track-shadow;
       background: $slider-track-background;
       border-radius: $slider-track-radius;
@@ -154,7 +155,7 @@ input[type=range] {
 
     &::-moz-range-track {
       cursor: pointer;
-      animate: 0.2s;
+      // animate: 0.2s;
       box-shadow: $slider-track-shadow;
       background: $slider-track-background;
       border-radius: $slider-track-radius;
@@ -165,7 +166,7 @@ input[type=range] {
 
     &::-ms-track {
       cursor: pointer;
-      animate: 0.2s;
+      // animate: 0.2s;
       box-shadow: $slider-track-shadow;
       background: $slider-track-background;
       border-radius: $slider-track-radius;

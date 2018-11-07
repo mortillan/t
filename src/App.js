@@ -1,13 +1,30 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import Loadable from 'react-loadable'
 import './App.css'
-
-import Login from './routes/Login'
-import SignUp from './routes/SignUp'
-import Timer from './routes/Timer'
-
-// const GlobalContext = React.createContext({})
 import { themes, GlobalContext } from './lib/context'
+
+const Loading = () => <div>Loading...</div>
+
+const Login = Loadable({
+  loader: () => import('./routes/Login'),
+  loading: Loading,
+})
+
+const SignUp = Loadable({
+  loader: () => import('./routes/SignUp'),
+  loading: Loading,
+})
+
+const Timer = Loadable({
+  loader: () => import('./routes/Timer'),
+  loading: Loading,
+})
+
+const TimeLogs = Loadable({
+  loader: () => import('./routes/TimeLogs'),
+  loading: Loading,
+})
 
 class App extends Component {
   constructor() {
@@ -53,6 +70,7 @@ class App extends Component {
         <BrowserRouter>
           <Switch>
             <Route exact path='/' component={Timer} />
+            <Route exact path='/insight' component={TimeLogs} />
             <Route exact path='/signup' component={SignUp} />
             <Route exact path='/login' component={Login} />
           </Switch>

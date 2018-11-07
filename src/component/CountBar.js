@@ -14,9 +14,9 @@ export default function CountBar({ task, marker}) {
 
   return (
     <g>
-      <rect x='0' y='0' width='86400' height='2320' fill={task.color} />
-      <text x='864' y='1560' fontSize='1160' fill='#ffffff'>{startTime.toLocaleTimeString(locale, settings)}</text>
-      <text x='81300' y='1560' fontSize='1160' fill='#ffffff'>{endTime.toLocaleTimeString(locale, settings)}</text>
+      <rect x='0' y='0' width='86400' height='2320' fill={task.color} rx='250' ry='250' overflow='hidden' />
+      <text x='864' y='1560' fontSize='1160' width='864' fill='#ffffff'>{startTime.toLocaleTimeString(locale, settings)}</text>
+      <text x='81300' y='1560' fontSize='1160' width='864' fill='#ffffff'>{endTime.toLocaleTimeString(locale, settings)}</text>
     </g>
   )
 }

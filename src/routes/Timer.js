@@ -40,7 +40,6 @@ class Timer extends Component {
       focusMode: false,
       mode: '',
       taskTimer: null,
-      // nightMode: false,
     }
     this.timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])));
     this.onChangeSliderValue = this.onChangeSliderValue.bind(this)
@@ -49,7 +48,6 @@ class Timer extends Component {
     this.stopTimer = this.stopTimer.bind(this)
     this.tickTimer = this.tickTimer.bind(this)
     this.onKeypress = this.onKeypress.bind(this)
-    // this.toggleTheme = this.toggleTheme.bind(this)
     this.onTimer = this.onTimer.bind(this)
   }
 
@@ -67,7 +65,7 @@ class Timer extends Component {
       end: tick + length,
       color: TASK_TYPES[type].color,
       type: type,
-      tick: length,
+      tick: 0,
       remaining: length,
       key: taskKey(new Date())
     }
@@ -151,7 +149,7 @@ class Timer extends Component {
     const remaining = ((currentTask.start + currentTask.length) - total)
     
     //auto stop countdown if no time remaining
-    if(currentTask.tick <= 0){
+    if(currentTask.remaining <= 0){
       return this.stopTimer()
     }
 
@@ -196,18 +194,6 @@ class Timer extends Component {
     })
   }
 
-  // toggleTheme() {
-  //   const { nightMode } = this.state
-
-  //   if (nightMode) {
-  //     document.body.classList.remove('dark')
-  //   } else {
-  //     document.body.classList.add('dark')
-  //   }
-
-  //   this.setState({ nightMode: !nightMode })
-  // }
-
   onTimer(e) {
     const { timestamp, hrs, min, sec } = e.data
     const total = ((hrs * 60 * 60) + (min * 60) + sec)
@@ -244,7 +230,9 @@ class Timer extends Component {
 
     return (
       <div className='vfull'>
-        <TopBar brand={Brand(this.state)} mid={OnlineCount(this.state)} end={Navigation(this.state)} />
+        <TopBar brand={<Brand focusMode={this.state.focusMode} />} 
+          mid={<OnlineCount />} 
+          end={<Navigation focusMode={this.state.focusMode} />} />
         <div className='container vfull'>
           <div className='columns is-vcentered vfull'>
             <div className='column columns is-multiline'>
@@ -258,13 +246,13 @@ class Timer extends Component {
                 <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
                   <TimeBar fill={this.context.theme ? '#FFFFFF' : '#212529'} />
                   {tasksToday &&
-                    tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} length={task.length} fill={task.color} start={task.start} />)}
+                    tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} start={task.start} end={task.end} fill={task.color} />)}
                   <Marker start={this.state.tick} length='100' fill={this.context.theme ? '#FFFFFF' : '#212529'} />
                   {this.state.currentTask &&
                     <>
-                    <CountBar task={this.state.currentTask} /> 
-                    <Marker start={this.state.currentTask.tick} length='100'
-                        fill={this.context.theme ? '#FFFFFF' : '#212529'} />
+                      <CountBar task={this.state.currentTask} /> 
+                      <Marker start={this.state.currentTask.tick} length='100'
+                          fill={this.context.theme ? '#FFFFFF' : '#212529'} />
                     </>}
                 </svg>
               </div>
@@ -321,30 +309,12 @@ const Navigation = ({ focusMode }) => {
             <Link to='/login' className='button not-outlined has-text-weight-bold'>Login</Link>
           </p>
           <p className='control'>
-            <Link to='/signup' className='button has-text-weight-bold'>Create a free account</Link>
+            <Link to='/signup' className='button has-text-weight-bold is-outlined'>Create a free account</Link>
           </p>
         </div>
       </div>
     </div>
   )
 }
-
-// const TaskBar = (props) => {
-//   return (
-//     <rect x={props.start} y='0' width={props.length} height='2320' fill={props.fill} />
-//   )
-// }
-
-// const TimeBar = (props) => {
-//   return (
-//     <rect x='0' y='0' width='86400' height='2320' fill={props.fill} fillOpacity='.16' />
-//   )
-// }
-
-// const Marker = (props) => {
-//   return (
-//     <rect x={props.x} y='0' width='100' height='2320' fill={props.fill} />
-//   )
-// }
 
 export default Timer

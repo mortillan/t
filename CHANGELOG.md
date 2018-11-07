@@ -1,3 +1,9 @@
+# (2018-11-07)
+* Code split routes using React-Loadable and babel plugin
+* add .babelrc file
+* Fix bug TaskBar not showing
+* Add TimeLogs module
+
 # (2018-11-06)
 * Add Formik as dependency
 * Add validation to Login form
