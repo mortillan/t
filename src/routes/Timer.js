@@ -244,10 +244,10 @@ class Timer extends Component {
               </div>
               <div className='column is-12'>
                 <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
-                  <TimeBar fill={this.context.theme ? '#FFFFFF' : '#212529'} />
+                  <TimeBar className='timebar' />
                   {tasksToday &&
                     tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} start={task.start} end={task.end} fill={task.color} />)}
-                  <Marker start={this.state.tick} length='100' fill={this.context.theme ? '#FFFFFF' : '#212529'} />
+                  <Marker start={this.state.tick} length='100' />
                   {this.state.currentTask &&
                     <>
                       <CountBar task={this.state.currentTask} /> 
@@ -289,7 +289,7 @@ class Timer extends Component {
             </div>
             <div>
               <ThemeButton />
-              <a className={this.state.focusMode ? 'icon button theme hide' : 'icon button theme'} href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
+              <a className={this.state.focusMode ? 'icon button hide' : 'icon button'} href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
                 <i className='ion-ionic ion-md-help'></i>
               </a>
             </div>
@@ -309,7 +309,7 @@ const Navigation = ({ focusMode }) => {
             <Link to='/login' className='button not-outlined has-text-weight-bold'>Login</Link>
           </p>
           <p className='control'>
-            <Link to='/signup' className='button has-text-weight-bold is-outlined'>Create a free account</Link>
+            <Link to='/register' className='button has-text-weight-bold is-text'>Create a free account</Link>
           </p>
         </div>
       </div>

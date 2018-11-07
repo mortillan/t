@@ -1,0 +1,15 @@
+$black: #212529;
+$white: #ffffff;
+
+.timebar {
+  fill: $black;
+}
+
+.dark {
+
+  & .timebar {
+    fill: $white;
+    opacity: 1;
+  }
+
+}

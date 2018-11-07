@@ -84,7 +84,7 @@ class Login extends Component {
             </div>
             <div>
               <ThemeButton />
-              <a className='icon button theme' href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
+              <a className='icon button' href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
                 <i className='ion-ionic ion-md-help'></i>
               </a>
             </div>
@@ -102,7 +102,7 @@ const Navigation = () => {
       <div className='navbar-item'>
         <div className='field is-grouped'>
           <p className='control'>
-            <Link to='/signup' className='button has-text-weight-bold is-inverted is-outlined'>Create a free account</Link>
+            <Link to='/register' className='button has-text-weight-bold is-inverted is-outlined'>Create a free account</Link>
           </p>
         </div>
       </div>

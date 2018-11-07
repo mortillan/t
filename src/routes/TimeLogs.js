@@ -346,7 +346,7 @@ const Navigation = () => {
             <Link to='/login' className='button not-outlined has-text-weight-bold'>Login</Link>
           </p>
           <p className='control'>
-            <Link to='/signup' className='button has-text-weight-bold is-outlined'>Create a free account</Link>
+            <Link to='/register' className='button has-text-weight-bold is-outlined'>Create a free account</Link>
           </p>
         </div>
       </div>

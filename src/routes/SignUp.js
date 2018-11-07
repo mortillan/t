@@ -20,7 +20,7 @@ class SignUp extends Component {
                     <input className='input black' type='text' placeholder='Your email address' />
                   </div>
                   <div className='control'>
-                    <a className='button is-black'>Let me know</a>
+                    <button className='button is-black'>Let me know</button>
                   </div>
                 </div>
               </form>
@@ -39,7 +39,7 @@ class SignUp extends Component {
             </div>
             <div>
               <ThemeButton />
-              <a className='icon button theme' href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
+              <a className='icon button' href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
                 <i className='ion-ionic ion-md-help'></i>
               </a>
             </div>

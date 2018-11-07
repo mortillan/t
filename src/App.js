@@ -70,9 +70,9 @@ class App extends Component {
         <BrowserRouter>
           <Switch>
             <Route exact path='/' component={Timer} />
-            <Route exact path='/insight' component={TimeLogs} />
-            <Route exact path='/signup' component={SignUp} />
-            <Route exact path='/login' component={Login} />
+            <Route path='/logs' component={TimeLogs} />
+            <Route path='/register' component={SignUp} />
+            <Route path='/login' component={Login} />
           </Switch>
         </BrowserRouter>
       </GlobalContext.Provider>

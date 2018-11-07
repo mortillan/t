@@ -44,12 +44,12 @@ body.dark {
     color: $white;
   }
 
-  & button {
+  & .is-primary {
     background-color: $white;
     color: $black;
   }
 
-  & a.button:not(.not-outlined) {
+  & a.button.is-text {
     border-color: $white;
     color: $white;
   }
@@ -95,8 +95,8 @@ body.dark {
     opacity: 1;
   }
 
-  & .theme {
-    background: #ffffff;
+  & .btn-circle {
+    background: $white;
   }
   // $body-background-color: #000000;//$black;
   // $text: $white;
@@ -225,6 +225,10 @@ input[type=range] {
   }
 }
 
+.button.is-text {
+  text-decoration: none;
+}
+
 .footer {
   padding: 1rem;
   position: absolute;
@@ -241,7 +245,7 @@ input[type=range] {
   border-radius: 50%;
   width: 1.5rem;
   height: 1.5rem;
-  background-color: #212529;
+  background-color: $black;
 }
 
 .btn-tasks {
