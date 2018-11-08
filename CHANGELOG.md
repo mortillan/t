@@ -1,3 +1,8 @@
+# (2018-11-08)
+* Refactor implementation of theme, use js instead of css
+* Fix bug in length of taskbar when count down is stopped
+* Add Google Analytics in all pages
+
 # (2018-11-07)
 * Code split routes using React-Loadable and babel plugin
 * add .babelrc file
