@@ -10,7 +10,7 @@ import OnlineCount from '../component/OnlineCount'
 import worker from '../workers/timer.worker'
 import HourCount from '../component/HourCount'
 import MinCount from '../component/MinCount'
-import ThemeButton from '../component/ThemeButton'
+import CircleButton from '../component/CircleButton'
 import CountBar from '../component/CountBar'
 import Marker from '../component/Marker'
 import TimeBar from '../component/TimeBar'
@@ -18,9 +18,10 @@ import TaskBar from '../component/TaskBar'
 import TaskTimeRemaining from '../component/TaskTimeRemaining'
 
 import { taskKey, calculateSecondsPastMidnight } from '../lib/common'
+import { GlobalContext } from '../lib/context'
 import { TASK_TYPES } from '../lib/constants'
 
-import './Timer.css'
+import { css } from '../config/themes'
 
 const MAX_SECONDS = 86400
 const MS_IN_DAY = 86400000
@@ -70,7 +71,7 @@ class Timer extends Component {
       key: taskKey(new Date())
     }
 
-    console.log(newTask)
+    // console.log(newTask)
 
     this.setState({
       currentTask: newTask,
@@ -87,7 +88,6 @@ class Timer extends Component {
     if (focusMode) {
       clearInterval(taskTimer)
 
-      let length;
       const key = currentTask.key
       if (!tasksLog[key]) {
         tasksLog[key] = []
@@ -95,14 +95,15 @@ class Timer extends Component {
 
       if (currentTask.end <= MAX_SECONDS) {
         tasksLog[key].push({
-          ...currentTask,
-          length: length,
+          length: currentTask.length - currentTask.remaining,
+          start: currentTask.start,
+          color: currentTask.color,
+          type: currentTask.type,
         })
       } else {
         tasksLog[key].push({
           length: MAX_SECONDS - currentTask.start,
           start: currentTask.start,
-          end: MAX_SECONDS,
           color: currentTask.color,
           type: currentTask.type,
         })
@@ -149,7 +150,7 @@ class Timer extends Component {
     const remaining = ((currentTask.start + currentTask.length) - total)
     
     //auto stop countdown if no time remaining
-    if(currentTask.remaining <= 0){
+    if (currentTask.remaining <= 0) {
       return this.stopTimer()
     }
 
@@ -225,77 +226,90 @@ class Timer extends Component {
   }
 
   render() {
-    const { tasksLog, taskKey, nightMode } = this.state
+    const { tasksLog, taskKey } = this.state
     const tasksToday = tasksLog[taskKey] || null
-
+    
     return (
-      <div className='vfull'>
-        <TopBar brand={<Brand focusMode={this.state.focusMode} />} 
-          mid={<OnlineCount />} 
-          end={<Navigation focusMode={this.state.focusMode} />} />
-        <div className='container vfull'>
-          <div className='columns is-vcentered vfull'>
-            <div className='column columns is-multiline'>
-              <div className='column is-12'>
-                <h1 className={!this.state.focusMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>
-                  You have <HourCount hr={this.state.tickHours} /> hours <MinCount min={this.state.tickMins} /> minutes today.
+      <GlobalContext.Consumer>
+        {({ theme, toggleTheme }) => (
+          <div className='vfull'>
+            <TopBar brand={<Brand focusMode={this.state.focusMode} />}
+              mid={<OnlineCount />}
+              end={<Navigation focusMode={this.state.focusMode} />} />
+            <div className='container vfull'>
+              <div className='columns is-vcentered vfull'>
+                <div className='column columns is-multiline'>
+                  <div className='column is-12'>
+                    <h1 className={!this.state.focusMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>
+                      You have <HourCount hr={this.state.tickHours} /> hours <MinCount min={this.state.tickMins} /> minutes today.
                 </h1>
-                {this.state.focusMode && <TaskTimeRemaining remaining={this.state.currentTask.remaining} focusMode={this.state.focusMode} mode={this.state.mode} />}
-              </div>
-              <div className='column is-12'>
-                <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
-                  <TimeBar className='timebar' />
-                  {tasksToday &&
-                    tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} start={task.start} end={task.end} fill={task.color} />)}
-                  <Marker start={this.state.tick} length='100' />
-                  {this.state.currentTask &&
-                    <>
-                      <CountBar task={this.state.currentTask} /> 
-                      <Marker start={this.state.currentTask.tick} length='100'
-                          fill={this.context.theme ? '#FFFFFF' : '#212529'} />
-                    </>}
-                </svg>
-              </div>
-              <div className='column is-12' style={{ minHeight: '75px' }}>
-                <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-work' : 'button is-outlined btn-tasks btn-work hide'}
-                  data-type='work' onClick={this.onClickTaskType}>work</button>
-                <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-play' : 'button is-outlined btn-tasks btn-play hide'}
-                  data-type='play' onClick={this.onClickTaskType}>play</button>
-                <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-learn' : 'button is-outlined btn-tasks btn-learn hide'}
-                  data-type='learn' onClick={this.onClickTaskType}>learn</button>
-                <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-break' : 'button is-outlined btn-tasks btn-break hide'}
-                  data-type='break' onClick={this.onClickTaskType}>break</button>
-                <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span onClick={this.stopTimer} className='icon stop'><i className='ion-ionic ion-md-close'></i></span>
-                    <span className='is-size-5 has-text-weight-bold grey-text'>Press "Esc" to stop</span>
+                    {this.state.focusMode && <TaskTimeRemaining remaining={this.state.currentTask.remaining} focusMode={this.state.focusMode} mode={this.state.mode} />}
                   </div>
-                  <div className='is-size-5 has-text-weight-bold grey-text' style={{ display: 'flex', alignItems: 'center' }}>
-                    {'#' + this.state.mode}
+                  <div className='column is-12'>
+                    <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
+                      <TimeBar fill={css[theme].color} fillOpacity='.16' />
+                      {tasksToday &&
+                        tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} start={task.start} length={task.length} fill={task.color} />)}
+                      <Marker start={this.state.tick} fill={css[theme].color} length='100' />
+                      {this.state.currentTask &&
+                        <>
+                          <CountBar task={this.state.currentTask} />
+                          <Marker start={this.state.currentTask.tick} length='100'
+                            fill={css[theme].color} />
+                        </>}
+                    </svg>
+                  </div>
+                  <div className='column is-12' style={{ minHeight: '75px' }}>
+                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-work' : 'button is-outlined btn-tasks btn-work hide'}
+                      data-type='work' onClick={this.onClickTaskType}>work</button>
+                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-play' : 'button is-outlined btn-tasks btn-play hide'}
+                      data-type='play' onClick={this.onClickTaskType}>play</button>
+                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-learn' : 'button is-outlined btn-tasks btn-learn hide'}
+                      data-type='learn' onClick={this.onClickTaskType}>learn</button>
+                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-break' : 'button is-outlined btn-tasks btn-break hide'}
+                      data-type='break' onClick={this.onClickTaskType}>break</button>
+                    <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <span onClick={this.stopTimer} className='icon stop'><i className='ion-ionic ion-md-close'></i></span>
+                        <span className='is-size-5 has-text-weight-bold grey-text'>Press "Esc" to stop</span>
+                      </div>
+                      <div className='is-size-5 has-text-weight-bold grey-text' style={{ display: 'flex', alignItems: 'center' }}>
+                        {'#' + this.state.mode}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <Footer>
+              <div className='content' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div>
+                  Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
+                </div>
+                <div className={this.state.focusMode ? 'has-text-weight-bold is-size-5 invisible' : 'has-text-weight-bold is-size-5'} style={{ width: '240px' }}>
+                  <div>{this.state.slider} minutes</div>
+                  <Slider onChange={this.onChangeSliderValue} val={this.state.slider} min='5' max='90' step='1' />
+                </div>
+                <div>
+                  <CircleButton 
+                    className='button' 
+                    onClick={toggleTheme} 
+                    backgroundColor={css[theme].color} 
+                    size='1.5rem' />
+                  <a className={this.state.focusMode ? 'icon button hide' : 'icon button'} 
+                    href='#' 
+                    style={{ 
+                      color: '#ffffff', 
+                      backgroundColor: '#212529' 
+                    }}>
+                    <i className='ion-ionic ion-md-help'></i>
+                  </a>
+                </div>
+              </div>
+            </Footer>
           </div>
-        </div>
-        <Footer>
-          <div className='content' style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-            <div>
-              Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
-            </div>
-            <div className={this.state.focusMode ? 'has-text-weight-bold is-size-5 invisible' : 'has-text-weight-bold is-size-5'} style={{width: '240px'}}>
-              <div>{this.state.slider} minutes</div>
-              <Slider onChange={this.onChangeSliderValue} val={this.state.slider} min='5' max='90' step='1' />
-            </div>
-            <div>
-              <ThemeButton />
-              <a className={this.state.focusMode ? 'icon button hide' : 'icon button'} href='#' style={{color: '#ffffff', backgroundColor: '#212529'}}>
-                <i className='ion-ionic ion-md-help'></i>
-              </a>
-            </div>
-          </div>
-        </Footer>
-      </div>
+        )}
+      </GlobalContext.Consumer>
     )
   }
 }

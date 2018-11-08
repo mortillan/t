@@ -65,7 +65,8 @@ class App extends Component {
   render() {
     return (
       <GlobalContext.Provider value={{
-        toggleTheme: this.toggleTheme
+        toggleTheme: this.toggleTheme,
+        theme: this.state.theme
       }}>
         <BrowserRouter>
           <Switch>

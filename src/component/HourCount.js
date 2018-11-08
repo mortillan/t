@@ -2,7 +2,7 @@ import React from 'react'
 
 const HourCount = (props) => {
   return (
-    <React.Fragment>{props.hr}</React.Fragment>
+    <>{props.hr}</>
   )
 }
 

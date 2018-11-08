@@ -1,8 +1,7 @@
 import React from 'react'
 
-export default function TimeBar({ ...rest }) {
+export default function TimeBar({ fill = '#212529', fillOpacity = '.16' }) {
   return (
-    <rect x='0' y='0' width='86400' height='2320' 
-      fillOpacity='.16' rx='250' ry='250' {...rest} />
+    <rect fill={fill} fillOpacity={fillOpacity} x='0' y='0' width='86400' height='2320' rx='250' ry='250' />
   )
 }

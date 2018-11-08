@@ -5,7 +5,7 @@ import TopBar from '../component/TopBar'
 import Brand from '../component/Brand'
 import Footer from '../component/Footer'
 import OnlineCount from '../component/OnlineCount'
-import ThemeButton from '../component/ThemeButton'
+import CircleButton from '../component/CircleButton'
 
 export default function TimeLogs(props) {
   return (
@@ -325,7 +325,7 @@ export default function TimeLogs(props) {
             Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
           </div>
           <div>
-            <ThemeButton />
+            <CircleButton />
             <a className='icon button theme'
               href='#' style={{ color: '#ffffff', backgroundColor: '#212529' }}>
               <i className='ion-ionic ion-md-help'></i>
