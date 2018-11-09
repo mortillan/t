@@ -233,7 +233,7 @@ class Timer extends Component {
             <TopBar brand={<Brand focusMode={this.state.focusMode} />}
               mid={<OnlineCount />}
               end={<Navigation focusMode={this.state.focusMode} />} />
-            <div className='container vfull'>
+            <div className='container is-fluid vfull'>
               <div className='columns is-vcentered vfull'>
                 <div className='column columns is-multiline'>
                   <div className='column is-12'>
@@ -242,7 +242,7 @@ class Timer extends Component {
                 </h1>
                     {this.state.focusMode && <TaskTimeRemaining remaining={this.state.currentTask.remaining} focusMode={this.state.focusMode} mode={this.state.mode} />}
                   </div>
-                  <div className='column is-12'>
+                  <div className='column'>
                     <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
                       <TimeBar fill={css[theme].color} fillOpacity='.16' />
                       {tasksToday &&
@@ -255,6 +255,18 @@ class Timer extends Component {
                             fill={css[theme].color} />
                         </>}
                     </svg>
+                  </div>
+                  <div className='column is-narrow'>
+                    <Link to='/logs'
+                      className='icon button is-black' 
+                      style={{ 
+                        // position: 'absolute',
+                        // right: '0',
+                        // top: '50%',
+                        height: '2.5rem'
+                      }}>
+                      <i className='ion-ionic ion-ios-arrow-forward'></i>
+                    </Link>
                   </div>
                   <div className='column is-12' style={{ minHeight: '75px' }}>
                     <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-work fat-border' : 'button is-outlined btn-tasks btn-work hide fat-border'}

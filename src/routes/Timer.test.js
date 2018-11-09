@@ -5,6 +5,7 @@ import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { log, taskKey } from '../lib/common'
 import { BrowserRouter } from 'react-router-dom'
+import { GlobalContext } from '../lib/context'
 
 Enzyme.configure({ adapter: new Adapter() })
 jest.useFakeTimers()

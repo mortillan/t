@@ -5,4 +5,6 @@ export const themes = {
   DARK: 'dark',
 }
 
-export const GlobalContext = createContext({})
+export const GlobalContext = createContext({
+  theme: themes.LIGHT
+})
