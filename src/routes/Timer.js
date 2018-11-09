@@ -56,9 +56,6 @@ class Timer extends Component {
     const { tick, slider, focusMode } = this.state
     const length = slider * 60
 
-    //create timer for task
-    const intervalId = setInterval(this.tickTimer, 1000)
-
     //save task to state
     const newTask = {
       length: length,
@@ -77,7 +74,7 @@ class Timer extends Component {
       currentTask: newTask,
       focusMode: !focusMode,
       mode: type,
-      taskTimer: intervalId,
+      taskTimer: setInterval(this.tickTimer, 1000),
     })
     document.title = `${Math.trunc(length / 60)}`.padStart(2, '0') + ':' + `${length % 60}`.padStart(2, '0')
   }
@@ -260,13 +257,13 @@ class Timer extends Component {
                     </svg>
                   </div>
                   <div className='column is-12' style={{ minHeight: '75px' }}>
-                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-work' : 'button is-outlined btn-tasks btn-work hide'}
+                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-work fat-border' : 'button is-outlined btn-tasks btn-work hide fat-border'}
                       data-type='work' onClick={this.onClickTaskType}>work</button>
-                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-play' : 'button is-outlined btn-tasks btn-play hide'}
+                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-play fat-border' : 'button is-outlined btn-tasks btn-play hide fat-border'}
                       data-type='play' onClick={this.onClickTaskType}>play</button>
-                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-learn' : 'button is-outlined btn-tasks btn-learn hide'}
+                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-learn fat-border' : 'button is-outlined btn-tasks btn-learn hide fat-border'}
                       data-type='learn' onClick={this.onClickTaskType}>learn</button>
-                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-break' : 'button is-outlined btn-tasks btn-break hide'}
+                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-break fat-border' : 'button is-outlined btn-tasks btn-break hide fat-border'}
                       data-type='break' onClick={this.onClickTaskType}>break</button>
                     <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -323,7 +320,7 @@ const Navigation = ({ focusMode }) => {
             <Link to='/login' className='button not-outlined has-text-weight-bold'>Login</Link>
           </p>
           <p className='control'>
-            <Link to='/register' className='button has-text-weight-bold is-text'>Create a free account</Link>
+            <Link to='/register' className='button has-text-weight-bold fat-border'>Create a free account</Link>
           </p>
         </div>
       </div>

@@ -1,3 +1,7 @@
+# (2018-11-09)
+* Fix bug when starting task, first run skips 2 sec
+* Refactor css
+
 # (2018-11-08)
 * Refactor implementation of theme, use js instead of css
 * Fix bug in length of taskbar when count down is stopped

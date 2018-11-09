@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function CountBar({ task, marker}) {
+export default function CountBar({ task }) {
   const startTime = new Date()
   startTime.setHours(0, 0, 0, 0)
   startTime.setSeconds(task.start);

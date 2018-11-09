@@ -22,7 +22,6 @@ $primary: $black;
 // $button-text-color: $white;
 // $button-text-hover-color: $white;
 $button-border-color: $black;
-$button-border-width: 2px;
 $button-hover-border-color: $black;
 $button-text-hover-background-color: rgba(33, 37, 41, 0.16);
 $button-focus-border-color: $black;
@@ -49,18 +48,14 @@ body.dark {
     color: $black;
   }
 
-  & a.button.is-text {
-    border-color: $white;
-    color: $white;
-  }
-
   & a.not-outlined:hover {
     border-color: $white;
     color: $white;
   }
 
-  & input {
+  & .input, & .button {
     background-color: $white;
+    color: $black;
   }
 
   & input[type=range] {
@@ -222,8 +217,8 @@ input[type=range] {
   }
 }
 
-.button.is-text {
-  text-decoration: none;
+.fat-border {
+  border-width: 2px;
 }
 
 .footer {
