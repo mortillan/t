@@ -18,7 +18,7 @@ import TaskBar from '../component/TaskBar'
 import TaskTimeRemaining from '../component/TaskTimeRemaining'
 
 import { taskKey, calculateSecondsPastMidnight } from '../lib/common'
-import { GlobalContext } from '../lib/context'
+import { GlobalContext, themes } from '../lib/context'
 import { TASK_TYPES } from '../lib/constants'
 
 import { css } from '../config/themes'
@@ -258,14 +258,17 @@ class Timer extends Component {
                   </div>
                   <div className='column is-narrow'>
                     <Link to='/logs'
-                      className='icon button is-black' 
-                      style={{ 
-                        // position: 'absolute',
-                        // right: '0',
-                        // top: '50%',
+                      className='icon button'
+                      style={{
+                        backgroundColor: css[themes.DARK].backgroundColor,
+                        color: css[themes.DARK].color,
                         height: '2.5rem'
                       }}>
-                      <i className='ion-ionic ion-ios-arrow-forward'></i>
+                      <i className='ion-ionic ion-ios-arrow-forward'
+                        style={{
+                          backgroundColor: css[themes.DARK].backgroundColor,
+                          color: css[themes.DARK].color,
+                        }}></i>
                     </Link>
                   </div>
                   <div className='column is-12' style={{ minHeight: '75px' }}>
@@ -305,12 +308,8 @@ class Timer extends Component {
                     onClick={toggleTheme} 
                     backgroundColor={css[theme].color} 
                     size='1.5rem' />
-                  <a className={this.state.focusMode ? 'icon button hide' : 'icon button'} 
-                    href='#' 
-                    style={{ 
-                      color: '#ffffff', 
-                      backgroundColor: '#212529' 
-                    }}>
+                  <a className={this.state.focusMode ? 'icon button is-primary hide' : 'icon is-primary button'} 
+                    href='#'>
                     <i className='ion-ionic ion-md-help'></i>
                   </a>
                 </div>
