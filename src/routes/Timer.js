@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import * as moment from 'moment'
 
 import Slider from '../component/Slider'
 import TopBar from '../component/TopBar'
@@ -26,6 +27,7 @@ import { css } from '../config/themes'
 const MAX_SECONDS = 86400
 const MS_IN_DAY = 86400000
 const LAEGATO = 'Laegato'
+const TASK_KEY_FORMAT = 'YYYYMMDD';
 
 class Timer extends Component {
   constructor() {
@@ -35,7 +37,7 @@ class Timer extends Component {
       tickMins: 0,
       tick: 0,
       tasksLog: JSON.parse(localStorage.getItem('logs')) || {},
-      taskKey: taskKey(new Date()),
+      taskKey: moment().format(TASK_KEY_FORMAT),
       currentTask: null,
       slider: 5,
       focusMode: false,
@@ -65,7 +67,7 @@ class Timer extends Component {
       type: type,
       tick: 0,
       remaining: length,
-      key: taskKey(new Date())
+      key: moment().format(TASK_KEY_FORMAT)
     }
 
     // console.log(newTask)
@@ -104,9 +106,9 @@ class Timer extends Component {
           color: currentTask.color,
           type: currentTask.type,
         })
-        const nextDay = new Date()
-        nextDay.setTime(new Date(currentTask.key).getTime() + MS_IN_DAY)
-        const nextKey = taskKey(nextDay)
+        // const nextDay = new Date()
+        // nextDay.setTime(new Date(currentTask.key).getTime() + MS_IN_DAY)
+        const nextKey = moment().add(1, 'd').format(TASK_KEY_FORMAT)
         tasksLog[nextKey] = []
         tasksLog[nextKey].push({
           length: tick - 0,
@@ -200,7 +202,7 @@ class Timer extends Component {
       tick: total,
       tickHours: 23 - hrs,
       tickMins: 59 - min,
-      taskKey: taskKey(new Date(timestamp)),
+      taskKey: moment(timestamp).format(TASK_KEY_FORMAT),
     })
   }
 
