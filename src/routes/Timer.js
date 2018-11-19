@@ -258,7 +258,7 @@ class Timer extends Component {
                         </>}
                     </svg>
                   </div>
-                  <div className='column is-narrow'>
+                  {!this.state.focusMode && <div className='column is-narrow'>
                     <Link to='/logs'
                       className='icon button'
                       style={{
@@ -272,7 +272,7 @@ class Timer extends Component {
                           color: css[themes.DARK].color,
                         }}></i>
                     </Link>
-                  </div>
+                  </div>}
                   <div className='column is-12' style={{ minHeight: '75px' }}>
                     <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-work fat-border' : 'button is-outlined btn-tasks btn-work hide fat-border'}
                       data-type='work' onClick={this.onClickTaskType}>work</button>

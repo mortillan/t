@@ -15,8 +15,8 @@ export default function CountBar({ task }) {
   return (
     <g>
       <rect x='0' y='0' width='86400' height='2320' fill={task.color} rx='250' ry='250' overflow='hidden' />
-      <text x='864' y='1560' fontSize='1160' fontWeight='900' width='864' fill='#ffffff'>{startTime.toLocaleTimeString(locale, settings)}</text>
-      <text x='80500' y='1560' fontSize='1160' fontWeight='900' width='864' fill='#ffffff'>{endTime.toLocaleTimeString(locale, settings)}</text>
+      <text x='864' y='1560' fontSize='75rem' fontWeight='900' width='864' fill='#ffffff'>{startTime.toLocaleTimeString(locale, settings)}</text>
+      <text x='80500' y='1560' fontSize='75rem' fontWeight='900' width='864' fill='#ffffff'>{endTime.toLocaleTimeString(locale, settings)}</text>
     </g>
   )
 }
