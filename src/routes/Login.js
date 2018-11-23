@@ -37,80 +37,80 @@ class Login extends Component {
                 <div className='column is-offset-4 is-4'>
                   <h1 className='is-size-2 has-text-weight-bold'>Welcome back</h1>
                   <Formik initialValues={{
-                      username: '',
-                      password: '',
-                    }} 
-                    validationSchema={LoginSchema} 
+                    username: '',
+                    password: '',
+                  }}
+                    validationSchema={LoginSchema}
                     onSubmit={this.handleFormSubmit}>
                     {({ errors, touched }) => (
-                        <Form>
-                          <div className='field'>
-                            <div className='control is-expanded'>
-                              <Field name='username' 
-                                className={errors.username && touched.username ? 
-                                  'input black is-danger' : 'input black'} 
-                                type='text' 
-                                placeholder='Email or username' />
-                            </div>
-                            <ErrorMessage name='username' 
-                              component='p' 
+                      <Form>
+                        <div className='field'>
+                          <div className='control is-expanded'>
+                            <Field name='username'
+                              className={errors.username && touched.username ?
+                                'input black is-danger' : 'input black'}
+                              type='text'
+                              placeholder='Email or username' />
+                          </div>
+                          <ErrorMessage name='username'
+                            component='p'
+                            className='help is-danger' />
+                        </div>
+                        <div className='field'>
+                          <div className='control is-expanded'>
+                            <Field name='password'
+                              className='input black'
+                              type='password'
+                              placeholder='Password' />
+                            <ErrorMessage name='password'
+                              component='p'
                               className='help is-danger' />
                           </div>
-                          <div className='field'>
-                            <div className='control is-expanded'>
-                              <Field name='password' 
-                                className='input black' 
-                                type='password' 
-                                placeholder='Password' />
-                              <ErrorMessage name='password' 
-                                component='p' 
-                                className='help is-danger' />
-                            </div>
-                          </div>
-                          <div className='field'>
-                            <div className='control'>
-                              <button type='submit' 
-                                className='button is-primary is-fullwidth'>
+                        </div>
+                        <div className='field'>
+                          <div className='control'>
+                            <button type='submit'
+                              className='button is-primary is-fullwidth'>
                               Login
                               </button>
-                            </div>
                           </div>
-                          <div className='columns'>
-                            <div className='column is-6'>
-                              <label className='checkbox'>
-                                <input type='checkbox' />
-                                Remember me
+                        </div>
+                        <div className='columns'>
+                          <div className='column is-6'>
+                            <label className='checkbox'>
+                              <input type='checkbox' />
+                              Remember me
                               </label>
-                            </div>
-                            <div className='column is-6 has-text-right'>
-                              <a href='/account/reset' 
-                                className='has-text-black'>
+                          </div>
+                          <div className='column is-6 has-text-right'>
+                            <a href='/account/reset'
+                              className='has-text-black'>
                               Forgot Password?
                               </a>
-                            </div>
                           </div>
-                        </Form>
-                      )}
+                        </div>
+                      </Form>
+                    )}
                   </Formik>
                 </div>
               </div>
             </div>
             <Footer>
-              <div className='content' 
-                style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'flex-end' 
+              <div className='content'
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end'
                 }}>
                 <div>
                   Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
                 </div>
                 <div>
-                  <CircleButton className='button' 
-                    onClick={toggleTheme} 
-                    backgroundColor={css[theme].color} 
+                  <CircleButton className='button'
+                    onClick={toggleTheme}
+                    backgroundColor={css[theme].color}
                     size='1.5rem' />
-                  <a className='icon button' href='#' 
+                  <a className='icon button' href='#'
                     style={{ color: '#ffffff', backgroundColor: '#212529' }}>
                     <i className='ion-ionic ion-md-help'></i>
                   </a>
@@ -131,9 +131,9 @@ const Navigation = () => {
       <div className='navbar-item'>
         <div className='field is-grouped'>
           <p className='control'>
-            <Link to='/register' 
+            <Link to='/register'
               className='button has-text-weight-bold is-inverted is-outlined'>
-            Create a free account
+              Create a free account
             </Link>
           </p>
         </div>
