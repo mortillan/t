@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 
@@ -22,8 +22,8 @@ const LoginSchema = Yup.object().shape({
 
 class Login extends Component {
 
-  handleFormSubmit(values) {
-    console.log(values)
+  handleFormSubmit = (values) => {
+    return this.props.history.push('/register')
   }
 
   render() {

@@ -135,15 +135,6 @@ class Timer extends Component {
   tickTimer() {
     const { currentTask } = this.state
 
-    // console.log(currentTask);
-
-    // const currentDateTime = new Date()
-    // currentDateTime.setHours(0, 0, 0, 0)
-    // currentDateTime.setSeconds()
-    // const hours = currentDateTime.getHours()
-    // const minutes = currentDateTime.getMinutes()
-    // const seconds = currentDateTime.getSeconds()
-    // const  = ((hours * 60 * 60) + (minutes * 60) + seconds) 
     const total = calculateSecondsPastMidnight(new Date())
     const tick = (total - currentTask.start) * (MAX_SECONDS / currentTask.length)
     const remaining = ((currentTask.start + currentTask.length) - total)
@@ -224,6 +215,10 @@ class Timer extends Component {
     })
   }
 
+  componentWillUnmount() {
+    this.timerWorker.terminate()
+  }
+
   render() {
     const { tasksLog, taskKey } = this.state
     const tasksToday = tasksLog[taskKey] || null
@@ -249,11 +244,11 @@ class Timer extends Component {
                       <TimeBar fill={css[theme].color} fillOpacity='.16' />
                       {tasksToday &&
                         tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} start={task.start} length={task.length} fill={task.color} />)}
-                      <Marker start={this.state.tick} fill={css[theme].color} length='100' />
+                      <Marker start={this.state.tick} fill={css[theme].color} length='50' />
                       {this.state.currentTask &&
                         <>
                           <CountBar task={this.state.currentTask} />
-                          <Marker start={this.state.currentTask.tick} length='100'
+                          <Marker start={this.state.currentTask.tick} length='50'
                             fill={css[theme].color} />
                         </>}
                     </svg>
