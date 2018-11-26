@@ -7,6 +7,7 @@ import TopBar from '../component/TopBar'
 import Brand from '../component/Brand'
 import Footer from '../component/Footer'
 import CircleButton from '../component/CircleButton'
+import Copyright from '../component/Copyright'
 
 import { GlobalContext } from '../lib/context'
 import { css } from '../config/themes'
@@ -30,8 +31,10 @@ class Login extends Component {
     return (
       <GlobalContext.Consumer>
         {({ theme, toggleTheme }) => (
-          <div className='vfull'>
-            <TopBar brand={Brand()} end={Navigation()} />
+          <>
+            <TopBar 
+              brand={<Brand theme={theme} />} 
+              end={<Navigation />} />
             <div className='container vfull'>
               <div className='columns vfull' style={{ alignItems: 'center' }}>
                 <div className='column is-offset-4 is-4'>
@@ -102,22 +105,20 @@ class Login extends Component {
                   justifyContent: 'space-between',
                   alignItems: 'flex-end'
                 }}>
-                <div>
-                  Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
-                </div>
+                <Copyright />
                 <div>
                   <CircleButton className='button'
                     onClick={toggleTheme}
                     backgroundColor={css[theme].color}
                     size='1.5rem' />
-                  <a className='icon button' href='#'
+                  {/* <a className='icon button' href='#'
                     style={{ color: '#ffffff', backgroundColor: '#212529' }}>
                     <i className='ion-ionic ion-md-help'></i>
-                  </a>
+                  </a> */}
                 </div>
               </div>
             </Footer>
-          </div>
+          </>
         )}
       </GlobalContext.Consumer>
     )

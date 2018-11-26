@@ -1,0 +1,142 @@
+@import "bulma/sass/utilities/initial-variables.sass";
+@import "../variables.scss";
+
+$slider-radius: 2rem;
+$slider-thumb-radius: 2rem;
+$slider-thumb-shadow: none;
+$slider-track-background: $black;
+$slider-track-radius: 2rem;
+$slider-track-border: 0px solid $grey;
+$slider-track-shadow: 0px 0px 0px $grey;
+$slider-thumb-border: 1px solid $black;
+$slider-thumb-background: $black;
+$track-height: 2px;
+$thumb-size: 1.5rem;
+
+input[type=range] {
+  &.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 1rem 0;
+    background: transparent;
+
+    &.is-fullwidth {
+      display: block;
+      width: 100%;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-webkit-slider-runnable-track {
+      cursor: pointer;
+      // animate: 0.2s;
+      box-shadow: $slider-track-shadow;
+      background: $slider-track-background;
+      border-radius: $slider-track-radius;
+      border: $slider-track-border;
+      width: 100%;
+      height: $track-height;
+    }
+
+    &::-moz-range-track {
+      cursor: pointer;
+      // animate: 0.2s;
+      box-shadow: $slider-track-shadow;
+      background: $slider-track-background;
+      border-radius: $slider-track-radius;
+      border: $slider-track-border;
+      width: 100%;
+      height: $track-height;
+    }
+
+    &::-ms-track {
+      cursor: pointer;
+      // animate: 0.2s;
+      box-shadow: $slider-track-shadow;
+      background: $slider-track-background;
+      border-radius: $slider-track-radius;
+      border: $slider-track-border;
+      width: 100%;
+      height: $track-height;
+    }
+
+    &::-ms-fill-lower,
+    &::-ms-fill-upper {
+      background: $grey-lighter;
+      border-radius: $slider-radius;
+    }
+
+    &::-webkit-slider-thumb {
+      box-shadow: $slider-thumb-shadow;
+      border: $slider-thumb-border;
+      border-radius: $slider-thumb-radius;
+      background: $slider-thumb-background;
+      cursor: pointer;
+      -webkit-appearance: none;
+      transition: transform .2s ease, -webkit-transform .2s ease;
+      transition: transform .2s ease;
+      transition: -webkit-transform .2s ease;
+      height: $thumb-size;
+      width: $thumb-size;
+      margin-top: -( $thumb-size / 2 );
+    }
+
+    &::-moz-range-thumb {
+      box-shadow: $slider-thumb-shadow;
+      border: $slider-thumb-border;
+      background: $slider-thumb-background;
+      border-radius: $slider-thumb-radius;
+      cursor: pointer;
+      transition: transform .2s ease, -webkit-transform .2s ease;
+      transition: transform .2s ease;
+      transition: -webkit-transform .2s ease;
+      height: $thumb-size;
+      width: $thumb-size;
+    }
+
+    &::-ms-thumb {
+      box-shadow: $slider-thumb-shadow;
+      border: $slider-thumb-border;
+      background: $slider-thumb-background;
+      border-radius: $slider-thumb-radius;
+      cursor: pointer;
+      transition: transform .2s ease, -webkit-transform .2s ease;
+      transition: transform .2s ease;
+      transition: -webkit-transform .2s ease;
+      height: $thumb-size;
+      width: $thumb-size;
+    }
+
+  }
+}
+
+body.dark {
+  & input[type=range] {
+
+    &::-ms-track {
+      background: #ffffff;
+    }
+
+    &::-moz-range-track {
+      background: #ffffff;
+    }
+
+    &::-webkit-slider-runnable-track {
+      background: #ffffff;
+    }
+
+    &::-webkit-slider-thumb {
+      background: #ffffff;
+    }
+
+    &::moz-range-thumb {
+      background: #ffffff;
+    }
+
+    &::-ms-thumb {
+      background: #ffffff;
+    }
+  }
+}

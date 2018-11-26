@@ -4,7 +4,20 @@ import Loadable from 'react-loadable'
 import './App.css'
 import { themes, GlobalContext } from './lib/context'
 
-const Loading = () => <div>Loading...</div>
+const Loading = () => (
+  <div style={{ 
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+    }}>
+    <div className='lds-ellipsis'>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+)
 
 const Login = Loadable({
   loader: () => import('./routes/Login'),

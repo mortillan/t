@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { memo } from 'react'
+import { themes } from '../lib/context'
 
-export default function Brand({ focusMode = false } = {}) {
+function Brand({ theme = themes.LIGHT, focusMode = false } = {}) {
   return (
     <div className={focusMode ? 'navbar-brand invisible' : 'navbar-brand'}>
       <a className='navbar-item' href='https://laegato.com'>
-          <img src='/img/logo-laegato.png' alt='' width='110' />
+          <img src={theme === themes.LIGHT ? 
+            '/img/laegato-logo-light.svg' : 
+            '/img/laegato-logo-dark.svg'} 
+            alt='Laegato' 
+            width='110' />
       </a>
     </div>
   )
 }
+
+export default memo(Brand)

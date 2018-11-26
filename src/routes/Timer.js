@@ -7,6 +7,7 @@ import TopBar from '../component/TopBar'
 import Brand from '../component/Brand'
 import Footer from '../component/Footer'
 import OnlineCount from '../component/OnlineCount'
+import Copyright from '../component/Copyright'
 
 import worker from '../workers/timer.worker'
 import HourCount from '../component/HourCount'
@@ -23,6 +24,7 @@ import { GlobalContext, themes } from '../lib/context'
 import { TASK_TYPES } from '../lib/constants'
 
 import { css } from '../config/themes'
+import './Timer.css'
 
 const MAX_SECONDS = 86400
 const MS_IN_DAY = 86400000
@@ -138,7 +140,7 @@ class Timer extends Component {
     const total = calculateSecondsPastMidnight(new Date())
     const tick = (total - currentTask.start) * (MAX_SECONDS / currentTask.length)
     const remaining = ((currentTask.start + currentTask.length) - total)
-    
+
     //auto stop countdown if no time remaining
     if (currentTask.remaining <= 0) {
       return this.stopTimer()
@@ -222,28 +224,43 @@ class Timer extends Component {
   render() {
     const { tasksLog, taskKey } = this.state
     const tasksToday = tasksLog[taskKey] || null
-    
+
     return (
       <GlobalContext.Consumer>
         {({ theme, toggleTheme }) => (
-          <div className='vfull'>
-            <TopBar brand={<Brand focusMode={this.state.focusMode} />}
+          <>
+            <TopBar
+              brand={<Brand theme={theme} focusMode={this.state.focusMode} />}
               mid={<OnlineCount />}
               end={<Navigation focusMode={this.state.focusMode} />} />
             <div className='container is-fluid vfull'>
               <div className='columns is-vcentered vfull'>
                 <div className='column columns is-multiline'>
                   <div className='column is-12'>
-                    <h1 className={!this.state.focusMode ? 'is-size-2 has-text-weight-bold' : 'is-size-2 has-text-weight-bold hide'}>
+                    <h1 className={!this.state.focusMode ?
+                      'is-size-2 has-text-weight-bold' :
+                      'is-size-2 has-text-weight-bold hide'}>
                       You have <HourCount hr={this.state.tickHours} /> hours <MinCount min={this.state.tickMins} /> minutes today.
-                </h1>
-                    {this.state.focusMode && <TaskTimeRemaining remaining={this.state.currentTask.remaining} focusMode={this.state.focusMode} mode={this.state.mode} />}
+                    </h1>
+                    {this.state.focusMode &&
+                      <TaskTimeRemaining
+                        remaining={this.state.currentTask.remaining}
+                        focusMode={this.state.focusMode}
+                        mode={this.state.mode} />}
                   </div>
                   <div className='column'>
-                    <svg width='100%' height='40' viewBox='0 0 86400 2320' preserveAspectRatio='none'>
+                    <svg width='100%'
+                      height='40'
+                      viewBox='0 0 86400 2320'
+                      preserveAspectRatio='none'>
                       <TimeBar fill={css[theme].color} fillOpacity='.16' />
                       {tasksToday &&
-                        tasksToday.map((task, i) => <TaskBar key={Date.now() + task.color + i} start={task.start} length={task.length} fill={task.color} />)}
+                        tasksToday.map((task, i) => (
+                          <TaskBar key={Date.now() + task.color + i}
+                            start={task.start}
+                            length={task.length}
+                            fill={task.color} />
+                        ))}
                       <Marker start={this.state.tick} fill={css[theme].color} length='50' />
                       {this.state.currentTask &&
                         <>
@@ -269,20 +286,38 @@ class Timer extends Component {
                     </Link>
                   </div>}
                   <div className='column is-12' style={{ minHeight: '75px' }}>
-                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-work fat-border' : 'button is-outlined btn-tasks btn-work hide fat-border'}
+                    <button className={!this.state.focusMode ?
+                      'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-work fat-border' :
+                      'button is-size-5 is-outlined btn-tasks btn-work hide fat-border'}
                       data-type='work' onClick={this.onClickTaskType}>work</button>
-                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-play fat-border' : 'button is-outlined btn-tasks btn-play hide fat-border'}
+                    <button className={!this.state.focusMode ?
+                      'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-play fat-border' :
+                      'button is-size-5 is-outlined btn-tasks btn-play hide fat-border'}
                       data-type='play' onClick={this.onClickTaskType}>play</button>
-                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-learn fat-border' : 'button is-outlined btn-tasks btn-learn hide fat-border'}
+                    <button className={!this.state.focusMode ?
+                      'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-learn fat-border' :
+                      'button is-size-5 is-outlined btn-tasks btn-learn hide fat-border'}
                       data-type='learn' onClick={this.onClickTaskType}>learn</button>
-                    <button className={!this.state.focusMode ? 'button has-text-weight-bold is-outlined btn-tasks btn-break fat-border' : 'button is-outlined btn-tasks btn-break hide fat-border'}
+                    <button className={!this.state.focusMode ?
+                      'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-break fat-border' :
+                      'button is-size-5 is-outlined btn-tasks btn-break hide fat-border'}
                       data-type='break' onClick={this.onClickTaskType}>break</button>
                     <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span onClick={this.stopTimer} className='icon stop'><i className='ion-ionic ion-md-close'></i></span>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}>
+                        <span onClick={this.stopTimer}
+                          className='icon stop'>
+                          <i className='ion-ionic ion-md-close'></i>
+                        </span>
                         <span className='is-size-5 has-text-weight-bold grey-text'>Press "Esc" to stop</span>
                       </div>
-                      <div className='is-size-5 has-text-weight-bold grey-text' style={{ display: 'flex', alignItems: 'center' }}>
+                      <div className='is-size-5 has-text-weight-bold grey-text'
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}>
                         {'#' + this.state.mode}
                       </div>
                     </div>
@@ -291,28 +326,40 @@ class Timer extends Component {
               </div>
             </div>
             <Footer>
-              <div className='content' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                <div>
-                  Copyright {new Date().getFullYear()} Godspeed. All rights reserverd.
-                </div>
-                <div className={this.state.focusMode ? 'has-text-weight-bold is-size-5 invisible' : 'has-text-weight-bold is-size-5'} style={{ width: '240px' }}>
+              <div className='content'
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end'
+                }}>
+                <Copyright />
+                <div className={this.state.focusMode ?
+                  'has-text-weight-bold is-size-5 invisible' :
+                  'has-text-weight-bold is-size-5'}
+                  style={{ width: '240px' }}>
                   <div>{this.state.slider} minutes</div>
-                  <Slider onChange={this.onChangeSliderValue} val={this.state.slider} min='5' max='90' step='1' />
+                  <Slider onChange={this.onChangeSliderValue}
+                    val={this.state.slider}
+                    min='5'
+                    max='90'
+                    step='1' />
                 </div>
                 <div>
-                  <CircleButton 
-                    className='button' 
-                    onClick={toggleTheme} 
-                    backgroundColor={css[theme].color} 
+                  <CircleButton
+                    className='button'
+                    onClick={toggleTheme}
+                    backgroundColor={css[theme].color}
                     size='1.5rem' />
-                  <a className={this.state.focusMode ? 'icon button is-primary hide' : 'icon is-primary button'} 
+                  {/* <a className={this.state.focusMode ?
+                    'icon button is-primary hide' :
+                    'icon is-primary button'}
                     href='#'>
                     <i className='ion-ionic ion-md-help'></i>
-                  </a>
+                  </a> */}
                 </div>
               </div>
             </Footer>
-          </div>
+          </>
         )}
       </GlobalContext.Consumer>
     )
@@ -325,10 +372,12 @@ const Navigation = ({ focusMode }) => {
       <div className='navbar-item'>
         <div className='field is-grouped'>
           <p className='control'>
-            <Link to='/login' className='button not-outlined has-text-weight-bold'>Login</Link>
+            <Link to='/login' 
+              className='button not-outlined has-text-weight-bold'>Login</Link>
           </p>
           <p className='control'>
-            <Link to='/register' className='button has-text-weight-bold fat-border'>Create a free account</Link>
+            <Link to='/register' 
+              className='button has-text-weight-bold fat-border'>Create a free account</Link>
           </p>
         </div>
       </div>
