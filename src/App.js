@@ -69,9 +69,9 @@ class App extends Component {
   componentDidMount() {
     const theme = localStorage.getItem('theme') || themes.LIGHT
     if (theme === themes.LIGHT) {
-      document.body.classList.remove('dark')
+      document.documentElement.classList.remove('dark')
     } else {
-      document.body.classList.add('dark')
+      document.documentElement.classList.add('dark')
     }
   }
 

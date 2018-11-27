@@ -13,10 +13,6 @@ import Copyright from '../component/Copyright';
 import { GlobalContext, themes } from '../lib/context'
 import { css } from '../config/themes'
 
-const underline = {
-  borderBottom: `solid 1px rgba(33,37,41, .16)`,
-}
-
 const padding = {
   paddingTop: '1rem',
   paddingBottom: '1rem'
@@ -24,7 +20,6 @@ const padding = {
 
 const WeekLog = ({ today, logs, weekNum }) => {
   const days = moment.weekdaysShort()
-  //const dayOfWeek = moment().day()
   const currDate = moment()
 
   return (
@@ -34,28 +29,22 @@ const WeekLog = ({ today, logs, weekNum }) => {
           <div className='column is-size-5 has-text-weight-bold has-text-left'>WEEK {weekNum}</div>
           <div className='column is-size-5 has-text-weight-bold has-text-right'>{moment().year()}</div>
         </div>
-        <div className='columns'>
+        <div className='columns' style={{ marginBottom: '2.5rem' }}>
           {days.map((d, i) => {
             const targetDate = moment().week(weekNum).day(i)
             const key = targetDate.format('YYYYMMDD')
             const totalSec = logs[key] ? logs[key].reduce((acc, task) => acc += task.length, 0) : 0
-            const style = targetDate.isAfter(currDate) && {
-              color: '#212529',
-              opacity: '.16',
-            }
+            const disabled = targetDate.isAfter(currDate) ? 'disabled' : '';
 
             return <div className='column'>
-              <div key={`header-${i}-weeklog`} className='has-text-weight-bold'
+              <div key={`header-${i}-weeklog`} className={`logs-header has-text-weight-bold ${disabled}`}
                 style={{
-                  ...style,
-                  ...underline,
                   ...padding,
                 }}>
                 {targetDate.format('ddd, MMM D')}
               </div>
-              <div key={`total-${i}-weeklog`} className='has-text-weight-bold'
+              <div key={`total-${i}-weeklog`} className='logs-header has-text-weight-bold'
                 style={{
-                  ...underline,
                   ...padding,
                 }}>
                 Total {totalSec > 0 ? `${Math.trunc(totalSec / 3600)}h ${Math.trunc(totalSec % 60)}m` : 0}
@@ -95,7 +84,8 @@ export default function TimeLogs(props) {
               <div className='column is-size-2 has-text-weight-bold has-text-centered'>Logs</div>
             </div>
             {weeksInYear.map((curr, index, arr) => (
-              <WeekLog today={today} key={`weeklog-${index}`}
+              <WeekLog today={today}
+                key={`weeklog-${index}`}
                 logs={logs}
                 weekNum={arr.length - index} />
             ))}

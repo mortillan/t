@@ -8,19 +8,130 @@ body {
 
 @import "bulma/sass/utilities/initial-variables.sass";
 @import "./variables.scss";
-// $black: #212529;
-// $family-primary: Arial, sans-serif;
-// $text: $black;
-// $primary: $black;
-// $button-border-color: $black;
-// $button-hover-border-color: $black;
-// $button-text-hover-background-color: rgba(33, 37, 41, 0.16);
-// $button-focus-border-color: $black;
-// $button-focus-box-shadow-color: none;
+
+$slider-radius: 2rem;
+$slider-thumb-radius: 2rem;
+$slider-thumb-shadow: none;
+$slider-track-background: $black;
+$slider-track-radius: 2rem;
+$slider-track-border: 0px solid $grey;
+$slider-track-shadow: 0px 0px 0px $grey;
+$slider-thumb-border: 1px solid $black;
+$slider-thumb-background: $black;
+$track-height: 2px;
+$thumb-size: 1.5rem;
+
+input[type=range] {
+  &.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 1rem 0;
+    background: transparent;
+
+    &.is-fullwidth {
+      display: block;
+      width: 100%;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-webkit-slider-runnable-track {
+      cursor: pointer;
+      // animate: 0.2s;
+      box-shadow: $slider-track-shadow;
+      background: $slider-track-background;
+      border-radius: $slider-track-radius;
+      border: $slider-track-border;
+      width: 100%;
+      height: $track-height;
+    }
+
+    &::-moz-range-track {
+      cursor: pointer;
+      // animate: 0.2s;
+      box-shadow: $slider-track-shadow;
+      background: $slider-track-background;
+      border-radius: $slider-track-radius;
+      border: $slider-track-border;
+      width: 100%;
+      height: $track-height;
+    }
+
+    &::-ms-track {
+      cursor: pointer;
+      // animate: 0.2s;
+      box-shadow: $slider-track-shadow;
+      background: $slider-track-background;
+      border-radius: $slider-track-radius;
+      border: $slider-track-border;
+      width: 100%;
+      height: $track-height;
+    }
+
+    &::-ms-fill-lower,
+    &::-ms-fill-upper {
+      background: $grey-lighter;
+      border-radius: $slider-radius;
+    }
+
+    &::-webkit-slider-thumb {
+      box-shadow: $slider-thumb-shadow;
+      border: $slider-thumb-border;
+      border-radius: $slider-thumb-radius;
+      background: $slider-thumb-background;
+      cursor: pointer;
+      -webkit-appearance: none;
+      transition: transform .2s ease, -webkit-transform .2s ease;
+      transition: transform .2s ease;
+      transition: -webkit-transform .2s ease;
+      height: $thumb-size;
+      width: $thumb-size;
+      margin-top: -( $thumb-size / 2 );
+    }
+
+    &::-moz-range-thumb {
+      box-shadow: $slider-thumb-shadow;
+      border: $slider-thumb-border;
+      background: $slider-thumb-background;
+      border-radius: $slider-thumb-radius;
+      cursor: pointer;
+      transition: transform .2s ease, -webkit-transform .2s ease;
+      transition: transform .2s ease;
+      transition: -webkit-transform .2s ease;
+      height: $thumb-size;
+      width: $thumb-size;
+    }
+
+    &::-ms-thumb {
+      box-shadow: $slider-thumb-shadow;
+      border: $slider-thumb-border;
+      background: $slider-thumb-background;
+      border-radius: $slider-thumb-radius;
+      cursor: pointer;
+      transition: transform .2s ease, -webkit-transform .2s ease;
+      transition: transform .2s ease;
+      transition: -webkit-transform .2s ease;
+      height: $thumb-size;
+      width: $thumb-size;
+    }
+
+  }
+}
 
 .grey-text {
   color: #000000; 
   opacity: 0.54;
+}
+
+.logs-header {
+  border-bottom: solid 1px rgba(33,37,41, .16);
+  color: $black;
+}
+
+.logs-header.disabled {
+  color: rgba(33,37,41, .16);
 }
 
 html.dark {
@@ -51,6 +162,12 @@ html.dark {
   & .input, & .button {
     background-color: $white;
     color: $black;
+    border-color: rgba(33,37,41, .16);
+  }
+
+  & .logs-header {
+    border-bottom: solid 1px $white;
+    color: $white;
   }
 
   & input[type=range] {
