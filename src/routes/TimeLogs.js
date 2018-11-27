@@ -17,56 +17,57 @@ const underline = {
   borderBottom: `solid 1px rgba(33,37,41, .16)`,
 }
 
-const verticalMargin = {
-  marginLeft: '1rem',
-  marginRight: '1rem',
+const padding = {
+  paddingTop: '1rem',
+  paddingBottom: '1rem'
 }
 
-const WeekLog = ({ logs, weekNum }) => {
+const WeekLog = ({ today, logs, weekNum }) => {
   const days = moment.weekdaysShort()
-  const dayOfWeek = moment().day()
+  //const dayOfWeek = moment().day()
+  const currDate = moment()
 
   return (
-    <LazyLoad height={500}>
+    <LazyLoad once={true} height={500}>
       <>
         <div className='columns is-vcentered'>
-          <div className='column is-size-5 has-text-weight-bold has-text-left'
-            style={{ ...verticalMargin }}>WEEK {weekNum}</div>
-          <div className='column is-size-5 has-text-weight-bold has-text-right'
-            style={{ ...verticalMargin }}>{moment().year()}</div>
+          <div className='column is-size-5 has-text-weight-bold has-text-left'>WEEK {weekNum}</div>
+          <div className='column is-size-5 has-text-weight-bold has-text-right'>{moment().year()}</div>
         </div>
         <div className='columns'>
           {days.map((d, i) => {
-            const style = i > dayOfWeek ? {
+            const targetDate = moment().week(weekNum).day(i)
+            const key = targetDate.format('YYYYMMDD')
+            const totalSec = logs[key] ? logs[key].reduce((acc, task) => acc += task.length, 0) : 0
+            const style = targetDate.isAfter(currDate) && {
               color: '#212529',
               opacity: '.16',
-            } : {}
-            return <div key={`header-${i}-weeklog`} className='column is-size-5 has-text-weight-bold'
-              style={{
-                ...style,
-                ...underline,
-                ...verticalMargin
-              }}>{moment().week(weekNum).day(i).format('ddd, MMM D')}</div>
-          })}
-        </div>
-        <div className='columns'>
-          {days.map((d, i) => {
-            const key = moment().week(weekNum).day(i).format('YYYYMMDD')
-            const totalSec = logs[key] ? logs[key].reduce((acc, task) => acc += task.length, 0) : 0
-            return <div key={`total-${i}-weeklog`} className='column is-size-6 has-text-weight-bold'
-              style={{
-                ...underline,
-                ...verticalMargin
-              }}>Total {totalSec > 0 ? `${Math.trunc(totalSec / 3600)}h ${Math.trunc(totalSec % 60)}m` : 0}</div>
-          })}
-        </div>
-        <div className='columns'>
-          {days.map((d, i) => {
-            const key = moment().week(weekNum).day(i).format('YYYYMMDD')
-            return <div key={`tasks-${i}-${Date.now()}`} className='column is-size-6'
-              style={{ ...verticalMargin }}>{
-                logs[key] &&
-                logs[key].map((task, i) => <div key={`taskduration-${i}-${performance.now()}`}>{task.type} {task.length < 60 ? `<1m` : `${Math.trunc(task.length / 60)}m`}</div>)}
+            }
+
+            return <div className='column'>
+              <div key={`header-${i}-weeklog`} className='has-text-weight-bold'
+                style={{
+                  ...style,
+                  ...underline,
+                  ...padding,
+                }}>
+                {targetDate.format('ddd, MMM D')}
+              </div>
+              <div key={`total-${i}-weeklog`} className='has-text-weight-bold'
+                style={{
+                  ...underline,
+                  ...padding,
+                }}>
+                Total {totalSec > 0 ? `${Math.trunc(totalSec / 3600)}h ${Math.trunc(totalSec % 60)}m` : 0}
+              </div>
+              <div style={padding} key={`tasks-${i}-${Date.now()}`}>
+                {logs[key] &&
+                  logs[key].map((task, i) => (
+                    <div key={`taskduration-${i}-${performance.now()}`}>
+                      {task.type} {task.length < 60 ? '<1m' : `${Math.trunc(task.length / 60)}m`}
+                    </div>
+                  ))}
+              </div>
             </div>
           })}
         </div>
@@ -77,10 +78,9 @@ const WeekLog = ({ logs, weekNum }) => {
 
 export default function TimeLogs(props) {
   const logs = JSON.parse(localStorage.getItem('logs')) || {}
-  // const dayOfWeek = moment().day()
-  // const days = moment.weekdaysShort()
   const weekYear = moment().week()
   const weeksInYear = [...Array(weekYear).keys()]
+  const today = moment()
 
   return (
     <GlobalContext.Consumer>
@@ -90,14 +90,17 @@ export default function TimeLogs(props) {
             brand={<Brand theme={theme} />}
             mid={<OnlineCount />}
             end={<Navigation />} />
-          <div className='container vfull'>
+          <div className='container'>
             <div className='columns is-vcentered'>
-              <div className='column is-size-2 has-text-weight-bold has-text-centered'
-                style={{ ...verticalMargin }}>Logs</div>
+              <div className='column is-size-2 has-text-weight-bold has-text-centered'>Logs</div>
             </div>
-            {weeksInYear.map((curr, index, arr) => <WeekLog key={`weeklog-${index}`} logs={logs} weekNum={arr.length - index} />)}
+            {weeksInYear.map((curr, index, arr) => (
+              <WeekLog today={today} key={`weeklog-${index}`}
+                logs={logs}
+                weekNum={arr.length - index} />
+            ))}
           </div>
-          {/* <Footer>
+          <Footer>
             <div className='content'
               style={{
                 display: 'flex',
@@ -111,13 +114,13 @@ export default function TimeLogs(props) {
                   onClick={toggleTheme}
                   backgroundColor={css[theme].color}
                   size='1.5rem' />
-                <a className='icon button theme'
-              href='#' style={{ color: '#ffffff', backgroundColor: '#212529' }}>
-              <i className='ion-ionic ion-md-help'></i>
-            </a>
+                {/* <a className='icon button theme'
+                  href='#' style={{ color: '#ffffff', backgroundColor: '#212529' }}>
+                  <i className='ion-ionic ion-md-help'></i>
+                </a> */}
               </div>
             </div>
-          </Footer> */}
+          </Footer>
         </>
       )}
     </GlobalContext.Consumer>

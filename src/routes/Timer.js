@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import * as moment from 'moment'
+import moment from 'moment'
 
 import Slider from '../component/Slider'
 import TopBar from '../component/TopBar'
@@ -234,21 +234,22 @@ class Timer extends Component {
               mid={<OnlineCount />}
               end={<Navigation focusMode={this.state.focusMode} />} />
             <div className='container is-fluid vfull'>
-              <div className='columns is-vcentered vfull'>
-                <div className='column columns is-multiline'>
-                  <div className='column is-12'>
-                    <h1 className={!this.state.focusMode ?
-                      'is-size-2 has-text-weight-bold' :
-                      'is-size-2 has-text-weight-bold hide'}>
-                      You have <HourCount hr={this.state.tickHours} /> hours <MinCount min={this.state.tickMins} /> minutes today.
-                    </h1>
-                    {this.state.focusMode &&
-                      <TaskTimeRemaining
-                        remaining={this.state.currentTask.remaining}
-                        focusMode={this.state.focusMode}
-                        mode={this.state.mode} />}
-                  </div>
-                  <div className='column'>
+              <div className='columns vfull is-vcentered'>
+                <div className='column'>
+                  <div className='columns is-multiline'>
+                    <div className='column is-12'>
+                      <h1 className={!this.state.focusMode ?
+                        'is-size-2 has-text-weight-bold' :
+                        'is-size-2 has-text-weight-bold hide'}>
+                        You have <HourCount hr={this.state.tickHours} /> hours <MinCount min={this.state.tickMins} /> minutes today.
+                      </h1>
+                      {this.state.focusMode &&
+                        <TaskTimeRemaining
+                          remaining={this.state.currentTask.remaining}
+                          focusMode={this.state.focusMode}
+                          mode={this.state.mode} />}
+                    </div>
+                    <div className='column'>
                     <svg width='100%'
                       height='40'
                       viewBox='0 0 86400 2320'
@@ -270,7 +271,7 @@ class Timer extends Component {
                         </>}
                     </svg>
                   </div>
-                  {!this.state.focusMode && <div className='column is-narrow'>
+                    {!this.state.focusMode && <div className='column is-narrow'>
                     <Link to='/logs'
                       className='icon button'
                       style={{
@@ -285,7 +286,7 @@ class Timer extends Component {
                         }}></i>
                     </Link>
                   </div>}
-                  <div className='column is-12' style={{ minHeight: '75px' }}>
+                    <div className='column is-12' style={{ minHeight: '75px' }}>
                     <button className={!this.state.focusMode ?
                       'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-work fat-border' :
                       'button is-size-5 is-outlined btn-tasks btn-work hide fat-border'}
@@ -321,6 +322,7 @@ class Timer extends Component {
                         {'#' + this.state.mode}
                       </div>
                     </div>
+                  </div>
                   </div>
                 </div>
               </div>

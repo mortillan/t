@@ -1,12 +1,9 @@
-html, #root {
+html, #root, body {
   height: 100%;
 }
 
 body {
-  margin: 0;
-  padding: 0;
   font-family: sans-serif;
-  height: 100%;
 }
 
 @import "bulma/sass/utilities/initial-variables.sass";
@@ -26,11 +23,15 @@ body {
   opacity: 0.54;
 }
 
-body.dark {
+html.dark {
   color: $white;
   background-color: $black;
-
   $slider-track-background: $black;
+
+  & body {
+    color: $white;
+    background-color: $black;
+  }
 
   & * {
     background-color: $black;
@@ -98,10 +99,13 @@ body.dark {
 
 .footer {
   padding: 1rem;
-  position: absolute;
+  position: fixed;
+  left: 0;
   bottom: 0;
   width: 100%;
-  background-color: inherit;
+  z-index: 30;
+  opacity: 1;
+  background-color: $white;
 }
 
 .vfull {
