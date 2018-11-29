@@ -415,3 +415,12 @@ input.is-black {
     transform: translate(19px, 0);
   }
 }
+
+.countbar {
+  animation: slidein 0.5s ease;
+}
+
+@keyframes slidein {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}

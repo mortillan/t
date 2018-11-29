@@ -20,6 +20,15 @@ const RegisterSchema = Yup.object().shape({
 
 class SignUp extends Component {
 
+  state = {
+    spiel: 'Sign up for private beta',
+    subSpiel: `We respect your privacy and do not tolerate spam and will never sell, rent, lease,
+    or give away your information (name, address, email, etc.) to any third party.
+    Nor will we send you unsolicited email.`
+  }
+
+  btnRegisterRef = React.createRef();
+
   register = async (values, { setErrors }) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/users/register/beta`, {
@@ -30,10 +39,19 @@ class SignUp extends Component {
         body: JSON.stringify(values),
         mode: 'cors'
       })
-      
+
+      this.btnRegisterRef.current.classList.add('is-loading')
+
       const json = await response.json()
-      
-      if(response.status !== 200) {
+
+      this.btnRegisterRef.current.classList.remove('is-loading')
+
+      if (response.status === 200) {
+        this.setState({
+          spiel: `Thanks for signing up!`,
+          subSpiel: `We will let you know once it's availale`,
+        })
+      } else {
         setErrors({
           email: json.error
         })
@@ -48,13 +66,13 @@ class SignUp extends Component {
       <GlobalContext.Consumer>
         {({ theme, toggleTheme }) => (
           <>
-            <TopBar 
-              brand={<Brand theme={theme} />} 
+            <TopBar
+              brand={<Brand theme={theme} />}
               end={<Navigation />} />
             <div className='container vfull'>
               <div className='columns vfull' style={{ alignItems: 'center' }}>
                 <div className='column is-offset-3 is-6'>
-                  <h1 className='is-size-2 has-text-weight-bold'>Sign up for private beta</h1>
+                  <h1 className='is-size-2 has-text-weight-bold'>{this.state.spiel}</h1>
                   <Formik initialValues={{
                     email: ''
                   }}
@@ -72,7 +90,8 @@ class SignUp extends Component {
                                 placeholder='Your email address' />
                             </div>
                             <div className='control'>
-                              <button type='submit'
+                              <button ref={this.btnRegisterRef}
+                                type='submit'
                                 className='button is-black'>
                                 Let me know
                             </button>
@@ -83,9 +102,7 @@ class SignUp extends Component {
                             className='help is-danger is-' />
                         </div>
                         <p className='is-size-7'>
-                          We respect your privacy and do not tolerate spam and will never sell, rent, lease,
-                          or give away your information (name, address, email, etc.) to any third party.
-                          Nor will we send you unsolicited email.
+                          {this.state.subSpiel}
                         </p>
                       </Form>
                     )}
