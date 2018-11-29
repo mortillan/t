@@ -24,7 +24,6 @@ import { GlobalContext, themes } from '../lib/context'
 import { TASK_TYPES } from '../lib/constants'
 
 import { css } from '../config/themes'
-import './Timer.css'
 
 const MAX_SECONDS = 86400
 const MS_IN_DAY = 86400000
@@ -336,7 +335,7 @@ class Timer extends Component {
                 }}>
                 <Copyright />
                 <div className={this.state.focusMode ?
-                  'has-text-weight-bold is-size-5 invisible' :
+                  'has-text-weight-bold is-size-5 is-invisible' :
                   'has-text-weight-bold is-size-5'}
                   style={{ width: '240px' }}>
                   <div>{this.state.slider} minutes</div>
@@ -370,7 +369,7 @@ class Timer extends Component {
 
 const Navigation = ({ focusMode }) => {
   return (
-    <div className={focusMode ? 'navbar-end invisible' : 'navbar-end'}>
+    <div className={focusMode ? 'navbar-end is-invisible' : 'navbar-end'}>
       <div className='navbar-item'>
         <div className='field is-grouped'>
           <p className='control'>

@@ -67,7 +67,7 @@ class SignUp extends Component {
                             <div className='control is-expanded'>
                               <Field name='email'
                                 className={errors.email && touched.email ?
-                                  'input black is-danger' : 'input black'}
+                                  'input fat-border is-danger' : 'input is-black fat-border'}
                                 type='text'
                                 placeholder='Your email address' />
                             </div>

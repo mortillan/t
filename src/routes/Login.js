@@ -51,7 +51,7 @@ class Login extends Component {
                           <div className='control is-expanded'>
                             <Field name='username'
                               className={errors.username && touched.username ?
-                                'input black is-danger' : 'input black'}
+                                'input fat-border is-danger' : 'input fat-border is-black'}
                               type='text'
                               placeholder='Email or username' />
                           </div>
@@ -62,7 +62,8 @@ class Login extends Component {
                         <div className='field'>
                           <div className='control is-expanded'>
                             <Field name='password'
-                              className='input black'
+                              className={errors.password && touched.password ? 
+                                'input fat-border is-danger' : 'input fat-border is-black'}
                               type='password'
                               placeholder='Password' />
                             <ErrorMessage name='password'
