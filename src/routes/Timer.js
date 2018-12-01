@@ -374,7 +374,7 @@ const Navigation = ({ focusMode }) => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/login' 
-              className='button not-outlined has-text-weight-bold'>Login</Link>
+              className='button not-outlined has-text-weight-bold fat-border'>Login</Link>
           </p>
           <p className='control'>
             <Link to='/register' 

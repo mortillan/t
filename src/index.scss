@@ -149,6 +149,10 @@ html.dark {
     color: $white;
   }
 
+  & a {
+    color: $white;
+  }
+
   & .is-primary {
     background-color: $white;
     color: $black;
@@ -159,10 +163,26 @@ html.dark {
     color: $white;
   }
 
-  & .input, & .button {
+  & .input {
     background-color: $white;
     color: $black;
-    border-color: rgba(33,37,41, .16);
+    border-color: $white;
+  }
+
+  & .checkbox {
+    &:hover {
+      color: $white;
+    }
+  }
+
+  & .button {
+    background-color: #424242;
+    border-color: #424242;
+    color: $white;
+
+    &:hover {
+      border-color: $white;
+    }
   }
 
   & .logs-header {
@@ -218,6 +238,10 @@ html.dark {
 @import "bulma/sass/elements/_all.sass";
 @import "bulma/sass/layout/footer.sass";
 @import "bulma/sass/components/_all.sass";
+
+a {
+  color: inherit;
+}
 
 .fat-border {
   border-width: 2px;

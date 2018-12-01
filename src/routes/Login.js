@@ -87,10 +87,9 @@ class Login extends Component {
                               </label>
                           </div>
                           <div className='column is-6 has-text-right'>
-                            <a href='/account/reset'
-                              className='has-text-black'>
+                            <a href='/account/reset'>
                               Forgot Password?
-                              </a>
+                            </a>
                           </div>
                         </div>
                       </Form>
@@ -134,7 +133,7 @@ const Navigation = () => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/register'
-              className='button has-text-weight-bold is-inverted is-outlined'>
+              className='button has-text-weight-bold is-outlined fat-border'>
               Create a free account
             </Link>
           </p>

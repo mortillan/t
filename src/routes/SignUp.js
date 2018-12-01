@@ -148,7 +148,7 @@ const Navigation = () => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/login'
-              className='button not-outlined has-text-weight-bold'>
+              className='button not-outlined has-text-weight-bold fat-border'>
               Login
             </Link>
           </p>
