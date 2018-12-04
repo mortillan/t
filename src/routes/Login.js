@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 
@@ -133,7 +133,7 @@ const Navigation = () => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/register'
-              className='button has-text-weight-bold is-outlined fat-border'>
+              className='nav-btn button has-text-weight-bold fat-border'>
               Create a free account
             </Link>
           </p>

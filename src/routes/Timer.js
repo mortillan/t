@@ -19,16 +19,14 @@ import TimeBar from '../component/TimeBar'
 import TaskBar from '../component/TaskBar'
 import TaskTimeRemaining from '../component/TaskTimeRemaining'
 
-import { taskKey, calculateSecondsPastMidnight } from '../lib/common'
+import { calculateSecondsPastMidnight } from '../lib/common'
 import { GlobalContext, themes } from '../lib/context'
-import { TASK_TYPES } from '../lib/constants'
+import { TASK_TYPES, TASK_KEY_FORMAT } from '../lib/constants'
+import { DOC_TITLE } from '../config/app'
 
 import { css } from '../config/themes'
 
 const MAX_SECONDS = 86400
-const MS_IN_DAY = 86400000
-const LAEGATO = 'Laegato'
-const TASK_KEY_FORMAT = 'YYYYMMDD';
 
 class Timer extends Component {
   constructor() {
@@ -46,16 +44,9 @@ class Timer extends Component {
       taskTimer: null,
     }
     this.timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])));
-    this.onChangeSliderValue = this.onChangeSliderValue.bind(this)
-    this.onClickTaskType = this.onClickTaskType.bind(this)
-    this.startTimer = this.startTimer.bind(this)
-    this.stopTimer = this.stopTimer.bind(this)
-    this.tickTimer = this.tickTimer.bind(this)
-    this.onKeypress = this.onKeypress.bind(this)
-    this.onTimer = this.onTimer.bind(this)
   }
 
-  startTimer(type = 'break') {
+  startTimer = (type = 'break') => {
     const { tick, slider, focusMode } = this.state
     const length = slider * 60
 
@@ -71,8 +62,6 @@ class Timer extends Component {
       key: moment().format(TASK_KEY_FORMAT)
     }
 
-    // console.log(newTask)
-
     this.setState({
       currentTask: newTask,
       focusMode: !focusMode,
@@ -82,7 +71,7 @@ class Timer extends Component {
     document.title = `${Math.trunc(length / 60)}`.padStart(2, '0') + ':' + `${length % 60}`.padStart(2, '0')
   }
 
-  stopTimer() {
+  stopTimer = () => {
     const { focusMode, taskTimer, tasksLog, currentTask, tick } = this.state
 
     if (focusMode) {
@@ -107,8 +96,7 @@ class Timer extends Component {
           color: currentTask.color,
           type: currentTask.type,
         })
-        // const nextDay = new Date()
-        // nextDay.setTime(new Date(currentTask.key).getTime() + MS_IN_DAY)
+
         const nextKey = moment().add(1, 'd').format(TASK_KEY_FORMAT)
         tasksLog[nextKey] = []
         tasksLog[nextKey].push({
@@ -128,12 +116,12 @@ class Timer extends Component {
         tasksLog: tasksLog,
       })
 
-      document.title = LAEGATO
+      document.title = DOC_TITLE
       localStorage.setItem('logs', JSON.stringify(this.state.tasksLog))
     }
   }
 
-  tickTimer() {
+  tickTimer = () => {
     const { currentTask } = this.state
 
     const total = calculateSecondsPastMidnight(new Date())
@@ -156,7 +144,7 @@ class Timer extends Component {
     document.title = `${Math.trunc(remaining / 60)}`.padStart(2, '0') + ':' + `${remaining % 60}`.padStart(2, '0')
   }
 
-  onKeypress(e) {
+  onKeypress = (e) => {
     const { key } = e
 
     if (key === 'Escape') {
@@ -172,7 +160,7 @@ class Timer extends Component {
     }
   }
 
-  onClickTaskType(e) {
+  onClickTaskType = (e) => {
     const { target } = e
 
     const { type } = target.dataset
@@ -180,13 +168,13 @@ class Timer extends Component {
     this.startTimer(type);
   }
 
-  onChangeSliderValue(e) {
+  onChangeSliderValue = (e) => {
     this.setState({
       slider: e.target.value
     })
   }
 
-  onTimer(e) {
+  onTimer = (e) => {
     const { timestamp, hrs, min, sec } = e.data
     const total = ((hrs * 60 * 60) + (min * 60) + sec)
 
@@ -274,14 +262,15 @@ class Timer extends Component {
                     <Link to='/logs'
                       className='icon button'
                       style={{
-                        backgroundColor: css[themes.DARK].backgroundColor,
-                        color: css[themes.DARK].color,
-                        height: '2.5rem'
+                        backgroundColor: theme === themes.LIGHT ? 'rgba(33, 37, 41, .16)' : css[theme].backgroundColor,
+                        borderColor: 'transparent',
+                        height: '2.5rem',
                       }}>
                       <i className='ion-ionic ion-ios-arrow-forward'
                         style={{
-                          backgroundColor: css[themes.DARK].backgroundColor,
-                          color: css[themes.DARK].color,
+                          color: css[theme].color,
+                          fontWeight: 'bold',
+                          fontSize: '1.25rem',
                         }}></i>
                     </Link>
                   </div>}
@@ -374,11 +363,11 @@ const Navigation = ({ focusMode }) => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/login' 
-              className='button not-outlined has-text-weight-bold fat-border'>Login</Link>
+              className='nav-btn button not-outlined has-text-weight-bold fat-border'>Login</Link>
           </p>
           <p className='control'>
             <Link to='/register' 
-              className='button has-text-weight-bold fat-border'>Create a free account</Link>
+              className='nav-btn button has-text-weight-bold fat-border'>Create a free account</Link>
           </p>
         </div>
       </div>

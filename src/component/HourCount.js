@@ -1,8 +1,8 @@
 import React from 'react'
 
-const HourCount = (props) => {
+function HourCount({ hr }) {
   return (
-    <>{props.hr}</>
+    <>{hr}</>
   )
 }
 

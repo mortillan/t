@@ -10,7 +10,8 @@ import OnlineCount from '../component/OnlineCount'
 import CircleButton from '../component/CircleButton'
 import Copyright from '../component/Copyright';
 
-import { GlobalContext, themes } from '../lib/context'
+import { GlobalContext } from '../lib/context'
+import { TASK_KEY_FORMAT } from '../lib/constants'
 import { css } from '../config/themes'
 
 const padding = {
@@ -18,7 +19,7 @@ const padding = {
   paddingBottom: '1rem'
 }
 
-const WeekLog = ({ today, logs, weekNum }) => {
+const WeekLog = ({ logs, weekNum }) => {
   const days = moment.weekdaysShort()
   const currDate = moment()
 
@@ -32,24 +33,24 @@ const WeekLog = ({ today, logs, weekNum }) => {
         <div className='columns' style={{ marginBottom: '2.5rem' }}>
           {days.map((d, i) => {
             const targetDate = moment().week(weekNum).day(i)
-            const key = targetDate.format('YYYYMMDD')
+            const key = targetDate.format(TASK_KEY_FORMAT)
             const totalSec = logs[key] ? logs[key].reduce((acc, task) => acc += task.length, 0) : 0
             const disabled = targetDate.isAfter(currDate) ? 'disabled' : '';
 
-            return <div className='column'>
-              <div key={`header-${i}-weeklog`} className={`logs-header has-text-weight-bold ${disabled}`}
+            return <div key={`weeklog-${i}`} className='column'>
+              <div className={`logs-header has-text-weight-bold ${disabled}`}
                 style={{
                   ...padding,
                 }}>
                 {targetDate.format('ddd, MMM D')}
               </div>
-              <div key={`total-${i}-weeklog`} className='logs-header has-text-weight-bold'
+              <div className='logs-header has-text-weight-bold'
                 style={{
                   ...padding,
                 }}>
                 Total {totalSec > 0 ? `${Math.trunc(totalSec / 3600)}h ${Math.trunc(totalSec % 60)}m` : 0}
               </div>
-              <div style={padding} key={`tasks-${i}-${Date.now()}`}>
+              <div style={padding}>
                 {logs[key] &&
                   logs[key].map((task, i) => (
                     <div key={`taskduration-${i}-${performance.now()}`}>
@@ -69,7 +70,6 @@ export default function TimeLogs(props) {
   const logs = JSON.parse(localStorage.getItem('logs')) || {}
   const weekYear = moment().week()
   const weeksInYear = [...Array(weekYear).keys()]
-  const today = moment()
 
   return (
     <GlobalContext.Consumer>
@@ -84,8 +84,7 @@ export default function TimeLogs(props) {
               <div className='column is-size-2 has-text-weight-bold has-text-centered'>Logs</div>
             </div>
             {weeksInYear.map((curr, index, arr) => (
-              <WeekLog today={today}
-                key={`weeklog-${index}`}
+              <WeekLog key={`weeklog-${index}`}
                 logs={logs}
                 weekNum={arr.length - index} />
             ))}
@@ -124,11 +123,11 @@ const Navigation = () => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/login'
-              className='button not-outlined has-text-weight-bold'>Login</Link>
+              className='nav-btn button not-outlined has-text-weight-bold fat-border'>Login</Link>
           </p>
           <p className='control'>
             <Link to='/register'
-              className='button has-text-weight-bold is-outlined'>Create a free account</Link>
+              className='nav-btn button has-text-weight-bold fat-border'>Create a free account</Link>
           </p>
         </div>
       </div>

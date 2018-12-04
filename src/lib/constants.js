@@ -12,3 +12,5 @@ export const TASK_TYPES = {
     color: '#FA5252'
   }
 }
+
+export const TASK_KEY_FORMAT = 'YYYYMMDD'

@@ -2,6 +2,10 @@ html, #root, body {
   height: 100%;
 }
 
+#root {
+  padding-top: 3.25rem;
+}
+
 body {
   font-family: sans-serif;
 }
@@ -20,6 +24,124 @@ $slider-thumb-border: 1px solid $black;
 $slider-thumb-background: $black;
 $track-height: 2px;
 $thumb-size: 1.5rem;
+
+html.dark {
+  color: $white;
+  background-color: $black;
+  $slider-track-background: $black;
+
+  & body {
+    color: $white;
+    background-color: $black;
+  }
+
+  & * {
+    background-color: $black;
+    color: $white;
+  }
+
+  & a {
+    color: $white;
+  }
+
+  & .is-primary {
+    background-color: #424242;
+    color: $white;
+
+    &:hover {
+      background-color: #424242;
+    }
+  }
+
+  & a.not-outlined:hover {
+    border-color: $white;
+    color: $white;
+  }
+
+  & .input {
+    background-color: $white;
+    color: $black;
+    border-color: $white;
+  }
+
+  & .checkbox {
+    &:hover {
+      color: $white;
+    }
+  }
+
+  & .nav-btn {
+    background-color: transparent;
+    border-color: $white;
+    color: $white;
+
+    &:hover, &:active {
+      border-color: $white;
+      background-color: #424242;
+    }
+
+    &.not-outlined {
+      border-color: transparent;
+    }
+  }
+
+  & .logs-header {
+    border-bottom: solid 1px $white;
+    color: $white;
+  }
+
+  & .btn-tasks {
+    background-color: transparent;
+    color: inherit;
+  }
+
+  & input[type=range] {
+
+    &::-ms-track {
+      background: #ffffff;
+    }
+
+    &::-moz-range-track {
+      background: #ffffff;
+    }
+
+    &::-webkit-slider-runnable-track {
+      background: #ffffff;
+    }
+
+    &::-webkit-slider-thumb {
+      background: $white;
+      border-color: $white;
+    }
+
+    &::moz-range-thumb {
+      background: $white;
+      border-color: $white;
+    }
+
+    &::-ms-thumb {
+      background: $white;
+      border-color: $white;
+    }
+
+  }
+
+  & .grey-text {
+    color: #ffffff; 
+    opacity: 1;
+  }
+}
+
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/grid/_all.sass";
+@import "bulma/sass/elements/_all.sass";
+@import "bulma/sass/layout/footer.sass";
+@import "bulma/sass/components/_all.sass";
+
+a {
+  color: inherit;
+}
 
 input[type=range] {
   &.slider {
@@ -120,6 +242,13 @@ input[type=range] {
   }
 }
 
+.nav-btn {
+  &:hover, &:active {
+    background-color: $black;
+    color: $white;
+  }
+}
+
 .grey-text {
   color: #000000; 
   opacity: 0.54;
@@ -132,115 +261,6 @@ input[type=range] {
 
 .logs-header.disabled {
   color: rgba(33,37,41, .16);
-}
-
-html.dark {
-  color: $white;
-  background-color: $black;
-  $slider-track-background: $black;
-
-  & body {
-    color: $white;
-    background-color: $black;
-  }
-
-  & * {
-    background-color: $black;
-    color: $white;
-  }
-
-  & a {
-    color: $white;
-  }
-
-  & .is-primary {
-    background-color: $white;
-    color: $black;
-  }
-
-  & a.not-outlined:hover {
-    border-color: $white;
-    color: $white;
-  }
-
-  & .input {
-    background-color: $white;
-    color: $black;
-    border-color: $white;
-  }
-
-  & .checkbox {
-    &:hover {
-      color: $white;
-    }
-  }
-
-  & .button {
-    background-color: #424242;
-    border-color: #424242;
-    color: $white;
-
-    &:hover {
-      border-color: $white;
-    }
-  }
-
-  & .logs-header {
-    border-bottom: solid 1px $white;
-    color: $white;
-  }
-
-  & .btn-tasks {
-    background-color: transparent;
-    color: inherit;
-  }
-
-  & input[type=range] {
-
-    &::-ms-track {
-      background: #ffffff;
-    }
-
-    &::-moz-range-track {
-      background: #ffffff;
-    }
-
-    &::-webkit-slider-runnable-track {
-      background: #ffffff;
-    }
-
-    &::-webkit-slider-thumb {
-      background: $white;
-      border-color: $white;
-    }
-
-    &::moz-range-thumb {
-      background: $white;
-      border-color: $white;
-    }
-
-    &::-ms-thumb {
-      background: $white;
-      border-color: $white;
-    }
-
-  }
-
-  & .grey-text {
-    color: #ffffff; 
-    opacity: 1;
-  }
-}
-
-@import "bulma/sass/utilities/_all.sass";
-@import "bulma/sass/base/_all.sass";
-@import "bulma/sass/grid/_all.sass";
-@import "bulma/sass/elements/_all.sass";
-@import "bulma/sass/layout/footer.sass";
-@import "bulma/sass/components/_all.sass";
-
-a {
-  color: inherit;
 }
 
 .fat-border {

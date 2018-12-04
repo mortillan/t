@@ -92,7 +92,7 @@ class SignUp extends Component {
                             <div className='control'>
                               <button ref={this.btnRegisterRef}
                                 type='submit'
-                                className='button is-black'>
+                                className='button is-primary'>
                                 Let me know
                             </button>
                             </div>
@@ -148,7 +148,7 @@ const Navigation = () => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/login'
-              className='button not-outlined has-text-weight-bold fat-border'>
+              className='nav-btn button not-outlined has-text-weight-bold fat-border'>
               Login
             </Link>
           </p>
