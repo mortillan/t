@@ -40,15 +40,14 @@ const TimeLogs = Loadable({
 })
 
 class App extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-      theme: localStorage.getItem('theme') || themes.LIGHT
+      theme: localStorage.getItem('theme') || themes.DARK
     }
-    this.toggleTheme = this.toggleTheme.bind(this)
   }
 
-  toggleTheme() {
+  toggleTheme = () => {
     const { theme } = this.state
     
     if (theme === themes.LIGHT) {
@@ -67,7 +66,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const theme = localStorage.getItem('theme') || themes.LIGHT
+    const { theme } = this.state
     if (theme === themes.LIGHT) {
       document.documentElement.classList.remove('dark')
     } else {

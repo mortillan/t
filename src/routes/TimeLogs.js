@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom'
 import LazyLoad from 'react-lazyload'
 import moment from 'moment'
 
-import TopBar from '../component/TopBar'
-import Brand from '../component/Brand'
-import Footer from '../component/Footer'
-import OnlineCount from '../component/OnlineCount'
-import CircleButton from '../component/CircleButton'
-import Copyright from '../component/Copyright';
+import TopBar from '../components/TopBar'
+import Brand from '../components/Brand'
+import Footer from '../components/Footer'
+import OnlineCount from '../components/OnlineCount'
+import CircleButton from '../components/CircleButton'
+import Copyright from '../components/Copyright';
 
 import { GlobalContext } from '../lib/context'
 import { TASK_KEY_FORMAT } from '../lib/constants'
