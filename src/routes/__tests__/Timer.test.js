@@ -1,11 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Timer from './Timer'
+import Timer from '../Timer'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { log, taskKey } from '../lib/common'
+import { log, taskKey } from '../../lib/common'
 import { BrowserRouter } from 'react-router-dom'
-import { GlobalContext } from '../lib/context'
+import { GlobalContext } from '../../lib/context'
+import moment from 'moment'
+import { TASK_KEY_FORMAT } from '../../lib/constants'
 
 Enzyme.configure({ adapter: new Adapter() })
 jest.useFakeTimers()
@@ -16,6 +18,7 @@ beforeAll(() => {
   //bind real Date global to Date inside describe
   //seems like describe functions are not bound to global scope
   Date = realDate
+  Worker.prototype.terminate = jest.fn()
 })
 
 afterAll(() => {
@@ -64,7 +67,7 @@ describe('Timer', () => {
         ms: 0,
       }
     })
-    expect(wrapper.state('taskKey')).toBe('1/1/2018')
+    expect(wrapper.state('taskKey')).toBe('20180101')
 
     
     wrapper.instance().onTimer({
@@ -76,17 +79,17 @@ describe('Timer', () => {
         ms: 0,
       }
     })
-    expect(wrapper.state('taskKey')).toBe('1/2/2018')
+    expect(wrapper.state('taskKey')).toBe('20180102')
   })
 
   it('time overflow to next day', () => {
     const wrapper = shallow(<Timer />)
-    const ts = Date.now()
-    const key = taskKey(new Date(ts))
+    const now = moment()
+    const key = now.format(TASK_KEY_FORMAT)
     
     wrapper.instance().onTimer({
       data: {
-        timestamp: ts,
+        timestamp: now.valueOf(),
         hrs: 23,
         min: 55,
         sec: 0,
@@ -97,9 +100,9 @@ describe('Timer', () => {
     wrapper.setState({
       slider: 10
     })
-    log(wrapper.state())
+    // log(wrapper.state())
     wrapper.instance().startTimer()
-    log(wrapper.state())
+    // log(wrapper.state())
 
     let { currentTask, taskKey: tKey } = wrapper.state()
     expect(currentTask.start).toBe(86100)
@@ -110,7 +113,7 @@ describe('Timer', () => {
 
     wrapper.instance().onTimer({
       data: {
-        timestamp: ts,
+        timestamp: now.valueOf(),
         hrs: 0,
         min: 5,
         sec: 0,
@@ -119,12 +122,13 @@ describe('Timer', () => {
     })
     
     wrapper.instance().stopTimer()
-    log(wrapper.state())
+    // log(wrapper.state())
     expect(wrapper.state().currentTask).toBeNull()
     expect(wrapper.state().tasksLog).toHaveProperty(key)
-    const dt = new Date(ts);
-    dt.setTime(ts +  86400000)
-    const overflowKey = taskKey(new Date(dt.getTime()))
+    const tomorrow = now.add(1, 'd')
+    // dt.setTime(ts +  86400000)
+    // const overflowKey = taskKey(new Date(dt.getTime()))
+    const overflowKey = tomorrow.format(TASK_KEY_FORMAT)
     expect(wrapper.state().tasksLog).toHaveProperty(overflowKey)
     expect(wrapper.state().focusMode).toBe(false)
     expect(wrapper.state().tasksLog[overflowKey][0].start).toBe(0)
