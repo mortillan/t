@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 function HourCount({ hr }) {
   return (
@@ -6,4 +6,4 @@ function HourCount({ hr }) {
   )
 }
 
-export default HourCount
+export default memo(HourCount)

@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { memo } from 'react'
 
-export default function Footer(props) {
+function Footer({ children }) {
   return (
     <footer className='footer'>
-      {props.children}
+      {children}
     </footer>
   )
 }
+
+export default memo(Footer)

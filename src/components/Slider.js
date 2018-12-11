@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-export default function Slide({ onChange, val = 0, min = 0, max, step = 1 }) {
+function Slide({ onChange, val = 0, min = 0, max, step = 1 }) {
   return (
     <input className='slider is-fullwidth'
       onChange={onChange}
@@ -9,3 +9,5 @@ export default function Slide({ onChange, val = 0, min = 0, max, step = 1 }) {
       type='range' />
   )
 }
+
+export default memo(Slide)

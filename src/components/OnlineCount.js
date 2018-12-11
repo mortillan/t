@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { memo } from 'react'
 
-export default function Online(props) {
+function OnlineCount(props) {
   return (
     <div style={{margin: 'auto', display: 'flex', alignItems: 'strect'}}>
       {/* <div>4,999 online users</div> */}
     </div>
   )
 }
+
+export default memo(OnlineCount)

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-export default function Marker({ start, length, fill }) {
+function Marker({ start, length, fill }) {
   return (
     <rect height='2320' y='0' x={start} width={length} fill={fill} />
   )
 }
+
+export default memo(Marker)

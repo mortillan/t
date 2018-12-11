@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { memo } from 'react'
 
-const MinCount = (props) => {
+function MinCount({ min }) {
   return (
-    <>{props.min}</>
+    <>{min}</>
   )
 }
 
-export default MinCount;
+export default memo(MinCount);

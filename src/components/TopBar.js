@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { memo } from 'react'
 
-export default function TopBar(props) {
+function TopBar({ brand, start, mid, end }) {
   return (
     <nav className='navbar is-fixed-top' aria-label='main navigation'>
-      {props.brand}
+      {brand}
       <div className="navbar-menu">
-        {props.start}
-        {props.mid}
-        {props.end}
+        {start}
+        {mid}
+        {end}
       </div>
     </nav>
   )
 }
+
+export default memo(TopBar)

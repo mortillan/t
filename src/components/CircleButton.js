@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { memo } from 'react'
 
-export default function CircleButton({ 
-  backgroundColor = '#ffffff', 
-  size = '2rem', 
+function CircleButton({
+  backgroundColor = '#ffffff',
+  size = '2rem',
   marginRight = '1.5rem',
   ...rest }) {
 
   return (
     <button {...rest}
-      style={{ 
+      style={{
         marginRight: marginRight,
         borderRadius: '50%',
         width: size,
@@ -20,3 +20,5 @@ export default function CircleButton({
   )
 
 }
+
+export default memo(CircleButton)

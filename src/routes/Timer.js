@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, memo } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
@@ -29,8 +29,8 @@ import { css } from '../config/themes'
 const MAX_SECONDS = 86400
 
 class Timer extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       tickHours: 0,
       tickMins: 0,
@@ -44,6 +44,56 @@ class Timer extends Component {
       taskTimer: null,
     }
     this.timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])));
+  }
+
+  createNav = () => {
+    const { focusMode } = this.state
+    return (
+      <div className={focusMode ? 'navbar-end is-invisible' : 'navbar-end'}>
+        <div className='navbar-item'>
+          <div className='field is-grouped'>
+            <p className='control'>
+              <Link to='/login'
+                className='nav-btn button not-outlined has-text-weight-bold fat-border'>Login</Link>
+            </p>
+            <p className='control'>
+              <Link to='/register'
+                className='nav-btn button has-text-weight-bold fat-border'>Create a free account</Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  createTaskButton = () => {
+    const { focusMode } = this.state
+    const types = Object.keys(TASK_TYPES)
+
+    return types.map(type => (
+      <button className={!focusMode ?
+        `button is-size-5 has-text-weight-bold is-outlined btn-tasks fat-border btn-${type}` :
+        `button is-size-5 is-outlined btn-tasks hide fat-border btn-${type}`}
+        data-type={type} onClick={this.onClickTaskType}>
+        {type}
+      </button>
+    ))
+    // const typeClass = `btn-${type}`
+    // return (
+    //   <button className={!focusMode ?
+    //     `button is-size-5 has-text-weight-bold is-outlined btn-tasks fat-border ${typeClass}` :
+    //     `button is-size-5 is-outlined btn-tasks hide fat-border ${typeClass}`}
+    //     data-type={type} onClick={onClick}>{type}</button>
+    // )
+  }
+
+  createTopBar = (theme) => {
+    return (
+      <TopBar
+        brand={<Brand theme={theme} focusMode={this.state.focusMode} />}
+        mid={<OnlineCount />}
+        end={this.createNav()} />
+    )
   }
 
   startTimer = (type = 'break') => {
@@ -216,10 +266,11 @@ class Timer extends Component {
       <GlobalContext.Consumer>
         {({ theme, toggleTheme }) => (
           <>
-            <TopBar
+            {/* <TopBar
               brand={<Brand theme={theme} focusMode={this.state.focusMode} />}
               mid={<OnlineCount />}
-              end={<Navigation focusMode={this.state.focusMode} />} />
+              end={this.createNav} /> */}
+              {this.createTopBar(theme)}
             <div className='container is-fluid vfull'>
               <div className='columns vfull is-vcentered'>
                 <div className='column'>
@@ -237,80 +288,81 @@ class Timer extends Component {
                           mode={this.state.mode} />}
                     </div>
                     <div className='column'>
-                    <svg width='100%'
-                      height='40'
-                      viewBox='0 0 86400 2320'
-                      preserveAspectRatio='none'>
-                      <TimeBar fill={css[theme].color} fillOpacity='.16' />
-                      {tasksToday &&
-                        tasksToday.map((task, i) => (
-                          <TaskBar key={Date.now() + task.color + i}
-                            start={task.start}
-                            length={task.length}
-                            fill={task.color} />
-                        ))}
-                      <Marker start={this.state.tick} fill={css[theme].color} length='50' />
-                      {this.state.currentTask &&
-                        <>
-                          <CountBar task={this.state.currentTask} />
-                          <Marker start={this.state.currentTask.tick} length='50'
-                            fill={css[theme].color} />
-                        </>}
-                    </svg>
-                  </div>
+                      <svg width='100%'
+                        height='40'
+                        viewBox='0 0 86400 2320'
+                        preserveAspectRatio='none'>
+                        <TimeBar fill={css[theme].color} fillOpacity='.16' />
+                        {tasksToday &&
+                          tasksToday.map((task, i) => (
+                            <TaskBar key={Date.now() + task.color + i}
+                              start={task.start}
+                              length={task.length}
+                              fill={task.color} />
+                          ))}
+                        <Marker start={this.state.tick} fill={css[theme].color} length='50' />
+                        {this.state.currentTask &&
+                          <>
+                            <CountBar task={this.state.currentTask} />
+                            <Marker start={this.state.currentTask.tick} length='50'
+                              fill={css[theme].color} />
+                          </>}
+                      </svg>
+                    </div>
                     {!this.state.focusMode && <div className='column is-narrow'>
-                    <Link to='/logs'
-                      className='icon button'
-                      style={{
-                        backgroundColor: theme === themes.LIGHT ? 'rgba(33, 37, 41, .16)' : css[theme].backgroundColor,
-                        borderColor: 'transparent',
-                        height: '2.5rem',
-                      }}>
-                      <i className='ion-ionic ion-ios-arrow-forward'
+                      <Link to='/logs'
+                        className='icon button'
                         style={{
-                          color: css[theme].color,
-                          fontWeight: 'bold',
-                          fontSize: '1.25rem',
-                        }}></i>
-                    </Link>
-                  </div>}
+                          backgroundColor: theme === themes.LIGHT ? 'rgba(33, 37, 41, .16)' : css[theme].backgroundColor,
+                          borderColor: 'transparent',
+                          height: '2.5rem',
+                        }}>
+                        <i className='ion-ionic ion-ios-arrow-forward'
+                          style={{
+                            color: css[theme].color,
+                            fontWeight: 'bold',
+                            fontSize: '1.25rem',
+                          }}></i>
+                      </Link>
+                    </div>}
                     <div className='column is-12' style={{ minHeight: '75px' }}>
-                    <button className={!this.state.focusMode ?
-                      'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-work fat-border' :
-                      'button is-size-5 is-outlined btn-tasks btn-work hide fat-border'}
-                      data-type='work' onClick={this.onClickTaskType}>work</button>
-                    <button className={!this.state.focusMode ?
-                      'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-play fat-border' :
-                      'button is-size-5 is-outlined btn-tasks btn-play hide fat-border'}
-                      data-type='play' onClick={this.onClickTaskType}>play</button>
-                    <button className={!this.state.focusMode ?
-                      'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-learn fat-border' :
-                      'button is-size-5 is-outlined btn-tasks btn-learn hide fat-border'}
-                      data-type='learn' onClick={this.onClickTaskType}>learn</button>
-                    <button className={!this.state.focusMode ?
-                      'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-break fat-border' :
-                      'button is-size-5 is-outlined btn-tasks btn-break hide fat-border'}
-                      data-type='break' onClick={this.onClickTaskType}>break</button>
-                    <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center'
-                      }}>
-                        <span onClick={this.stopTimer}
-                          className='icon stop'>
-                          <i className='ion-ionic ion-md-close'></i>
-                        </span>
-                        <span className='is-size-5 has-text-weight-bold grey-text'>Press "Esc" to stop</span>
-                      </div>
-                      <div className='is-size-5 has-text-weight-bold grey-text'
-                        style={{
+                      {/* <button className={!this.state.focusMode ?
+                        'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-work fat-border' :
+                        'button is-size-5 is-outlined btn-tasks btn-work hide fat-border'}
+                        data-type='work' onClick={this.onClickTaskType}>work</button>
+                      <button className={!this.state.focusMode ?
+                        'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-play fat-border' :
+                        'button is-size-5 is-outlined btn-tasks btn-play hide fat-border'}
+                        data-type='play' onClick={this.onClickTaskType}>play</button>
+                      <button className={!this.state.focusMode ?
+                        'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-learn fat-border' :
+                        'button is-size-5 is-outlined btn-tasks btn-learn hide fat-border'}
+                        data-type='learn' onClick={this.onClickTaskType}>learn</button>
+                      <button className={!this.state.focusMode ?
+                        'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-break fat-border' :
+                        'button is-size-5 is-outlined btn-tasks btn-break hide fat-border'}
+                        data-type='break' onClick={this.onClickTaskType}>break</button> */}
+                        {this.createTaskButton()}
+                      <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
+                        <div style={{
                           display: 'flex',
                           alignItems: 'center'
                         }}>
-                        {'#' + this.state.mode}
+                          <span onClick={this.stopTimer}
+                            className='icon stop'>
+                            <i className='ion-ionic ion-md-close'></i>
+                          </span>
+                          <span className='is-size-5 has-text-weight-bold grey-text'>Press "Esc" to stop</span>
+                        </div>
+                        <div className='is-size-5 has-text-weight-bold grey-text'
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center'
+                          }}>
+                          {'#' + this.state.mode}
+                        </div>
                       </div>
                     </div>
-                  </div>
                   </div>
                 </div>
               </div>
@@ -356,23 +408,23 @@ class Timer extends Component {
   }
 }
 
-const Navigation = ({ focusMode }) => {
+const Navigation = memo(({ focusMode }) => {
   return (
     <div className={focusMode ? 'navbar-end is-invisible' : 'navbar-end'}>
       <div className='navbar-item'>
         <div className='field is-grouped'>
           <p className='control'>
-            <Link to='/login' 
+            <Link to='/login'
               className='nav-btn button not-outlined has-text-weight-bold fat-border'>Login</Link>
           </p>
           <p className='control'>
-            <Link to='/register' 
+            <Link to='/register'
               className='nav-btn button has-text-weight-bold fat-border'>Create a free account</Link>
           </p>
         </div>
       </div>
     </div>
   )
-}
+})
 
 export default Timer
