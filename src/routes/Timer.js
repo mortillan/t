@@ -13,6 +13,7 @@ import MinCount from '../components/MinCount'
 import CircleButton from '../components/CircleButton'
 import CountBar from '../components/CountBar'
 import Marker from '../components/Marker'
+import TimeFluid from '../components/TimeFluid'
 import TimeBar from '../components/TimeBar'
 import TaskBar from '../components/TaskBar'
 import TaskTimeRemaining from '../components/TaskTimeRemaining'
@@ -78,13 +79,6 @@ class Timer extends Component {
         {type}
       </button>
     ))
-    // const typeClass = `btn-${type}`
-    // return (
-    //   <button className={!focusMode ?
-    //     `button is-size-5 has-text-weight-bold is-outlined btn-tasks fat-border ${typeClass}` :
-    //     `button is-size-5 is-outlined btn-tasks hide fat-border ${typeClass}`}
-    //     data-type={type} onClick={onClick}>{type}</button>
-    // )
   }
 
   createTopBar = (theme) => {
@@ -93,6 +87,40 @@ class Timer extends Component {
         brand={<Brand theme={theme} focusMode={this.state.focusMode} />}
         mid={<OnlineCount />}
         end={this.createNav()} />
+    )
+  }
+
+  createTaskTimerBar = (theme) => {
+    const { currentTask } = this.state
+    return (
+      <>
+        <TimeBar clipPath='url(#br-tb)' fill={css[theme].color} fillOpacity='.16' />
+        <g className='tlb'>
+          <TimeFluid start={currentTask.tick}
+            fill={currentTask.color}
+            clipPath='url(#br-tb)' />
+        </g>
+      </> 
+    )
+  }
+
+  createTimeBar = (theme) => {
+    const { tasksLog, taskKey, tick } = this.state
+    const tasksToday = tasksLog[taskKey] || null
+    return (
+      <>
+        <TimeBar clipPath='url(#br-tb)' fill={css[theme].color} fillOpacity='.16' />
+        <TimeFluid start={tick}
+          fill={css[theme].color}
+          fillOpacity='.16'
+          clipPath='url(#br-tb)' />
+        {tasksToday && tasksToday.map((task, i) => (
+          <TaskBar key={Date.now() + task.color + i}
+            start={task.start}
+            length={task.length}
+            fill={task.color} />
+        ))}
+      </>
     )
   }
 
@@ -112,12 +140,12 @@ class Timer extends Component {
       key: moment().format(TASK_KEY_FORMAT)
     }
 
-    this.setState({
+    this.setState(() => ({
       currentTask: newTask,
       focusMode: !focusMode,
       mode: type,
       taskTimer: setInterval(this.tickTimer, 1000),
-    })
+    }))
     document.title = `${Math.trunc(length / 60)}`.padStart(2, '0') + ':' + `${length % 60}`.padStart(2, '0')
   }
 
@@ -259,18 +287,11 @@ class Timer extends Component {
   }
 
   render() {
-    const { tasksLog, taskKey } = this.state
-    const tasksToday = tasksLog[taskKey] || null
-
     return (
       <GlobalContext.Consumer>
         {({ theme, toggleTheme }) => (
           <>
-            {/* <TopBar
-              brand={<Brand theme={theme} focusMode={this.state.focusMode} />}
-              mid={<OnlineCount />}
-              end={this.createNav} /> */}
-              {this.createTopBar(theme)}
+            {this.createTopBar(theme)}
             <div className='container is-fluid vfull'>
               <div className='columns vfull is-vcentered'>
                 <div className='column'>
@@ -292,21 +313,10 @@ class Timer extends Component {
                         height='40'
                         viewBox='0 0 86400 2320'
                         preserveAspectRatio='none'>
-                        <TimeBar fill={css[theme].color} fillOpacity='.16' />
-                        {tasksToday &&
-                          tasksToday.map((task, i) => (
-                            <TaskBar key={Date.now() + task.color + i}
-                              start={task.start}
-                              length={task.length}
-                              fill={task.color} />
-                          ))}
-                        <Marker start={this.state.tick} fill={css[theme].color} length='50' />
-                        {this.state.currentTask &&
-                          <>
-                            <CountBar task={this.state.currentTask} />
-                            <Marker start={this.state.currentTask.tick} length='50'
-                              fill={css[theme].color} />
-                          </>}
+                        <clipPath id='br-tb'>
+                          <rect height='2320' y='0' x='0' width='86400' rx='250' ry='250' />
+                        </clipPath>
+                        {this.state.currentTask ? this.createTaskTimerBar(theme) : this.createTimeBar(theme)}
                       </svg>
                     </div>
                     {!this.state.focusMode && <div className='column is-narrow'>
@@ -326,23 +336,7 @@ class Timer extends Component {
                       </Link>
                     </div>}
                     <div className='column is-12' style={{ minHeight: '75px' }}>
-                      {/* <button className={!this.state.focusMode ?
-                        'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-work fat-border' :
-                        'button is-size-5 is-outlined btn-tasks btn-work hide fat-border'}
-                        data-type='work' onClick={this.onClickTaskType}>work</button>
-                      <button className={!this.state.focusMode ?
-                        'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-play fat-border' :
-                        'button is-size-5 is-outlined btn-tasks btn-play hide fat-border'}
-                        data-type='play' onClick={this.onClickTaskType}>play</button>
-                      <button className={!this.state.focusMode ?
-                        'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-learn fat-border' :
-                        'button is-size-5 is-outlined btn-tasks btn-learn hide fat-border'}
-                        data-type='learn' onClick={this.onClickTaskType}>learn</button>
-                      <button className={!this.state.focusMode ?
-                        'button is-size-5 has-text-weight-bold is-outlined btn-tasks btn-break fat-border' :
-                        'button is-size-5 is-outlined btn-tasks btn-break hide fat-border'}
-                        data-type='break' onClick={this.onClickTaskType}>break</button> */}
-                        {this.createTaskButton()}
+                      {this.createTaskButton()}
                       <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
                         <div style={{
                           display: 'flex',
