@@ -11,8 +11,6 @@ import Copyright from '../components/Copyright'
 import HourCount from '../components/HourCount'
 import MinCount from '../components/MinCount'
 import CircleButton from '../components/CircleButton'
-import CountBar from '../components/CountBar'
-import Marker from '../components/Marker'
 import TimeFluid from '../components/TimeFluid'
 import TimeBar from '../components/TimeBar'
 import TaskBar from '../components/TaskBar'
@@ -72,7 +70,7 @@ class Timer extends Component {
     const types = Object.keys(TASK_TYPES)
 
     return types.map(type => (
-      <button className={!focusMode ?
+      <button key={`btn-task-${type}`} className={!focusMode ?
         `button is-size-5 has-text-weight-bold is-outlined btn-tasks fat-border btn-${type}` :
         `button is-size-5 is-outlined btn-tasks hide fat-border btn-${type}`}
         data-type={type} onClick={this.onClickTaskType}>
