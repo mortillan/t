@@ -136,12 +136,18 @@ describe('Timer', () => {
     expect(wrapper.state().tasksLog[overflowKey][0].length).toBe(5 * 60)
   })
 
-  it('startTimer creates task', () => {
+  it('creates a task when a button is clicked', () => {
     const wrapper = shallow(<Timer />)
 
     wrapper.instance().startTimer()
     expect(wrapper.state().currentTask).toHaveProperty('key')
   })
+
+  it('stops timer automatically after duration of task', () => {
+
+  })
+
+  it('')
 
   // it('toggle night mode')
 

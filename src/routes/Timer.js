@@ -1,5 +1,6 @@
 import React, { Component, memo } from 'react'
 import { Link } from 'react-router-dom'
+import { Transition } from 'react-spring'
 import moment from 'moment'
 
 import Slider from '../components/Slider'
@@ -89,16 +90,23 @@ class Timer extends Component {
   }
 
   createTaskTimerBar = (theme) => {
-    const { currentTask } = this.state
+    const { focusMode, currentTask } = this.state
     return (
-      <>
+      <Transition items={focusMode}
+       from={{ opacity: 0 }}
+       to={{ opacity: 1 }}>
+       {show =>  show &&
+        (props =>
+          <>
         <TimeBar clipPath='url(#br-tb)' fill={css[theme].color} fillOpacity='.16' />
-        <g className='tlb'>
+        <g>
           <TimeFluid start={currentTask.tick}
             fill={currentTask.color}
             clipPath='url(#br-tb)' />
-        </g>
-      </> 
+        </g></>)
+       
+       }
+      </Transition> 
     )
   }
 

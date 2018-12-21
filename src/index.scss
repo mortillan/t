@@ -1,16 +1,4 @@
-html, #root, body {
-  height: 100%;
-}
-
-#root {
-  padding-top: 3.25rem;
-}
-
-body {
-  font-family: sans-serif;
-}
-
-@import "bulma/sass/utilities/initial-variables.sass";
+@import "bulma/sass/utilities/_all.sass";
 @import "./variables.scss";
 
 $slider-radius: 2rem;
@@ -24,6 +12,12 @@ $slider-thumb-border: 1px solid $black;
 $slider-thumb-background: $black;
 $track-height: 2px;
 $thumb-size: 1.5rem;
+
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/grid/_all.sass";
+@import "bulma/sass/elements/_all.sass";
+@import "bulma/sass/layout/footer.sass";
+@import "bulma/sass/components/_all.sass";
 
 html.dark {
   color: $white;
@@ -132,12 +126,21 @@ html.dark {
   }
 }
 
-@import "bulma/sass/utilities/_all.sass";
-@import "bulma/sass/base/_all.sass";
-@import "bulma/sass/grid/_all.sass";
-@import "bulma/sass/elements/_all.sass";
-@import "bulma/sass/layout/footer.sass";
-@import "bulma/sass/components/_all.sass";
+html, #root, body {
+  height: 100%;
+}
+
+html {
+  overflow: hidden;
+}
+
+#root {
+  padding-top: 3.25rem;
+}
+
+body {
+  font-family: sans-serif;
+}
 
 a {
   color: inherit;
