@@ -18,6 +18,7 @@ beforeAll(() => {
   //bind real Date global to Date inside describe
   //seems like describe functions are not bound to global scope
   Date = realDate
+  //Worker API are mocked by jest w/o terminate
   Worker.prototype.terminate = jest.fn()
 })
 
@@ -141,6 +142,18 @@ describe('Timer', () => {
 
     wrapper.instance().startTimer()
     expect(wrapper.state().currentTask).toHaveProperty('key')
+  })
+
+  it('stops timer automatically after duration of task', () => {
+
+  })
+
+  it('')
+
+  it('spawns a web worker for timer', () => {
+    const wrapper = shallow(<Timer />)
+
+    expect(wrapper.instance().timerWorker).toBeInstanceOf(Worker)
   })
 
   // it('toggle night mode')
