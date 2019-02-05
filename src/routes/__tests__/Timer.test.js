@@ -17,7 +17,7 @@ const realDate = Date
 beforeAll(() => {
   //bind real Date global to Date inside describe
   //seems like describe functions are not bound to global scope
-  Date = realDate
+  global.Date = realDate
   //Worker API are mocked by jest w/o terminate
   Worker.prototype.terminate = jest.fn()
 })
@@ -144,11 +144,70 @@ describe('Timer', () => {
     expect(wrapper.state().currentTask).toHaveProperty('key')
   })
 
-  it('stops timer automatically after duration of task', () => {
+  it('stops timer when time elapsed greater than length', () => {
+    const wrapper = shallow(<Timer />)
+    const now = moment()
+    const key = now.format(TASK_KEY_FORMAT)
 
+    //set to 10minutes length
+    wrapper.setState({
+      slider: 10
+    })
+
+    wrapper.instance().startTimer()
+
+    const mockDate = moment().add(15, 'minutes').utc().unix();
+    console.log(new Date(mockDate * 1000))
+    //updateCurrentTak
+    
+    wrapper.instance().onTimer({
+      data: {
+        timestamp: now.valueOf(),
+        hrs: 23,
+        min: 55,
+        sec: 0,
+        ms: 0,
+      }
+    })
+
+    wrapper.setState({
+      slider: 10
+    })
+    // log(wrapper.state())
+    wrapper.instance().startTimer()
+    // log(wrapper.state())
+
+    let { currentTask, taskKey: tKey } = wrapper.state()
+    expect(currentTask.start).toBe(86100)
+    expect(currentTask.end).toBe(86700)
+    expect(currentTask).toBeDefined()
+    expect(currentTask).toBeInstanceOf(Object)
+    expect(tKey).toBe(key)
+
+    wrapper.instance().onTimer({
+      data: {
+        timestamp: now.valueOf(),
+        hrs: 0,
+        min: 5,
+        sec: 0,
+        ms: 0,
+      }
+    })
+    
+    wrapper.instance().stopTimer()
+    // log(wrapper.state())
+    expect(wrapper.state().currentTask).toBeNull()
+    expect(wrapper.state().tasksLog).toHaveProperty(key)
+    const tomorrow = now.add(1, 'd')
+    // dt.setTime(ts +  86400000)
+    // const overflowKey = taskKey(new Date(dt.getTime()))
+    const overflowKey = tomorrow.format(TASK_KEY_FORMAT)
+    expect(wrapper.state().tasksLog).toHaveProperty(overflowKey)
+    expect(wrapper.state().focusMode).toBe(false)
+    expect(wrapper.state().tasksLog[overflowKey][0].start).toBe(0)
+    expect(wrapper.state().tasksLog[overflowKey][0].end).toBe(5 * 60)
+    expect(wrapper.state().tasksLog[overflowKey][0].length).toBe(5 * 60)
   })
-
-  it('')
 
   it('spawns a web worker for timer', () => {
     const wrapper = shallow(<Timer />)

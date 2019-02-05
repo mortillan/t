@@ -142,7 +142,7 @@ class Timer extends Component {
       currentTask: newTask,
       focusMode: !focusMode,
       mode: type,
-      taskTimer: setInterval(this.tickTimer, 1000),
+      taskTimer: setInterval(() => this.tickTimer(new Date()), 1000),
     }))
     document.title = `${Math.trunc(length / 60)}`.padStart(2, '0') + ':' + `${length % 60}`.padStart(2, '0')
   }
@@ -150,62 +150,64 @@ class Timer extends Component {
   stopTimer = () => {
     const { focusMode, taskTimer, tasksLog, currentTask, tick } = this.state
 
-    if (focusMode) {
-      clearInterval(taskTimer)
+    if (!focusMode) {
+      return;
+    }
 
-      const key = currentTask.key
-      if (!tasksLog[key]) {
-        tasksLog[key] = []
-      }
+    clearInterval(taskTimer)
 
-      if (currentTask.end <= MAX_SECONDS) {
-        tasksLog[key].push({
-          length: currentTask.length - currentTask.remaining,
-          start: currentTask.start,
-          color: currentTask.color,
-          type: currentTask.type,
-        })
-      } else {
-        tasksLog[key].push({
-          length: MAX_SECONDS - currentTask.start,
-          start: currentTask.start,
-          color: currentTask.color,
-          type: currentTask.type,
-        })
+    const key = currentTask.key
+    if (!tasksLog[key]) {
+      tasksLog[key] = []
+    }
 
-        const nextKey = moment().add(1, 'd').format(TASK_KEY_FORMAT)
-        tasksLog[nextKey] = []
-        tasksLog[nextKey].push({
-          length: tick - 0,
-          start: 0,
-          end: tick,
-          color: currentTask.color,
-          type: currentTask.type,
-        })
-      }
-
-      //TODO stop current task on current time
-      this.setState({
-        focusMode: !focusMode,
-        currentTask: null,
-        taskTimer: null,
-        tasksLog: tasksLog,
+    if (currentTask.end <= MAX_SECONDS) {
+      tasksLog[key].push({
+        length: currentTask.length - currentTask.remaining,
+        start: currentTask.start,
+        color: currentTask.color,
+        type: currentTask.type,
+      })
+    } else {
+      tasksLog[key].push({
+        length: MAX_SECONDS - currentTask.start,
+        start: currentTask.start,
+        color: currentTask.color,
+        type: currentTask.type,
       })
 
-      document.title = DOC_TITLE
-      localStorage.setItem('logs', JSON.stringify(this.state.tasksLog))
+      const nextKey = moment().add(1, 'd').format(TASK_KEY_FORMAT)
+      tasksLog[nextKey] = []
+      tasksLog[nextKey].push({
+        length: tick - 0,
+        start: 0,
+        end: tick,
+        color: currentTask.color,
+        type: currentTask.type,
+      })
     }
+
+    //TODO stop current task on current time
+    this.setState({
+      focusMode: !focusMode,
+      currentTask: null,
+      taskTimer: null,
+      tasksLog: tasksLog,
+    })
+
+    document.title = DOC_TITLE
+    localStorage.setItem('logs', JSON.stringify(this.state.tasksLog))
   }
 
-  tickTimer = () => {
+  tickTimer = (date) => {
     const { currentTask } = this.state
 
-    const total = calculateSecondsPastMidnight(new Date())
+    const total = calculateSecondsPastMidnight(date)
     const tick = (total - currentTask.start) * (MAX_SECONDS / currentTask.length)
     const remaining = ((currentTask.start + currentTask.length) - total)
 
     //auto stop countdown if no time remaining
-    if (currentTask.remaining <= 0) {
+    if (currentTask.remaining <= 0 || remaining <= 0) {
       return this.stopTimer()
     }
 
