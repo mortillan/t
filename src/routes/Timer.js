@@ -1,6 +1,7 @@
 import React, { Component, memo } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
+import Notification from 'react-web-notification'
 
 import Slider from '../components/Slider'
 import TopBar from '../components/TopBar'
@@ -361,6 +362,16 @@ class Timer extends Component {
                 </div>
               </div>
             </div>
+            <Notification
+              timeout={5000}
+              title={'Laegato'}
+              options={{
+                tag: Date.now(),
+                body: 'Test',
+                icon: '',
+                lang: 'en',
+              }}
+            />
             <Footer>
               <div className='content'
                 style={{

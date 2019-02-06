@@ -1,3 +1,7 @@
+# (2019-02-06)
+* Fix bug overflow in timer
+* Remove mobile support
+
 # (2018-11-09)
 * Fix bug when starting task, first run skips 2 sec
 * Refactor css
