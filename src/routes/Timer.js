@@ -204,12 +204,7 @@ class Timer extends Component {
 
     const total = calculateSecondsPastMidnight(date)
     const tick = (total - currentTask.start) * (MAX_SECONDS / currentTask.length)
-    const remaining = ((currentTask.start + currentTask.length) - total)
-
-    //auto stop countdown if no time remaining
-    if (currentTask.remaining <= 0 || remaining <= 0) {
-      return this.stopTimer()
-    }
+    let remaining = Math.max(0, ((currentTask.start + currentTask.length) - total))
 
     this.setState({
       currentTask: {
@@ -220,6 +215,11 @@ class Timer extends Component {
     })
 
     document.title = `${Math.trunc(remaining / 60)}`.padStart(2, '0') + ':' + `${remaining % 60}`.padStart(2, '0')
+
+    //auto stop countdown if no time remaining
+    if (remaining <= 0) {
+      return this.stopTimer()
+    }
   }
 
   onKeypress = (e) => {
