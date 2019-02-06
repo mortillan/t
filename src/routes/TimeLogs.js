@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import LazyLoad from 'react-lazyload'
-import { List } from 'react-virtualized'
 import moment from 'moment'
 
 import TopBar from '../components/TopBar'
@@ -9,7 +8,7 @@ import Brand from '../components/Brand'
 import Footer from '../components/Footer'
 import OnlineCount from '../components/OnlineCount'
 import CircleButton from '../components/CircleButton'
-import Copyright from '../components/Copyright'
+import Copyright from '../components/Copyright';
 
 import { GlobalContext } from '../lib/context'
 import { TASK_KEY_FORMAT } from '../lib/constants'
@@ -25,7 +24,7 @@ const WeekLog = ({ logs, weekNum }) => {
   const currDate = moment()
 
   return (
-    <LazyLoad overflow height={500} offset={10}>
+    <LazyLoad once={true} height={500}>
       <>
         <div className='columns is-vcentered'>
           <div className='column is-size-5 has-text-weight-bold has-text-left'>WEEK {weekNum}</div>
@@ -67,58 +66,8 @@ const WeekLog = ({ logs, weekNum }) => {
   )
 }
 
-const logs = JSON.parse(localStorage.getItem('logs')) || {}
-
-const WeekLog2 = ({ index }) => {
-  console.log(index)
-  const days = moment.weekdaysShort()
-  const currDate = moment()
-
-  return (
-    <LazyLoad throttle={10} overflow once={true} height={500}>
-      <>
-        <div className='columns is-vcentered'>
-          <div className='column is-size-5 has-text-weight-bold has-text-left'>WEEK {index}</div>
-          <div className='column is-size-5 has-text-weight-bold has-text-right'>{moment().year()}</div>
-        </div>
-        <div className='columns' style={{ marginBottom: '2.5rem' }}>
-          {days.map((d, i) => {
-            const targetDate = moment().week(index).day(i)
-            const key = targetDate.format(TASK_KEY_FORMAT)
-            const totalSec = logs[key] ? logs[key].reduce((acc, task) => acc += task.length, 0) : 0
-            const disabled = targetDate.isAfter(currDate) ? 'disabled' : '';
-
-            return <div key={`weeklog-${i}`} className='column'>
-              <div className={`logs-header has-text-weight-bold ${disabled}`}
-                style={{
-                  ...padding,
-                }}>
-                {targetDate.format('ddd, MMM D')}
-              </div>
-              <div className='logs-header has-text-weight-bold'
-                style={{
-                  ...padding,
-                }}>
-                Total {totalSec > 0 ? `${Math.trunc(totalSec / 3600)}h ${Math.trunc(totalSec % 60)}m` : 0}
-              </div>
-              <div style={padding}>
-                {logs[key] &&
-                  logs[key].map((task, i) => (
-                    <div key={`taskduration-${i}-${performance.now()}`}>
-                      {task.type} {task.length < 60 ? '<1m' : `${Math.trunc(task.length / 60)}m`}
-                    </div>
-                  ))}
-              </div>
-            </div>
-          })}
-        </div>
-      </>
-    </LazyLoad>
-  )
-}
-
 export default function TimeLogs(props) {
-  // const logs = JSON.parse(localStorage.getItem('logs')) || {}
+  const logs = JSON.parse(localStorage.getItem('logs')) || {}
   const weekYear = moment().week()
   const weeksInYear = [...Array(weekYear).keys()]
 
@@ -130,20 +79,15 @@ export default function TimeLogs(props) {
             brand={<Brand theme={theme} />}
             mid={<OnlineCount />}
             end={<Navigation />} />
-          <div className=''>
+          <div className='container'>
             <div className='columns is-vcentered'>
               <div className='column is-size-2 has-text-weight-bold has-text-centered'>Logs</div>
             </div>
-            {/* <div style={{ position: 'relative', overflowY: 'scroll', overflowX: 'hidden', height: 500}}>
             {weeksInYear.map((curr, index, arr) => (
               <WeekLog key={`weeklog-${index}`}
                 logs={logs}
                 weekNum={arr.length - index} />
             ))}
-            </div> */}
-            <List>
-              
-            </List>
           </div>
           <Footer>
             <div className='content'
@@ -190,4 +134,3 @@ const Navigation = () => {
     </div>
   )
 }
-
