@@ -42,6 +42,7 @@ class Timer extends Component {
       focusMode: false,
       mode: '',
       taskTimer: null,
+      showNotif: false,
     }
     this.timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])));
   }
@@ -219,7 +220,12 @@ class Timer extends Component {
 
     //auto stop countdown if no time remaining
     if (remaining <= 0) {
-      return this.stopTimer()
+      this.stopTimer()
+      this.setState((state, props) => {
+        return {
+          showNotif: true,
+        }
+      })
     }
   }
 
@@ -263,6 +269,16 @@ class Timer extends Component {
       tickMins: 59 - min,
       taskKey: moment(timestamp).format(TASK_KEY_FORMAT),
     })
+  }
+
+  onShowNotif = (e, tag) => {
+    this.setState({
+      showNotif: false,
+    })
+  }
+
+  onClickNotif = (e, tag) => {
+    window.focus()
   }
 
   componentDidMount() {
@@ -362,16 +378,16 @@ class Timer extends Component {
                 </div>
               </div>
             </div>
-            <Notification
-              timeout={5000}
+            {this.state.showNotif && <Notification timeout={7000} 
               title={'Laegato'}
+              onShow={this.onShowNotif}
+              onClick={this.onClickNotif}
               options={{
                 tag: Date.now(),
-                body: 'Test',
-                icon: '',
+                body: `Time's up!`,
+                icon: 'favicon.ico',
                 lang: 'en',
-              }}
-            />
+              }} />}
             <Footer>
               <div className='content'
                 style={{
