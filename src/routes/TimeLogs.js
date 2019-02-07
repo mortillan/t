@@ -35,7 +35,10 @@ const WeekLog = ({ logs, weekNum }) => {
             const targetDate = moment().week(weekNum).day(i)
             const key = targetDate.format(TASK_KEY_FORMAT)
             const totalSec = logs[key] ? logs[key].reduce((acc, task) => acc += task.length, 0) : 0
-            const disabled = targetDate.isAfter(currDate) ? 'disabled' : '';
+            const disabled = targetDate.isAfter(currDate) ? 'disabled' : ''
+
+            const minSpent = Math.trunc((totalSec % 3600) / 60)
+            const hrSpent = Math.trunc(totalSec / 3600)
 
             return <div key={`weeklog-${i}`} className='column'>
               <div className={`logs-header has-text-weight-bold ${disabled}`}
@@ -48,7 +51,7 @@ const WeekLog = ({ logs, weekNum }) => {
                 style={{
                   ...padding,
                 }}>
-                Total {totalSec > 0 ? `${Math.trunc(totalSec / 3600)}h ${Math.trunc(totalSec % 60)}m` : 0}
+                Total {totalSec > 0 ? `${hrSpent}h ${minSpent}m` : 0}
               </div>
               <div style={padding}>
                 {logs[key] &&
