@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
+import { GoogleLogin } from 'react-google-login'
 
 import TopBar from '../components/TopBar'
 import Brand from '../components/Brand'
@@ -25,6 +26,14 @@ class Login extends Component {
 
   handleFormSubmit = (values) => {
     return this.props.history.push('/register')
+  }
+
+  handleOnSuccessGoogleLogin = (response) => {
+    console.log(response)
+  }
+
+  handleOnFailureGoogleLogin = (response) => {
+    console.log(response)
   }
 
   render() {
@@ -72,12 +81,19 @@ class Login extends Component {
                           </div>
                         </div>
                         <div className='field'>
-                          <div className='control'>
                             <button type='submit'
                               className='button is-primary is-fullwidth'>
                               Login
-                              </button>
-                          </div>
+                            </button>
+                        </div>
+                        <div className='field'>
+                          <GoogleLogin clientId="647448470626-tu1io9d97vspbndqqf3sd73v8cr71tq6.apps.googleusercontent.com" 
+                            uxMode="redirect"
+                            buttonText="Login with Google" 
+                            className="google-login-button"
+                            theme={theme}
+                            onSuccess={this.handleOnSuccessGoogleLogin} 
+                            onFailure={this.handleOnFailureGoogleLogin} />
                         </div>
                         <div className='columns'>
                           <div className='column is-6'>
