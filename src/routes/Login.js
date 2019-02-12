@@ -30,10 +30,19 @@ class Login extends Component {
 
   handleOnSuccessGoogleLogin = (response) => {
     console.log(response)
+    const { id_token: idToken } = response.tokenObj
+
+    if(idToken) {
+      //send oid to backend to check if existing
+    }
   }
 
   handleOnFailureGoogleLogin = (response) => {
     console.log(response)
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:8000/cookie/login', { credentials: 'include' }).then(response => response.json()).then(json => console.log(json));
   }
 
   render() {
@@ -87,8 +96,9 @@ class Login extends Component {
                             </button>
                         </div>
                         <div className='field'>
-                          <GoogleLogin clientId="647448470626-tu1io9d97vspbndqqf3sd73v8cr71tq6.apps.googleusercontent.com" 
+                          <GoogleLogin clientId={process.env.REACT_APP_GAUTH_CLIENT_ID} 
                             uxMode="redirect"
+                            isSignedIn="true"
                             buttonText="Login with Google" 
                             className="google-login-button"
                             theme={theme}

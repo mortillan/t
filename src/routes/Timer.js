@@ -378,7 +378,7 @@ class Timer extends Component {
                 </div>
               </div>
             </div>
-            {this.state.showNotif && <Notification timeout={7000} 
+            {this.state.showNotif && <Notification timeout={10000} 
               title={'Laegato'}
               onShow={this.onShowNotif}
               onClick={this.onClickNotif}

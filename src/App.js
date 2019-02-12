@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
+import { CookiesProvider } from 'react-cookie'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Loadable from 'react-loadable'
 import './App.css'
 import { themes, GlobalContext } from './lib/context'
 
 const Loading = () => (
-  <div style={{ 
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-    }}>
+  <div style={{
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+  }}>
     <div className='lds-ellipsis'>
       <div></div>
       <div></div>
@@ -35,7 +36,7 @@ const Timer = Loadable({
 })
 
 const TimeLogs = Loadable({
-  loader: () => import('./routes/TimeLogs'),
+  loader: () => import('./routes/TimeLogs').then(module => module.TimeLogs),
   loading: Loading,
 })
 
@@ -49,15 +50,15 @@ class App extends Component {
 
   toggleTheme = () => {
     const { theme } = this.state
-    
+
     if (theme === themes.LIGHT) {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
     }
 
-    this.setState((state, props) => { 
-      const newTheme = theme === themes.LIGHT ? themes.DARK : themes.LIGHT 
+    this.setState((state, props) => {
+      const newTheme = theme === themes.LIGHT ? themes.DARK : themes.LIGHT
       localStorage.setItem('theme', newTheme)
       return {
         theme: newTheme
@@ -76,19 +77,21 @@ class App extends Component {
 
   render() {
     return (
-      <GlobalContext.Provider value={{
-        toggleTheme: this.toggleTheme,
-        theme: this.state.theme
-      }}>
-        <BrowserRouter>
-          <Switch>
-            <Route exact path='/' component={Timer} />
-            <Route path='/logs' component={TimeLogs} />
-            <Route path='/register' component={SignUp} />
-            <Route path='/login' component={Login} />
-          </Switch>
-        </BrowserRouter>
-      </GlobalContext.Provider>
+      <CookiesProvider>
+        <GlobalContext.Provider value={{
+          toggleTheme: this.toggleTheme,
+          theme: this.state.theme
+        }}>
+          <BrowserRouter>
+            <Switch>
+              <Route exact path='/' component={Timer} />
+              <Route path='/logs' component={TimeLogs} />
+              <Route path='/register' component={SignUp} />
+              <Route path='/login' component={Login} />
+            </Switch>
+          </BrowserRouter>
+        </GlobalContext.Provider>
+      </CookiesProvider>
     )
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { withCookies } from 'react-cookie'
 import { Link } from 'react-router-dom'
 import LazyLoad from 'react-lazyload'
 import moment from 'moment'
@@ -69,7 +70,12 @@ const WeekLog = ({ logs, weekNum }) => {
   )
 }
 
-export default function TimeLogs(props) {
+const TimeLogsComponent = (props) => {
+  console.log(document.cookie)
+  fetch('http://localhost:8000/cookie', {
+    credentials: 'include'
+  }).then(response => response.json()).then(json => console.log(json));
+
   const logs = JSON.parse(localStorage.getItem('logs')) || {}
   const weekYear = moment().week()
   const weeksInYear = [...Array(weekYear).keys()]
@@ -137,3 +143,6 @@ const Navigation = () => {
     </div>
   )
 }
+
+
+export const TimeLogs = withCookies(TimeLogsComponent);
