@@ -13,6 +13,8 @@ import Copyright from '../components/Copyright'
 import { GlobalContext } from '../lib/context'
 import { css } from '../config/themes'
 
+import 'bulma-divider';
+
 const LoginSchema = Yup.object().shape({
   username: Yup.string()
     .required('This field is required'),
@@ -66,6 +68,17 @@ class Login extends Component {
                     {({ errors, touched }) => (
                       <Form>
                         <div className='field'>
+                          <GoogleLogin clientId={process.env.REACT_APP_GAUTH_CLIENT_ID} 
+                            uxMode="redirect"
+                            isSignedIn="true"
+                            buttonText="Login with Google" 
+                            className="google-login-button"
+                            theme={theme}
+                            onSuccess={this.handleOnSuccessGoogleLogin} 
+                            onFailure={this.handleOnFailureGoogleLogin} />
+                        </div>
+                        <div className='is-divider' data-content='OR'></div>
+                        <div className='field'>
                           <div className='control is-expanded'>
                             <Field name='username'
                               className={errors.username && touched.username ?
@@ -94,16 +107,6 @@ class Login extends Component {
                               className='button is-primary is-fullwidth'>
                               Login
                             </button>
-                        </div>
-                        <div className='field'>
-                          <GoogleLogin clientId={process.env.REACT_APP_GAUTH_CLIENT_ID} 
-                            uxMode="redirect"
-                            isSignedIn="true"
-                            buttonText="Login with Google" 
-                            className="google-login-button"
-                            theme={theme}
-                            onSuccess={this.handleOnSuccessGoogleLogin} 
-                            onFailure={this.handleOnFailureGoogleLogin} />
                         </div>
                         <div className='columns'>
                           <div className='column is-6'>

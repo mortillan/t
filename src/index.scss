@@ -118,15 +118,15 @@ html.dark {
   & input[type=range] {
 
     &::-ms-track {
-      background: #ffffff;
+      background: $white;
     }
 
     &::-moz-range-track {
-      background: #ffffff;
+      background: $white;
     }
 
     &::-webkit-slider-runnable-track {
-      background: #ffffff;
+      background: $white;
     }
 
     &::-webkit-slider-thumb {
@@ -147,8 +147,14 @@ html.dark {
   }
 
   & .grey-text {
-    color: #ffffff; 
+    color: $white; 
     opacity: 1;
+  }
+
+  & .is-divider-vertical[data-content]::after, 
+  .is-divider[data-content]::after {
+    color: $white;
+    background-color: $black;
   }
 }
 
