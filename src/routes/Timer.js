@@ -325,24 +325,21 @@ class Timer extends Component {
                           focusMode={this.state.focusMode}
                           mode={this.state.mode} />}
                     </div>
-                    <div className='column'>
-                      <svg width='100%'
-                        height='40'
-                        viewBox='0 0 86400 2320'
-                        preserveAspectRatio='none'>
+                    <div className='column is-flex-desktop is-flex-touch' style={{ alignItems: 'center' }}>
+                      <svg viewBox='0 0 86400 2320' style={{ flex: '1 1 auto' }}>
                         <clipPath id='br-tb'>
                           <rect height='2320' y='0' x='0' width='86400' rx='250' ry='250' />
                         </clipPath>
                         {this.state.currentTask ? this.createTaskTimerBar(theme) : this.createTimeBar(theme)}
                       </svg>
-                    </div>
-                    {!this.state.focusMode && <div className='column is-narrow'>
-                      <Link to='/logs'
+                      {!this.state.focusMode && <Link to='/logs'
                         className='icon button'
                         style={{
                           backgroundColor: theme === themes.LIGHT ? 'rgba(33, 37, 41, .16)' : css[theme].backgroundColor,
                           borderColor: 'transparent',
-                          height: '2.5rem',
+                          height: '2.25rem',
+                          flex: '0 0 auto',
+                          marginLeft: '1rem',
                         }}>
                         <i className='ion-ionic ion-ios-arrow-forward'
                           style={{
@@ -350,8 +347,8 @@ class Timer extends Component {
                             fontWeight: 'bold',
                             fontSize: '1.25rem',
                           }}></i>
-                      </Link>
-                    </div>}
+                      </Link>}
+                    </div>
                     <div className='column is-12' style={{ minHeight: '75px' }}>
                       {this.createTaskButton()}
                       <div className={this.state.focusMode ? 'focus-controls' : 'hide'}>
