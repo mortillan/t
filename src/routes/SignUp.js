@@ -12,26 +12,56 @@ import Copyright from '../components/Copyright'
 import { GlobalContext } from '../lib/context'
 import { css } from '../config/themes'
 
-const RegisterSchema = Yup.object().shape({
+const commonFieldValidation = {
+  username: Yup.string()
+    .matches(/^[a-zA-z]+/, {
+      message: 'Must start with letters',
+      excludeEmptyString: true,
+    })
+    .matches(/^[a-zA-Z0-9_.]+$/, {
+      message: 'You can only use letters, numbers, underscore and dot',
+      excludeEmptyString: true,
+    })
+    .required('This field is required'),
+  password: Yup.string()
+    .min(8, 'Must not be less than 8 characters')
+    .required('This field is required')
+}
+
+const DefaultSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .matches(/^[a-zA-z\s]+/, {
+      message: 'Only letters are allowed',
+      excludeEmptyString: true,
+    })
+    .required('This field is required'),
+  lastName: Yup.string()
+    .matches(/^[a-zA-z\s]+/, {
+      message: 'Only letters are allowed',
+      excludeEmptyString: true,
+    })
+    .required('This field is required'),
   email: Yup.string()
     .email('This is not a valid email')
     .required('This field is required'),
+  ...commonFieldValidation,
+})
+
+const GoogleSchema = Yup.object().shape({
+  ...commonFieldValidation
 })
 
 class SignUp extends Component {
 
   state = {
-    spiel: 'Sign up for private beta',
-    subSpiel: `We respect your privacy and do not tolerate spam and will never sell, rent, lease,
-    or give away your information (name, address, email, etc.) to any third party.
-    Nor will we send you unsolicited email.`
+    spiel: 'Create account',
   }
 
   btnRegisterRef = React.createRef();
 
   register = async (values, { setErrors }) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/register/beta`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/oauth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -49,7 +79,6 @@ class SignUp extends Component {
       if (response.status === 200) {
         this.setState({
           spiel: `Thanks for signing up!`,
-          subSpiel: `We will let you know once it's availale`,
         })
       } else {
         setErrors({
@@ -58,6 +87,148 @@ class SignUp extends Component {
       }
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  createSignUpForm = () => {
+    const { location } = this.props
+
+    if (!location.state) {
+      return (
+        <Formik initialValues={{
+          firstName: '',
+          lastName: '',
+          email: '',
+          username: '',
+          password: '',
+        }}
+          validationSchema={DefaultSchema}
+          onSubmit={this.register}>
+          {({ errors, touched }) => (
+            <Form>
+              <div className='field is-flex-touch is-flex-desktop'>
+                <div style={{ marginRight: '1rem' }}>
+                  <div className='control is-expanded'>
+                    <Field name='firstName'
+                      className={errors.firstName && touched.firstName ?
+                        'input fat-border is-danger' : 'input is-black fat-border'}
+                      type='text'
+                      placeholder='First Name' />
+                  </div>
+                  <ErrorMessage name='firstName'
+                    component='p'
+                    className='help is-danger' />
+                </div>
+                <div>
+                  <div className='control is-expanded'>
+                    <Field name='lastName'
+                      className={errors.lastName && touched.lastName ?
+                        'input fat-border is-danger' : 'input is-black fat-border'}
+                      type='text'
+                      placeholder='Last Name' />
+                  </div>
+                  <ErrorMessage name='lastName'
+                    component='p'
+                    className='help is-danger' />
+                </div>
+              </div>
+              <div className='field'>
+                <div className='control '>
+                  <Field name='username'
+                    className={errors.username && touched.username ?
+                      'input fat-border is-danger' : 'input is-black fat-border'}
+                    type='text'
+                    placeholder='Username' />
+                </div>
+                <ErrorMessage name='username'
+                  component='p'
+                  className='help is-danger' />
+              </div>
+              <div className='field'>
+                <div className='control is-expanded'>
+                  <Field name='email'
+                    className={errors.email && touched.email ?
+                      'input fat-border is-danger' : 'input is-black fat-border'}
+                    type='text'
+                    placeholder='Email' />
+                </div>
+                <ErrorMessage name='email'
+                  component='p'
+                  className='help is-danger' />
+              </div>
+              <div className='field'>
+                <div className='control is-expanded'>
+                  <Field name='password'
+                    className={errors.password && touched.password ?
+                      'input fat-border is-danger' : 'input is-black fat-border'}
+                    type='text'
+                    placeholder='Password' />
+                </div>
+                <ErrorMessage name='password'
+                  component='p'
+                  className='help is-danger' />
+              </div>
+              <div className='field'>
+                <button ref={this.btnRegisterRef}
+                  type='submit'
+                  className='button is-primary is-fullwidth'>
+                  Register
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      )
+    }
+
+    if (location.state.provider === 'google') {
+      return (
+        <Formik initialValues={{
+          username: '',
+          password: ''
+        }}
+          validationSchema={GoogleSchema}
+          onSubmit={this.register}>
+          {({ errors, touched }) => (
+            <Form>
+              <Field type='hidden' name='idToken' value={location.state.idToken} />
+              <div className='field'>
+                <div className='control is-expanded'>
+                  <Field name='username'
+                    className={errors.username && touched.username ?
+                      'input fat-border is-danger' : 'input is-black fat-border'}
+                    type='text'
+                    placeholder='Username' />
+                </div>
+                <ErrorMessage name='username'
+                  component='p'
+                  className='help is-danger' />
+              </div>
+              <div className='field'>
+                <div className='control is-expanded'>
+                  <Field name='password'
+                    className={errors.password && touched.password ?
+                      'input fat-border is-danger' : 'input is-black fat-border'}
+                    type='text'
+                    placeholder='Password' />
+                </div>
+                <ErrorMessage name='password'
+                  component='p'
+                  className='help is-danger' />
+              </div>
+              <div className='field'>
+                <button ref={this.btnRegisterRef}
+                  type='submit'
+                  className='button is-primary is-fullwidth'>
+                  Register
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      )
+    } else if (location.state.provider === 'facebook') {
+
     }
   }
 
@@ -71,42 +242,9 @@ class SignUp extends Component {
               end={<Navigation />} />
             <div className='container vfull'>
               <div className='columns vfull' style={{ alignItems: 'center' }}>
-                <div className='column is-offset-3 is-6'>
+                <div className='column is-offset-4 is-4'>
                   <h1 className='is-size-2 has-text-weight-semibold'>{this.state.spiel}</h1>
-                  <Formik initialValues={{
-                    email: ''
-                  }}
-                    validationSchema={RegisterSchema}
-                    onSubmit={this.register}>
-                    {({ errors, touched }) => (
-                      <Form>
-                        <div className='field'>
-                          <div className='field has-addons' style={{ marginBottom: 0 }}>
-                            <div className='control is-expanded'>
-                              <Field name='email'
-                                className={errors.email && touched.email ?
-                                  'input fat-border is-danger' : 'input is-black fat-border'}
-                                type='text'
-                                placeholder='Your email address' />
-                            </div>
-                            <div className='control'>
-                              <button ref={this.btnRegisterRef}
-                                type='submit'
-                                className='button is-primary'>
-                                Let me know
-                            </button>
-                            </div>
-                          </div>
-                          <ErrorMessage name='email'
-                            component='p'
-                            className='help is-danger is-' />
-                        </div>
-                        <p className='is-size-7'>
-                          {this.state.subSpiel}
-                        </p>
-                      </Form>
-                    )}
-                  </Formik>
+                  {this.createSignUpForm()}
                 </div>
               </div>
             </div>

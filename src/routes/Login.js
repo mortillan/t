@@ -39,6 +39,7 @@ class Login extends Component {
         pathname: '/register',
         state: {
           provider: 'google',
+          idToken: idToken,
         }
       })
     }
