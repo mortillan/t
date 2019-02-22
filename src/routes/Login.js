@@ -35,7 +35,12 @@ class Login extends Component {
     const { id_token: idToken } = response.tokenObj
 
     if(idToken) {
-      //send oid to backend to check if existing
+      this.props.history.push({
+        pathname: '/register',
+        state: {
+          provider: 'google',
+        }
+      })
     }
   }
 
@@ -44,7 +49,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:8000/cookie/login', { credentials: 'include' }).then(response => response.json()).then(json => console.log(json));
+    // fetch('http://localhost:8000/cookie/login', { credentials: 'include' }).then(response => response.json()).then(json => console.log(json));
   }
 
   render() {
@@ -58,7 +63,7 @@ class Login extends Component {
             <div className='container vfull'>
               <div className='columns vfull' style={{ alignItems: 'center' }}>
                 <div className='column is-offset-4 is-4'>
-                  <h1 className='is-size-2 has-text-weight-bold'>Welcome back</h1>
+                  <h1 className='is-size-2 has-text-weight-semibold'>Welcome back</h1>
                   <Formik initialValues={{
                     username: '',
                     password: '',
@@ -162,7 +167,7 @@ const Navigation = () => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/register'
-              className='nav-btn button has-text-weight-bold fat-border'>
+              className='nav-btn button has-text-weight-semibold fat-border'>
               Create a free account
             </Link>
           </p>

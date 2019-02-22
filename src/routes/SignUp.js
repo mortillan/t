@@ -72,7 +72,7 @@ class SignUp extends Component {
             <div className='container vfull'>
               <div className='columns vfull' style={{ alignItems: 'center' }}>
                 <div className='column is-offset-3 is-6'>
-                  <h1 className='is-size-2 has-text-weight-bold'>{this.state.spiel}</h1>
+                  <h1 className='is-size-2 has-text-weight-semibold'>{this.state.spiel}</h1>
                   <Formik initialValues={{
                     email: ''
                   }}
@@ -148,7 +148,7 @@ const Navigation = () => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/login'
-              className='nav-btn button not-outlined has-text-weight-bold fat-border'>
+              className='nav-btn button not-outlined has-text-weight-semibold fat-border'>
               Login
             </Link>
           </p>

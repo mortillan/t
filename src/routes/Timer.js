@@ -55,11 +55,11 @@ class Timer extends Component {
           <div className='field is-grouped'>
             <p className='control'>
               <Link to='/login'
-                className='nav-btn button not-outlined has-text-weight-bold fat-border'>Login</Link>
+                className='nav-btn button not-outlined has-text-weight-semibold fat-border'>Login</Link>
             </p>
             <p className='control'>
               <Link to='/register'
-                className='nav-btn button has-text-weight-bold fat-border'>Create a free account</Link>
+                className='nav-btn button has-text-weight-semibold fat-border'>Create a free account</Link>
             </p>
           </div>
         </div>
@@ -73,7 +73,7 @@ class Timer extends Component {
 
     return types.map(type => (
       <button key={`btn-task-${type}`} className={!focusMode ?
-        `button is-size-5 has-text-weight-bold is-outlined btn-tasks fat-border btn-${type}` :
+        `button is-size-5 has-text-weight-semibold is-outlined btn-tasks fat-border btn-${type}` :
         `button is-size-5 is-outlined btn-tasks hide fat-border btn-${type}`}
         data-type={type} onClick={this.onClickTaskType}>
         {type}
@@ -315,8 +315,8 @@ class Timer extends Component {
                   <div className='columns is-multiline'>
                     <div className='column is-12'>
                       <h1 className={!this.state.focusMode ?
-                        'is-size-2 has-text-weight-bold' :
-                        'is-size-2 has-text-weight-bold hide'}>
+                        'is-size-2 has-text-weight-semibold' :
+                        'is-size-2 has-text-weight-semibold hide'}>
                         You have <HourCount hr={this.state.tickHours} /> hours <MinCount min={this.state.tickMins} /> minutes today.
                       </h1>
                       {this.state.focusMode &&
@@ -360,9 +360,9 @@ class Timer extends Component {
                             className='icon stop'>
                             <i className='ion-ionic ion-md-close'></i>
                           </span>
-                          <span className='is-size-5 has-text-weight-bold grey-text'>Press "Esc" to stop</span>
+                          <span className='is-size-5 has-text-weight-semibold grey-text'>Press "Esc" to stop</span>
                         </div>
-                        <div className='is-size-5 has-text-weight-bold grey-text'
+                        <div className='is-size-5 has-text-weight-semibold grey-text'
                           style={{
                             display: 'flex',
                             alignItems: 'center'
@@ -394,8 +394,8 @@ class Timer extends Component {
                 }}>
                 <Copyright />
                 <div className={this.state.focusMode ?
-                  'has-text-weight-bold is-size-5 is-invisible' :
-                  'has-text-weight-bold is-size-5'}
+                  'has-text-weight-semibold is-size-5 is-invisible' :
+                  'has-text-weight-semibold is-size-5'}
                   style={{ width: '240px' }}>
                   <div>{this.state.slider} minutes</div>
                   <Slider onChange={this.onChangeSliderValue}
@@ -433,11 +433,11 @@ const Navigation = memo(({ focusMode }) => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/login'
-              className='nav-btn button not-outlined has-text-weight-bold fat-border'>Login</Link>
+              className='nav-btn button not-outlined has-text-weight-semibold fat-border'>Login</Link>
           </p>
           <p className='control'>
             <Link to='/register'
-              className='nav-btn button has-text-weight-bold fat-border'>Create a free account</Link>
+              className='nav-btn button has-text-weight-semibold fat-border'>Create a free account</Link>
           </p>
         </div>
       </div>

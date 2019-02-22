@@ -28,8 +28,8 @@ const WeekLog = ({ logs, weekNum }) => {
     <LazyLoad once={true} height={500}>
       <>
         <div className='columns is-vcentered'>
-          <div className='column is-size-5 has-text-weight-bold has-text-left'>WEEK {weekNum}</div>
-          <div className='column is-size-5 has-text-weight-bold has-text-right'>{moment().year()}</div>
+          <div className='column is-size-5 has-text-weight-semibold has-text-left'>WEEK {weekNum}</div>
+          <div className='column is-size-5 has-text-weight-semibold has-text-right'>{moment().year()}</div>
         </div>
         <div className='columns' style={{ marginBottom: '2.5rem' }}>
           {days.map((d, i) => {
@@ -42,13 +42,13 @@ const WeekLog = ({ logs, weekNum }) => {
             const hrSpent = Math.trunc(totalSec / 3600)
 
             return <div key={`weeklog-${i}`} className='column'>
-              <div className={`logs-header has-text-weight-bold ${disabled}`}
+              <div className={`logs-header has-text-weight-semibold ${disabled}`}
                 style={{
                   ...padding,
                 }}>
                 {targetDate.format('ddd, MMM D')}
               </div>
-              <div className='logs-header has-text-weight-bold'
+              <div className='logs-header has-text-weight-semibold'
                 style={{
                   ...padding,
                 }}>
@@ -90,7 +90,7 @@ const TimeLogsComponent = (props) => {
             end={<Navigation />} />
           <div className='container'>
             <div className='columns is-vcentered'>
-              <div className='column is-size-2 has-text-weight-bold has-text-centered'>Logs</div>
+              <div className='column is-size-2 has-text-weight-semibold has-text-centered'>Logs</div>
             </div>
             {weeksInYear.map((curr, index, arr) => (
               <WeekLog key={`weeklog-${index}`}
@@ -132,11 +132,11 @@ const Navigation = () => {
         <div className='field is-grouped'>
           <p className='control'>
             <Link to='/login'
-              className='nav-btn button not-outlined has-text-weight-bold fat-border'>Login</Link>
+              className='nav-btn button not-outlined has-text-weight-semibold fat-border'>Login</Link>
           </p>
           <p className='control'>
             <Link to='/register'
-              className='nav-btn button has-text-weight-bold fat-border'>Create a free account</Link>
+              className='nav-btn button has-text-weight-semibold fat-border'>Create a free account</Link>
           </p>
         </div>
       </div>
