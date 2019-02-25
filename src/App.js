@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { CookiesProvider } from 'react-cookie'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { Provider } from 'react-redux'
 import Loadable from 'react-loadable'
 import './App.css'
 import { themes, GlobalContext } from './lib/context'
@@ -31,7 +32,7 @@ const SignUp = Loadable({
 })
 
 const Timer = Loadable({
-  loader: () => import('./routes/Timer'),
+  loader: () => import('./routes/Timer').then(module => module.Timer),
   loading: Loading,
 })
 
@@ -77,21 +78,21 @@ class App extends Component {
 
   render() {
     return (
-      <CookiesProvider>
-        <GlobalContext.Provider value={{
-          toggleTheme: this.toggleTheme,
-          theme: this.state.theme
-        }}>
-          <BrowserRouter>
-            <Switch>
-              <Route exact path='/' component={Timer} />
-              <Route path='/logs' component={TimeLogs} />
-              <Route path='/register' component={SignUp} />
-              <Route path='/login' component={Login} />
-            </Switch>
-          </BrowserRouter>
-        </GlobalContext.Provider>
-      </CookiesProvider>
+        <CookiesProvider>
+          <GlobalContext.Provider value={{
+            toggleTheme: this.toggleTheme,
+            theme: this.state.theme
+          }}>
+            <BrowserRouter>
+              <Switch>
+                <Route exact path='/' component={Timer} />
+                <Route path='/logs' component={TimeLogs} />
+                <Route path='/register' component={SignUp} />
+                <Route path='/login' component={Login} />
+              </Switch>
+            </BrowserRouter>
+          </GlobalContext.Provider>
+        </CookiesProvider>
     )
   }
 }
