@@ -207,7 +207,7 @@ export const Timer = ({ initialClockState }) => {
                     display: 'flex',
                     alignItems: 'center'
                   }}>
-                    <span onClick={() => currentTaskDispatch()}
+                    <span onClick={() => currentTaskDispatch({ type: 'STOP_TASK' })}
                       className='icon stop'>
                       <i className='ion-ionic ion-md-close'></i>
                     </span>
