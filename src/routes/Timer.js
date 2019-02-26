@@ -61,17 +61,13 @@ const createTopBar = (hasTask, theme) => {
 
   return (
     <TopBar
-      brand={<Brand theme={theme} focusMode={hasTask} />}
+      brand={<Brand theme={theme} />}
       mid={<OnlineCount />}
-      end={createNav(hasTask)} />
+      end={createNav()} />
   )
 }
 
-const createNav = (hasTask) => {
-  if(hasTask) {
-    return null
-  }
-
+const createNav = () => {
   return (
     <div className='navbar-end'>
       <div className='navbar-item'>

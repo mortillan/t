@@ -1,11 +1,7 @@
 import React, { memo } from 'react'
 import { themes } from '../lib/context'
 
-function Brand({ theme = themes.LIGHT, focusMode = false } = {}) {
-  if (focusMode) {
-    return null
-  }
-
+function Brand({ theme = themes.LIGHT } = {}) {
   return (
     <div className='navbar-brand'>
       <a className='navbar-item' href='/'>
