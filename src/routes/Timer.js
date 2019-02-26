@@ -1,6 +1,8 @@
 import React, { Component, memo, useState, useReducer, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import moment from 'moment'
+// import moment from 'moment'
+import getIsoWeek from 'date-fns/get_iso_week'
+import dateFormat from 'date-fns/format'
 import Notification from 'react-web-notification'
 
 import Slider from '../components/Slider'
@@ -31,6 +33,8 @@ import { TICK } from '../actions/main'
 
 import { taskReducer } from '../reducers/task'
 
+import { timelogReducer, initialState as timelogInitialState } from '../reducers/timelogs'
+
 const MAX_SECONDS = 86400
 
 function initClockState(initialClockState) {
@@ -43,11 +47,97 @@ function initClockState(initialClockState) {
   return {
     tick: ((hours * 60 * 60) + (minutes * 60) + seconds),
     tickHours: 23 - hours,
-    tickMins: 59 - minutes
+    tickMins: 59 - minutes,
+    taskKey: dateFormat(new Date(), TASK_KEY_FORMAT),
   }
 }
+
+const createTopBar = (hasTask, theme) => {
+  if (hasTask) {
+    return (
+      <TopBar />
+    )
+  }
+
+  return (
+    <TopBar
+      brand={<Brand theme={theme} focusMode={hasTask} />}
+      mid={<OnlineCount />}
+      end={createNav(hasTask)} />
+  )
+}
+
+const createNav = (hasTask) => {
+  if(hasTask) {
+    return null
+  }
+
+  return (
+    <div className='navbar-end'>
+      <div className='navbar-item'>
+        <div className='field is-grouped'>
+          <p className='control'>
+            <Link to='/login'
+              className='nav-btn button not-outlined has-text-weight-semibold fat-border'>Login</Link>
+          </p>
+          <p className='control'>
+            <Link to='/register'
+              className='nav-btn button has-text-weight-semibold fat-border'>Create a free account</Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const createTaskButton = (focusMode) => {
+  const types = Object.keys(TASK_TYPES)
+
+  return types.map(type => (
+    <button key={`btn-task-${type}`} className={!focusMode ?
+      `button is-size-5 has-text-weight-semibold is-outlined btn-tasks fat-border btn-${type}` :
+      `button is-size-5 is-outlined btn-tasks hide fat-border btn-${type}`}
+      data-type={type} onClick={() => null}>
+      {type}
+    </button>
+  ))
+}
+
+const createTaskTimerBar = (currentTask, theme) => {
+  return (
+    <>
+      <TimeBar clipPath='url(#br-tb)' fill={css[theme].color} fillOpacity='.16' />
+      <g className='tlb'>
+        <TimeFluid start={currentTask.tick}
+          fill={currentTask.color}
+          clipPath='url(#br-tb)' />
+      </g>
+    </>
+  )
+}
+
+const createTimeBar = (timeLogs, tick, theme) => {
+  return (
+    <>
+      <TimeBar clipPath='url(#br-tb)' fill={css[theme].color} fillOpacity='.16' />
+      <TimeFluid start={tick}
+        fill={css[theme].color}
+        fillOpacity='.16'
+        clipPath='url(#br-tb)' />
+      {timeLogs && timeLogs.map((task, i) => (
+        <TaskBar key={Date.now() + task.color + i}
+          start={task.start}
+          length={task.length}
+          fill={task.color} />
+      ))}
+    </>
+  )
+}
+
 export const Timer = ({ initialClockState }) => {
   const [clock, clockDispatch] = useReducer(clockReducer, initialClockState, initClockState)
+  const [currentTask, currentTaskDispatch] = useReducer(taskReducer, null)
+  const [timeLogs, timeLogsDispatch] = useReducer(timelogReducer, timelogInitialState)
 
   useEffect(() => {
     function onTimer({ data: { hrs, min, sec } }) {
@@ -61,12 +151,6 @@ export const Timer = ({ initialClockState }) => {
           tickMins: 59 - min,
         }
       })
-      // this.setState({
-      //   tick: total,
-      //   tickHours: 23 - hrs,
-      //   tickMins: 59 - min,
-      //   taskKey: moment(timestamp).format(TASK_KEY_FORMAT),
-      // })
     }
 
     const timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])))
@@ -80,11 +164,11 @@ export const Timer = ({ initialClockState }) => {
 
   const globalContext = useContext(GlobalContext)
 
-  const [currentTask, currentTaskDispatch] = useReducer(taskReducer, null)
   const [slider, sliderSetState] = useState(5)
 
   return (
     <>
+      {createTopBar(currentTask, globalContext.theme)}
       <div className='container is-fluid vfull'>
         <div className='columns vfull is-vcentered'>
           <div className='column'>
@@ -95,6 +179,52 @@ export const Timer = ({ initialClockState }) => {
                   'is-size-2 has-text-weight-semibold hide'}>
                   You have <HourCount hr={clock.tickHours} /> hours <MinCount min={clock.tickMins} /> minutes today.
                     </h1>
+              </div>
+              <div className='column is-flex-desktop is-flex-touch' style={{ alignItems: 'center' }}>
+                <svg viewBox={`0 0 ${MAX_SECONDS} 2320`} style={{ flex: '1 1 auto' }}>
+                  <clipPath id='br-tb'>
+                    <rect height='2320' y='0' x='0' width={MAX_SECONDS} rx='250' ry='250' />
+                  </clipPath>
+                  {currentTask ? createTaskTimerBar(currentTask, globalContext.theme) : createTimeBar(timeLogs[clock.taskKey], clock.tick, globalContext.theme)}
+                </svg>
+                {!currentTask && <Link to='/logs'
+                  className='icon button'
+                  style={{
+                    backgroundColor: globalContext.theme === themes.LIGHT ? 'rgba(33, 37, 41, .16)' : css[globalContext.theme].backgroundColor,
+                    borderColor: 'transparent',
+                    height: '2.25rem',
+                    flex: '0 0 auto',
+                    marginLeft: '1rem',
+                  }}>
+                  <i className='ion-ionic ion-ios-arrow-forward'
+                    style={{
+                      color: css[globalContext.theme].color,
+                      fontWeight: 'bold',
+                      fontSize: '1.25rem',
+                    }}></i>
+                </Link>}
+              </div>
+              <div className='column is-12' style={{ minHeight: '75px' }}>
+                {createTaskButton(currentTask)}
+                <div className={currentTask ? 'focus-controls' : 'hide'}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}>
+                    <span onClick={() => currentTaskDispatch()}
+                      className='icon stop'>
+                      <i className='ion-ionic ion-md-close'></i>
+                    </span>
+                    <span className='is-size-5 has-text-weight-semibold grey-text'>Press "Esc" to stop</span>
+                  </div>
+                  <div className='is-size-5 has-text-weight-semibold grey-text'
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}>
+                    {currentTask && `#${currentTask.type}`}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -126,12 +256,6 @@ export const Timer = ({ initialClockState }) => {
               onClick={globalContext.toggleTheme}
               backgroundColor={css[globalContext.theme].color}
               size='1.5rem' />
-            {/* <a className={this.state.focusMode ?
-                     'icon button is-primary hide' :
-                     'icon is-primary button'}
-                     href='#'>
-                     <i className='ion-ionic ion-md-help'></i>
-                   </a> */}
           </div>
         </div>
       </Footer>

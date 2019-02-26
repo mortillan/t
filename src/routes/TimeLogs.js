@@ -3,6 +3,7 @@ import { withCookies } from 'react-cookie'
 import { Link } from 'react-router-dom'
 import LazyLoad from 'react-lazyload'
 import moment from 'moment'
+import getIsoWeek from 'date-fns/get_iso_week'
 
 import TopBar from '../components/TopBar'
 import Brand from '../components/Brand'
@@ -77,7 +78,7 @@ const TimeLogsComponent = (props) => {
   }).then(response => response.json()).then(json => console.log(json));
 
   const logs = JSON.parse(localStorage.getItem('logs')) || {}
-  const weekYear = moment().week()
+  const weekYear = getIsoWeek(new Date())
   const weeksInYear = [...Array(weekYear).keys()]
 
   return (

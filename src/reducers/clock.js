@@ -8,6 +8,7 @@ export const clockReducer = (state, { type, data }) => {
         tick: data.tick,
         tickHours: data.tickHours,
         tickMins: data.tickMins,
+        taskKey: data.taskKey,
       }
     default:
       return state
