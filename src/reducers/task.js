@@ -1,4 +1,5 @@
 export const taskReducer = (state, { type, data }) => {
+  console.log(state, type, data)
   switch (type) {
     case 'START_TASK':
       return {

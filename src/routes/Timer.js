@@ -18,6 +18,7 @@ import TimeFluid from '../components/TimeFluid'
 import TimeBar from '../components/TimeBar'
 import TaskBar from '../components/TaskBar'
 import TaskTimeRemaining from '../components/TaskTimeRemaining'
+import { TaskButtonList } from '../components/TaskButtonList'
 
 import worker from '../workers/timer.worker'
 
@@ -33,7 +34,7 @@ import { TICK } from '../actions/main'
 
 import { taskReducer } from '../reducers/task'
 
-import { timelogReducer, initialState as timelogInitialState } from '../reducers/timelogs'
+import { timeLogReducer, initialState as timelogInitialState } from '../reducers/timelogs'
 
 const MAX_SECONDS = 86400
 
@@ -133,10 +134,10 @@ const createTimeBar = (timeLogs, tick, theme) => {
 export const Timer = ({ initialClockState }) => {
   const [clock, clockDispatch] = useReducer(clockReducer, initialClockState, initClockState)
   const [currentTask, currentTaskDispatch] = useReducer(taskReducer, null)
-  const [timeLogs, timeLogsDispatch] = useReducer(timelogReducer, timelogInitialState)
+  const [timeLogs, timeLogsDispatch] = useReducer(timeLogReducer, timelogInitialState)
 
   useEffect(() => {
-    function onTimer({ data: { hrs, min, sec } }) {
+    function onTimer({ data: { timestamp, hrs, min, sec } }) {
       const total = ((hrs * 60 * 60) + (min * 60) + sec)
 
       clockDispatch({
@@ -145,6 +146,7 @@ export const Timer = ({ initialClockState }) => {
           tick: total,
           tickHours: 23 - hrs,
           tickMins: 59 - min,
+          taskKey: dateFormat(new Date(timestamp), TASK_KEY_FORMAT),
         }
       })
     }
@@ -201,7 +203,7 @@ export const Timer = ({ initialClockState }) => {
                 </Link>}
               </div>
               <div className='column is-12' style={{ minHeight: '75px' }}>
-                {createTaskButton(currentTask)}
+                <TaskButtonList taskDuration={slider * 60} tick={clock.tick} taskKey={clock.taskKey} />
                 <div className={currentTask ? 'focus-controls' : 'hide'}>
                   <div style={{
                     display: 'flex',
