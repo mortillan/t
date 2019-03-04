@@ -1,7 +1,12 @@
-export const taskReducer = (state, { type, data }) => {
-  console.log(state, type, data)
+import {
+  START_TIMER,
+  STOP_TIMER,
+} from '../actions/timer'
+
+export const timerReducer = (state = null, { type, data }) => {
+  console.log(type, data)
   switch (type) {
-    case 'START_TASK':
+    case START_TIMER:
       return {
         length: data.length,
         start: data.start,
@@ -12,9 +17,8 @@ export const taskReducer = (state, { type, data }) => {
         remaining: data.remaining,
         key: data.key,
       }
-    case 'STOP_TASK':
-      return null
+    case STOP_TIMER:
     default:
-      break
+      return null
   }
 }

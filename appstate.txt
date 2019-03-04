@@ -45,3 +45,10 @@ containers
 
 stores
 1. the glue for reducers and actions. only created once for an app. usually use in the main component of react to inject the store all across components heirarchy.
+
+
+
+
+
+
+Per Route, Single Store, Single Reducer, 2 context (1 initialValue, 1 dispatch)

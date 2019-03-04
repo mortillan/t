@@ -4,7 +4,7 @@ const black = '#212529'
 export const css = {
   light: {
     backgroundColor: white,
-    color: black,
+    color: black
   },
   dark: {
     backgroundColor: black,

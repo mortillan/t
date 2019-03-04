@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
 import { CookiesProvider } from 'react-cookie'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { Provider } from 'react-redux'
+import { Provider as ReactRedux } from 'react-redux'
+import { createStore } from 'redux'
 import Loadable from 'react-loadable'
 import './App.css'
 import { themes, GlobalContext } from './lib/context'
+import { reducers as rootReducer } from './reducers/main'
+
+const store = createStore(rootReducer)
 
 const Loading = () => (
   <div style={{
@@ -78,6 +82,7 @@ class App extends Component {
 
   render() {
     return (
+      // <ReactRedux store={store}>
         <CookiesProvider>
           <GlobalContext.Provider value={{
             toggleTheme: this.toggleTheme,
@@ -93,6 +98,7 @@ class App extends Component {
             </BrowserRouter>
           </GlobalContext.Provider>
         </CookiesProvider>
+      // </ReactRedux>
     )
   }
 }

@@ -2,7 +2,6 @@ import React, { Component, memo, useState, useReducer, useEffect, useContext } f
 import { Link } from 'react-router-dom'
 // import moment from 'moment'
 import getIsoWeek from 'date-fns/get_iso_week'
-import dateFormat from 'date-fns/format'
 import Notification from 'react-web-notification'
 
 import Slider from '../components/Slider'
@@ -20,8 +19,6 @@ import TaskBar from '../components/TaskBar'
 import TaskTimeRemaining from '../components/TaskTimeRemaining'
 import { TaskButtonList } from '../components/TaskButtonList'
 
-import worker from '../workers/timer.worker'
-
 import { calculateSecondsPastMidnight } from '../lib/common'
 import { GlobalContext, themes } from '../lib/context'
 import { TASK_TYPES, TASK_KEY_FORMAT } from '../lib/constants'
@@ -29,29 +26,24 @@ import { DOC_TITLE } from '../config/app'
 
 import { css } from '../config/themes'
 
-import { clockReducer } from '../reducers/clock'
-import { TICK } from '../actions/main'
-
-import { taskReducer } from '../reducers/task'
+// import { taskReducer } from '../reducers/task'
 
 import { timeLogReducer, initialState as timelogInitialState } from '../reducers/timelogs'
+import { useClock } from '../hooks/useClock';
+import { STOP_TIMER } from '../actions/timer';
+import { timerReducer } from '../reducers/timer';
+
+import worker from '../workers/timer.worker'
 
 const MAX_SECONDS = 86400
 
-function initClockState(initialClockState) {
-  const date = new Date()
-  const hours = date.getHours()
-  const minutes = date.getMinutes()
-  const seconds = date.getSeconds()
-  const ms = date.getMilliseconds()
+const timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])))
 
-  return {
-    tick: ((hours * 60 * 60) + (minutes * 60) + seconds),
-    tickHours: 23 - hours,
-    tickMins: 59 - minutes,
-    taskKey: dateFormat(new Date(), TASK_KEY_FORMAT),
-  }
-}
+timerWorker.postMessage({
+  name: 'kian',
+  job: 'programmer'
+})
+
 
 const createTopBar = (hasTask, theme) => {
   if (hasTask) {
@@ -131,38 +123,14 @@ const createTimeBar = (timeLogs, tick, theme) => {
   )
 }
 
-export const Timer = ({ initialClockState }) => {
-  const [clock, clockDispatch] = useReducer(clockReducer, initialClockState, initClockState)
-  const [currentTask, currentTaskDispatch] = useReducer(taskReducer, null)
+export const Timer = () => {
+  const clock = useClock()
+  const [currentTask, currentTaskDispatch] = useReducer(timerReducer)
   const [timeLogs, timeLogsDispatch] = useReducer(timeLogReducer, timelogInitialState)
-
-  useEffect(() => {
-    function onTimer({ data: { timestamp, hrs, min, sec } }) {
-      const total = ((hrs * 60 * 60) + (min * 60) + sec)
-
-      clockDispatch({
-        type: TICK,
-        data: {
-          tick: total,
-          tickHours: 23 - hrs,
-          tickMins: 59 - min,
-          taskKey: dateFormat(new Date(timestamp), TASK_KEY_FORMAT),
-        }
-      })
-    }
-
-    const timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])))
-
-    timerWorker.addEventListener('message', onTimer)
-
-    return (() => {
-      timerWorker.terminate()
-    })
-  })
 
   const globalContext = useContext(GlobalContext)
 
-  const [slider, sliderSetState] = useState(5)
+  const [timerDuration, timerDurationSetState] = useState(5)
 
   return (
     <>
@@ -203,26 +171,28 @@ export const Timer = ({ initialClockState }) => {
                 </Link>}
               </div>
               <div className='column is-12' style={{ minHeight: '75px' }}>
-                <TaskButtonList taskDuration={slider * 60} tick={clock.tick} taskKey={clock.taskKey} />
-                <div className={currentTask ? 'focus-controls' : 'hide'}>
+                {!currentTask ? <TaskButtonList clock={clock} timerDuration={timerDuration} dispatch={currentTaskDispatch} /> :
                   <div style={{
                     display: 'flex',
-                    alignItems: 'center'
+                    alignItems: 'center',
                   }}>
-                    <span onClick={() => currentTaskDispatch({ type: 'STOP_TASK' })}
-                      className='icon stop'>
-                      <i className='ion-ionic ion-md-close'></i>
-                    </span>
-                    <span className='is-size-5 has-text-weight-semibold grey-text'>Press "Esc" to stop</span>
-                  </div>
-                  <div className='is-size-5 has-text-weight-semibold grey-text'
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center'
+                    <div style={{
+                      flex: '1 1 auto'
                     }}>
-                    {currentTask && `#${currentTask.type}`}
-                  </div>
-                </div>
+                      <span onClick={() => currentTaskDispatch({
+                        type: STOP_TIMER
+                      })}
+                        className='icon stop'>
+                        <i className='ion-ionic ion-md-close'></i>
+                      </span>
+                      <span className='is-size-5 has-text-weight-semibold'>Press "Esc" to stop</span>
+                    </div>
+                    <div className='is-size-5 has-text-weight-semibold text-align-right has-text-right' style={{
+                      flex: '1 1 auto'
+                    }}>
+                      {`#${currentTask.type}`}
+                    </div>
+                  </div>}
               </div>
             </div>
           </div>
@@ -240,10 +210,10 @@ export const Timer = ({ initialClockState }) => {
             'has-text-weight-semibold is-size-5 is-invisible' :
             'has-text-weight-semibold is-size-5'}
             style={{ width: '240px' }}>
-            <div>{slider} minutes</div>
+            <div>{timerDuration} minutes</div>
             <Slider
-              val={slider}
-              onChange={e => sliderSetState(e.target.value)}
+              val={timerDuration}
+              onChange={e => timerDurationSetState(e.target.value)}
               min='5'
               max='90'
               step='1' />
