@@ -14,6 +14,10 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   stopTimer: () => dispatch({
     type: STOP_TIMER
+  }),
+
+  setTimerDuration: ({ target }) => dispatch({
+
   })
 })
 

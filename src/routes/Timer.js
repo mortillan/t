@@ -1,5 +1,6 @@
-import React, { Component, memo, useState, useReducer, useEffect, useContext } from 'react'
+import React, { createContext, useState, useReducer, useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 // import moment from 'moment'
 import getIsoWeek from 'date-fns/get_iso_week'
 import Notification from 'react-web-notification'
@@ -30,20 +31,10 @@ import { css } from '../config/themes'
 
 import { timeLogReducer, initialState as timelogInitialState } from '../reducers/timelogs'
 import { useClock } from '../hooks/useClock';
-import { STOP_TIMER } from '../actions/timer';
+import { START_TIMER, STOP_TIMER } from '../actions/timer';
 import { timerReducer } from '../reducers/timer';
 
-import worker from '../workers/timer.worker'
-
 const MAX_SECONDS = 86400
-
-const timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])))
-
-timerWorker.postMessage({
-  name: 'kian',
-  job: 'programmer'
-})
-
 
 const createTopBar = (hasTask, theme) => {
   if (hasTask) {
@@ -79,19 +70,6 @@ const createNav = () => {
   )
 }
 
-const createTaskButton = (focusMode) => {
-  const types = Object.keys(TASK_TYPES)
-
-  return types.map(type => (
-    <button key={`btn-task-${type}`} className={!focusMode ?
-      `button is-size-5 has-text-weight-semibold is-outlined btn-tasks fat-border btn-${type}` :
-      `button is-size-5 is-outlined btn-tasks hide fat-border btn-${type}`}
-      data-type={type} onClick={() => null}>
-      {type}
-    </button>
-  ))
-}
-
 const createTaskTimerBar = (currentTask, theme) => {
   return (
     <>
@@ -123,9 +101,9 @@ const createTimeBar = (timeLogs, tick, theme) => {
   )
 }
 
-export const Timer = () => {
-  const clock = useClock()
-  const [currentTask, currentTaskDispatch] = useReducer(timerReducer)
+const TimerComponent = ({ clock, currentTask, timerDuration, setTimerDuration }) => {
+  // const clock = useClock()
+  // const [currentTask, currentTaskDispatch] = useReducer(timerReducer)
   const [timeLogs, timeLogsDispatch] = useReducer(timeLogReducer, timelogInitialState)
 
   const globalContext = useContext(GlobalContext)
@@ -171,7 +149,7 @@ export const Timer = () => {
                 </Link>}
               </div>
               <div className='column is-12' style={{ minHeight: '75px' }}>
-                {!currentTask ? <TaskButtonList clock={clock} timerDuration={timerDuration} dispatch={currentTaskDispatch} /> :
+                {!currentTask ? <TaskButtonList /> :
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -213,7 +191,7 @@ export const Timer = () => {
             <div>{timerDuration} minutes</div>
             <Slider
               val={timerDuration}
-              onChange={e => timerDurationSetState(e.target.value)}
+              onChange={setTimerDuration}
               min='5'
               max='90'
               step='1' />
@@ -230,6 +208,28 @@ export const Timer = () => {
     </>
   )
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  tasksLog: state.tasksLog,
+  currentTask: state.currentTask,
+  timerDuration: state.timerDuration,
+  showNotif: state.showNotif,
+})
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  stopTimer: () => dispatch({
+    type: STOP_TIMER
+  }),
+
+  setTimerDuration: ({ target }) => dispatch({
+
+  }),
+})
+
+export const Timer = connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)(TimerComponent)
 
 // export class Timer1 extends Component {
 //   constructor(props) {

@@ -1,11 +1,17 @@
 import {
   START_TIMER,
   STOP_TIMER,
+  UPDATE_TIMER,
 } from '../actions/timer'
 
 export const timerReducer = (state = null, { type, data }) => {
-  console.log(type, data)
   switch (type) {
+    case UPDATE_TIMER:
+      return {
+        ...state,
+        tick: data.tick,
+        remaining: data.remaining,
+      }
     case START_TIMER:
       return {
         length: data.length,

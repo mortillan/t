@@ -82,7 +82,7 @@ class App extends Component {
 
   render() {
     return (
-      // <ReactRedux store={store}>
+      <ReactRedux store={store}>
         <CookiesProvider>
           <GlobalContext.Provider value={{
             toggleTheme: this.toggleTheme,
@@ -98,7 +98,7 @@ class App extends Component {
             </BrowserRouter>
           </GlobalContext.Provider>
         </CookiesProvider>
-      // </ReactRedux>
+      </ReactRedux>
     )
   }
 }

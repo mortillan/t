@@ -1,33 +1,44 @@
 import React, { useEffect, useReducer } from 'react'
+import { connect } from 'react-redux'
 import { clockReducer } from '../reducers/clock'
 import { TICK } from '../actions/main'
 import { TASK_KEY_FORMAT } from '../lib/constants'
 import dateFormat from 'date-fns/format'
 import worker from '../workers/clock.worker'
 
-export const useClock = () => {
-  function initClockState() {
-    const date = new Date()
-    const hours = date.getHours()
-    const minutes = date.getMinutes()
-    const seconds = date.getSeconds()
-    const ms = date.getMilliseconds()
+const useClockHook = ({ dispatch }) => {
+  // function initClockState() {
+  //   const date = new Date()
+  //   const hours = date.getHours()
+  //   const minutes = date.getMinutes()
+  //   const seconds = date.getSeconds()
+  //   const ms = date.getMilliseconds()
 
-    return {
-      tick: ((hours * 60 * 60) + (minutes * 60) + seconds),
-      tickHours: 23 - hours,
-      tickMins: 59 - minutes,
-      taskKey: dateFormat(new Date(), TASK_KEY_FORMAT),
-    }
-  }
+  //   return {
+  //     tick: ((hours * 60 * 60) + (minutes * 60) + seconds),
+  //     tickHours: 23 - hours,
+  //     tickMins: 59 - minutes,
+  //     taskKey: dateFormat(new Date(), TASK_KEY_FORMAT),
+  //   }
+  // }
 
-  const [clock, clockDispatch] = useReducer(clockReducer, null, initClockState)
+  // const [clock, clockDispatch] = useReducer(clockReducer, null, initClockState)
 
   useEffect(() => {
     function onTimer({ data: { timestamp, hrs, min, sec } }) {
       const total = ((hrs * 60 * 60) + (min * 60) + sec)
 
-      clockDispatch({
+      // clockDispatch({
+      //   type: TICK,
+      //   data: {
+      //     tick: total,
+      //     tickHours: 23 - hrs,
+      //     tickMins: 59 - min,
+      //     taskKey: dateFormat(new Date(timestamp), TASK_KEY_FORMAT),
+      //   }
+      // })
+
+      dispatch({
         type: TICK,
         data: {
           tick: total,
@@ -47,5 +58,14 @@ export const useClock = () => {
     })
   })
 
-  return clock
+  // return clock
 }
+
+// const mapStateToProps = (state, ownProps) => ({
+//   tasksLog: state.tasksLog,
+//   currentTask: state.currentTask,
+//   timerDuration: state.timerDuration,
+//   showNotif: state.showNotif,
+// })
+
+export const useClock = connect()(useClockHook)

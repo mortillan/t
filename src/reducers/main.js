@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux'
 import { timerReducer } from './timer'
-import { } from './timelogs'
+import { clockReducer } from './clock'
 
 export const reducers = combineReducers({
+  clockReducer,
   timerReducer
 })  
