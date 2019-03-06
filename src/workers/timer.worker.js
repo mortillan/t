@@ -11,14 +11,13 @@ export default () => {
   }
 
   onmessage = function({ data }) {
-    console.log(data)
     const { startTick, timerDuration } = data
 
     setInterval(() => {
       const total = calculateSecondsPastMidnight(new Date())
       const tick = (total - startTick) * (MAX_SECONDS / timerDuration)
       const remaining = Math.max(0, ((startTick + timerDuration) - total))
-
+      console.log(tick, remaining)
       postMessage({
         tick: tick,
         remaining: remaining,

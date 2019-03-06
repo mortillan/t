@@ -4,7 +4,9 @@ import {
   UPDATE_TIMER,
 } from '../actions/timer'
 
-export const timerReducer = (state = null, { type, data }) => {
+const initialState = null
+
+export const timerReducer = (state = initialState, { type, data }) => {
   switch (type) {
     case UPDATE_TIMER:
       return {
@@ -22,8 +24,11 @@ export const timerReducer = (state = null, { type, data }) => {
         tick: data.tick,
         remaining: data.remaining,
         key: data.key,
+        worker: data.worker,
       }
     case STOP_TIMER:
+      state.worker.terminate()
+      return null
     default:
       return null
   }

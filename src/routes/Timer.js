@@ -1,9 +1,13 @@
-import React, { createContext, useState, useReducer, useContext } from 'react'
+import React, { createContext, useState, useReducer, useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 // import moment from 'moment'
 import getIsoWeek from 'date-fns/get_iso_week'
 import Notification from 'react-web-notification'
+
+import { TICK } from '../actions/main'
+import dateFormat from 'date-fns/format'
+import worker from '../workers/clock.worker'
 
 import Slider from '../components/Slider'
 import TopBar from '../components/TopBar'
@@ -30,7 +34,6 @@ import { css } from '../config/themes'
 // import { taskReducer } from '../reducers/task'
 
 import { timeLogReducer, initialState as timelogInitialState } from '../reducers/timelogs'
-import { useClock } from '../hooks/useClock';
 import { START_TIMER, STOP_TIMER } from '../actions/timer';
 import { timerReducer } from '../reducers/timer';
 
@@ -101,24 +104,42 @@ const createTimeBar = (timeLogs, tick, theme) => {
   )
 }
 
-const TimerComponent = ({ clock, currentTask, timerDuration, setTimerDuration }) => {
-  // const clock = useClock()
-  // const [currentTask, currentTaskDispatch] = useReducer(timerReducer)
+const TimerComponent = ({ clock, timer, timerDuration, setTimerDuration, stopTimer, updateClock }) => {
+
   const [timeLogs, timeLogsDispatch] = useReducer(timeLogReducer, timelogInitialState)
 
   const globalContext = useContext(GlobalContext)
 
-  const [timerDuration, timerDurationSetState] = useState(5)
+  useEffect(() => {
+    function onTimer({ data: { timestamp, hrs, min, sec } }) {
+      const total = ((hrs * 60 * 60) + (min * 60) + sec)
+
+      updateClock({
+        tick: total,
+        tickHours: 23 - hrs,
+        tickMins: 59 - min,
+        taskKey: dateFormat(new Date(timestamp), TASK_KEY_FORMAT),
+      })
+    }
+
+    const timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])))
+
+    timerWorker.addEventListener('message', onTimer)
+
+    return (() => {
+      timerWorker.terminate()
+    })
+  })
 
   return (
     <>
-      {createTopBar(currentTask, globalContext.theme)}
+      {createTopBar(timer, globalContext.theme)}
       <div className='container is-fluid vfull'>
         <div className='columns vfull is-vcentered'>
           <div className='column'>
             <div className='columns is-multiline'>
               <div className='column is-12'>
-                <h1 className={!currentTask ?
+                <h1 className={!timer ?
                   'is-size-2 has-text-weight-semibold' :
                   'is-size-2 has-text-weight-semibold hide'}>
                   You have <HourCount hr={clock.tickHours} /> hours <MinCount min={clock.tickMins} /> minutes today.
@@ -129,9 +150,9 @@ const TimerComponent = ({ clock, currentTask, timerDuration, setTimerDuration })
                   <clipPath id='br-tb'>
                     <rect height='2320' y='0' x='0' width={MAX_SECONDS} rx='250' ry='250' />
                   </clipPath>
-                  {currentTask ? createTaskTimerBar(currentTask, globalContext.theme) : createTimeBar(timeLogs[clock.taskKey], clock.tick, globalContext.theme)}
+                  {timer ? createTaskTimerBar(timer, globalContext.theme) : createTimeBar(timeLogs[clock.taskKey], clock.tick, globalContext.theme)}
                 </svg>
-                {!currentTask && <Link to='/logs'
+                {!timer && <Link to='/logs'
                   className='icon button'
                   style={{
                     backgroundColor: globalContext.theme === themes.LIGHT ? 'rgba(33, 37, 41, .16)' : css[globalContext.theme].backgroundColor,
@@ -149,7 +170,7 @@ const TimerComponent = ({ clock, currentTask, timerDuration, setTimerDuration })
                 </Link>}
               </div>
               <div className='column is-12' style={{ minHeight: '75px' }}>
-                {!currentTask ? <TaskButtonList /> :
+                {!timer ? <TaskButtonList /> :
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -157,9 +178,7 @@ const TimerComponent = ({ clock, currentTask, timerDuration, setTimerDuration })
                     <div style={{
                       flex: '1 1 auto'
                     }}>
-                      <span onClick={() => currentTaskDispatch({
-                        type: STOP_TIMER
-                      })}
+                      <span onClick={stopTimer}
                         className='icon stop'>
                         <i className='ion-ionic ion-md-close'></i>
                       </span>
@@ -168,7 +187,7 @@ const TimerComponent = ({ clock, currentTask, timerDuration, setTimerDuration })
                     <div className='is-size-5 has-text-weight-semibold text-align-right has-text-right' style={{
                       flex: '1 1 auto'
                     }}>
-                      {`#${currentTask.type}`}
+                      {`#${timer.type}`}
                     </div>
                   </div>}
               </div>
@@ -184,7 +203,7 @@ const TimerComponent = ({ clock, currentTask, timerDuration, setTimerDuration })
             alignItems: 'flex-end'
           }}>
           <Copyright />
-          <div className={currentTask ?
+          <div className={timer ?
             'has-text-weight-semibold is-size-5 is-invisible' :
             'has-text-weight-semibold is-size-5'}
             style={{ width: '240px' }}>
@@ -210,8 +229,9 @@ const TimerComponent = ({ clock, currentTask, timerDuration, setTimerDuration })
 }
 
 const mapStateToProps = (state, ownProps) => ({
+  clock: state.clock,
   tasksLog: state.tasksLog,
-  currentTask: state.currentTask,
+  timer: state.timer,
   timerDuration: state.timerDuration,
   showNotif: state.showNotif,
 })
@@ -221,13 +241,21 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     type: STOP_TIMER
   }),
 
-  setTimerDuration: ({ target }) => dispatch({
+  updateClock: (data) => dispatch({
+    type: TICK,
+    data: data,
+  }),
 
+  setTimerDuration: ({ target }) => dispatch({
+    type: 'UPDATE_TIMER_DURATION',
+    data: {
+      duration: target.value
+    }
   }),
 })
 
 export const Timer = connect(
-  mapStateToProps, 
+  mapStateToProps,
   mapDispatchToProps
 )(TimerComponent)
 

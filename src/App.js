@@ -2,13 +2,10 @@ import React, { Component } from 'react'
 import { CookiesProvider } from 'react-cookie'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { Provider as ReactRedux } from 'react-redux'
-import { createStore } from 'redux'
 import Loadable from 'react-loadable'
 import './App.css'
 import { themes, GlobalContext } from './lib/context'
-import { reducers as rootReducer } from './reducers/main'
-
-const store = createStore(rootReducer)
+import { store } from './stores/main'
 
 const Loading = () => (
   <div style={{
