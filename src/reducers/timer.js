@@ -24,11 +24,12 @@ export const timerReducer = (state = initialState, { type, data }) => {
         tick: data.tick,
         remaining: data.remaining,
         key: data.key,
-        worker: data.worker,
+        timerId: data.timerId,
       }
-    case STOP_TIMER:
-      state.worker.terminate()
+    case STOP_TIMER: {
+      clearInterval(data.timerId)
       return null
+    }
     default:
       return null
   }

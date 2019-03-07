@@ -1,22 +1,18 @@
-import React, { createContext, useState, useReducer, useContext, useEffect } from 'react'
+import React, { createContext, useEffect, useContext, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 // import moment from 'moment'
 import getIsoWeek from 'date-fns/get_iso_week'
 import Notification from 'react-web-notification'
 
-import { TICK } from '../actions/main'
-import dateFormat from 'date-fns/format'
-import worker from '../workers/clock.worker'
-
+import { Clock } from '../components/Clock'
+import { CountDown } from '../components/CountDown'
 import Slider from '../components/Slider'
 import TopBar from '../components/TopBar'
 import Brand from '../components/Brand'
 import Footer from '../components/Footer'
 import OnlineCount from '../components/OnlineCount'
 import Copyright from '../components/Copyright'
-import HourCount from '../components/HourCount'
-import MinCount from '../components/MinCount'
 import CircleButton from '../components/CircleButton'
 import TimeFluid from '../components/TimeFluid'
 import TimeBar from '../components/TimeBar'
@@ -24,18 +20,13 @@ import TaskBar from '../components/TaskBar'
 import TaskTimeRemaining from '../components/TaskTimeRemaining'
 import { TaskButtonList } from '../components/TaskButtonList'
 
-import { calculateSecondsPastMidnight } from '../lib/common'
 import { GlobalContext, themes } from '../lib/context'
-import { TASK_TYPES, TASK_KEY_FORMAT } from '../lib/constants'
+import { TASK_TYPES } from '../lib/constants'
 import { DOC_TITLE } from '../config/app'
 
 import { css } from '../config/themes'
 
-// import { taskReducer } from '../reducers/task'
-
-import { timeLogReducer, initialState as timelogInitialState } from '../reducers/timelogs'
 import { START_TIMER, STOP_TIMER } from '../actions/timer';
-import { timerReducer } from '../reducers/timer';
 
 const MAX_SECONDS = 86400
 
@@ -94,7 +85,7 @@ const createTimeBar = (timeLogs, tick, theme) => {
         fill={css[theme].color}
         fillOpacity='.16'
         clipPath='url(#br-tb)' />
-      {timeLogs && timeLogs.map((task, i) => (
+      {timeLogs.length > 0 && timeLogs.map((task, i) => (
         <TaskBar key={Date.now() + task.color + i}
           start={task.start}
           length={task.length}
@@ -104,32 +95,31 @@ const createTimeBar = (timeLogs, tick, theme) => {
   )
 }
 
-const TimerComponent = ({ clock, timer, timerDuration, setTimerDuration, stopTimer, updateClock }) => {
-
-  const [timeLogs, timeLogsDispatch] = useReducer(timeLogReducer, timelogInitialState)
+const TimerComponent = ({ clock, timer, todayLogs, timerDuration, setTimerDuration, stopTimer, fetchAllTimeLogs }) => {
 
   const globalContext = useContext(GlobalContext)
 
-  useEffect(() => {
-    function onTimer({ data: { timestamp, hrs, min, sec } }) {
-      const total = ((hrs * 60 * 60) + (min * 60) + sec)
+  useMemo(() => fetchAllTimeLogs(clock.taskKey), [clock.taskKey])
 
-      updateClock({
-        tick: total,
-        tickHours: 23 - hrs,
-        tickMins: 59 - min,
-        taskKey: dateFormat(new Date(timestamp), TASK_KEY_FORMAT),
-      })
+  useEffect(() => {
+    function handleKeyboardShortcuts ({ key }) {      
+      if (key === 'Escape' && timer) {
+        stopTimer(timer.timerId)
+      } else if (key === 'b') {
+        // this.startTimer('break')
+      } else if (key === 'w') {
+        // this.startTimer('work')
+      } else if (key === 'l') {
+        // this.startTimer('learn')
+      } else if (key === 'p') {
+        // this.startTimer('play')
+      }
     }
 
-    const timerWorker = new Worker(URL.createObjectURL(new Blob(['(' + worker.toString() + ')()'])))
+    document.addEventListener('keydown', handleKeyboardShortcuts)
 
-    timerWorker.addEventListener('message', onTimer)
-
-    return (() => {
-      timerWorker.terminate()
-    })
-  })
+    return (() => document.removeEventListener('keydown', handleKeyboardShortcuts, true))
+  }, [timer])
 
   return (
     <>
@@ -139,18 +129,14 @@ const TimerComponent = ({ clock, timer, timerDuration, setTimerDuration, stopTim
           <div className='column'>
             <div className='columns is-multiline'>
               <div className='column is-12'>
-                <h1 className={!timer ?
-                  'is-size-2 has-text-weight-semibold' :
-                  'is-size-2 has-text-weight-semibold hide'}>
-                  You have <HourCount hr={clock.tickHours} /> hours <MinCount min={clock.tickMins} /> minutes today.
-                    </h1>
+                {!timer ? <Clock /> : <CountDown />}
               </div>
               <div className='column is-flex-desktop is-flex-touch' style={{ alignItems: 'center' }}>
                 <svg viewBox={`0 0 ${MAX_SECONDS} 2320`} style={{ flex: '1 1 auto' }}>
                   <clipPath id='br-tb'>
                     <rect height='2320' y='0' x='0' width={MAX_SECONDS} rx='250' ry='250' />
                   </clipPath>
-                  {timer ? createTaskTimerBar(timer, globalContext.theme) : createTimeBar(timeLogs[clock.taskKey], clock.tick, globalContext.theme)}
+                  {timer ? createTaskTimerBar(timer, globalContext.theme) : createTimeBar(todayLogs, clock.tick, globalContext.theme)}
                 </svg>
                 {!timer && <Link to='/logs'
                   className='icon button'
@@ -178,7 +164,7 @@ const TimerComponent = ({ clock, timer, timerDuration, setTimerDuration, stopTim
                     <div style={{
                       flex: '1 1 auto'
                     }}>
-                      <span onClick={stopTimer}
+                      <span onClick={() => stopTimer(timer.timerId)}
                         className='icon stop'>
                         <i className='ion-ionic ion-md-close'></i>
                       </span>
@@ -230,26 +216,33 @@ const TimerComponent = ({ clock, timer, timerDuration, setTimerDuration, stopTim
 
 const mapStateToProps = (state, ownProps) => ({
   clock: state.clock,
-  tasksLog: state.tasksLog,
+  todayLogs: state.todayLogs,
   timer: state.timer,
   timerDuration: state.timerDuration,
   showNotif: state.showNotif,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  stopTimer: () => dispatch({
-    type: STOP_TIMER
-  }),
-
-  updateClock: (data) => dispatch({
-    type: TICK,
-    data: data,
-  }),
+  stopTimer: (timerId) => {
+    dispatch({
+      type: STOP_TIMER,
+      data: {
+        timerId: timerId,
+      }
+    })
+  },
 
   setTimerDuration: ({ target }) => dispatch({
     type: 'UPDATE_TIMER_DURATION',
     data: {
       duration: target.value
+    }
+  }),
+
+  fetchAllTimeLogs: (taskKey) => dispatch({
+    type: 'GET_TIME_LOGS_TODAY',
+    data: {
+      taskKey: taskKey
     }
   }),
 })

@@ -1,6 +1,4 @@
 export default () => {
-  'use strict'
-
   const MAX_SECONDS = 86400
 
   function calculateSecondsPastMidnight(date) {
