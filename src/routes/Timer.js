@@ -23,12 +23,14 @@ import { TaskButtonList } from '../components/TaskButtonList'
 import { GlobalContext, themes } from '../lib/context'
 import { TASK_TYPES } from '../lib/constants'
 import { DOC_TITLE } from '../config/app'
+import { START_TIMER, STOP_TIMER, UPDATE_TIMER } from '../actions/timer'
+import { calculateSecondsPastMidnight } from '../lib/common'
 
 import { css } from '../config/themes'
-
-import { START_TIMER, STOP_TIMER } from '../actions/timer';
+import { useClock } from '../hooks/useClock'
 
 const MAX_SECONDS = 86400
+const types = Object.keys(TASK_TYPES)
 
 const createTopBar = (hasTask, theme) => {
   if (hasTask) {
@@ -95,14 +97,18 @@ const createTimeBar = (timeLogs, tick, theme) => {
   )
 }
 
-const TimerComponent = ({ clock, timer, todayLogs, timerDuration, setTimerDuration, stopTimer, fetchAllTimeLogs }) => {
+const TimerComponent = ({ timer, todayLogs, timerDuration, setTimerDuration, startTimer, stopTimer, fetchAllTimeLogs }) => {
 
   const globalContext = useContext(GlobalContext)
+
+  const clock = useClock()
+
+  console.log(clock)
 
   useMemo(() => fetchAllTimeLogs(clock.taskKey), [clock.taskKey])
 
   useEffect(() => {
-    function handleKeyboardShortcuts ({ key }) {      
+    function handleKeyboardShortcuts({ key }) {
       if (key === 'Escape' && timer) {
         stopTimer(timer.timerId)
       } else if (key === 'b') {
@@ -121,6 +127,10 @@ const TimerComponent = ({ clock, timer, todayLogs, timerDuration, setTimerDurati
     return (() => document.removeEventListener('keydown', handleKeyboardShortcuts, true))
   }, [timer])
 
+  useEffect(() => {
+
+  }, [timer])
+
   return (
     <>
       {createTopBar(timer, globalContext.theme)}
@@ -129,7 +139,7 @@ const TimerComponent = ({ clock, timer, todayLogs, timerDuration, setTimerDurati
           <div className='column'>
             <div className='columns is-multiline'>
               <div className='column is-12'>
-                {!timer ? <Clock /> : <CountDown />}
+                {!timer ? <></> : <CountDown />}
               </div>
               <div className='column is-flex-desktop is-flex-touch' style={{ alignItems: 'center' }}>
                 <svg viewBox={`0 0 ${MAX_SECONDS} 2320`} style={{ flex: '1 1 auto' }}>
@@ -156,7 +166,12 @@ const TimerComponent = ({ clock, timer, todayLogs, timerDuration, setTimerDurati
                 </Link>}
               </div>
               <div className='column is-12' style={{ minHeight: '75px' }}>
-                {!timer ? <TaskButtonList /> :
+                {!timer ? types.map(type => (
+                  <button key={`btn-task-${type}`} className={`button is-size-5 has-text-weight-semibold is-outlined btn-tasks fat-border btn-${type}`}
+                    data-type={type} onClick={() => startTimer(clock, timerDuration, type)}>
+                    {type}
+                  </button>
+                )) :
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -215,7 +230,7 @@ const TimerComponent = ({ clock, timer, todayLogs, timerDuration, setTimerDurati
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  clock: state.clock,
+  // clock: state.clock,
   todayLogs: state.todayLogs,
   timer: state.timer,
   timerDuration: state.timerDuration,
@@ -223,14 +238,12 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  stopTimer: (timerId) => {
-    dispatch({
-      type: STOP_TIMER,
-      data: {
-        timerId: timerId,
-      }
-    })
-  },
+  stopTimer: (timerId) => dispatch({
+    type: STOP_TIMER,
+    data: {
+      timerId: timerId,
+    }
+  }),
 
   setTimerDuration: ({ target }) => dispatch({
     type: 'UPDATE_TIMER_DURATION',
@@ -245,6 +258,40 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       taskKey: taskKey
     }
   }),
+
+  startTimer: (clock, timerDuration, type) => {
+    const duration = timerDuration * 60
+
+      dispatch({
+        type: START_TIMER,
+        data: {
+          length: duration,
+          tick: 0,
+          remaining: duration,
+          start: clock.tick,
+          end: clock.tick + duration,
+          type: type,
+          key: clock.taskKey,
+          color: TASK_TYPES[type].color,
+          timerId: setInterval(() => {
+            const total = calculateSecondsPastMidnight(new Date())
+            const tick = (total - clock.tick) * (MAX_SECONDS / duration)
+            const remaining = Math.max(0, ((clock.tick + duration) - total))
+
+            dispatch({
+              type: UPDATE_TIMER,
+              data: {
+                tick: tick,
+                remaining: remaining,
+              }
+            })
+
+            document.title = `${Math.trunc(remaining / 60)}`.padStart(2, '0') + ':' + `${remaining % 60}`.padStart(2, '0')
+
+          }, 0),
+        }
+      })
+  }
 })
 
 export const Timer = connect(

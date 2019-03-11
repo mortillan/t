@@ -67,7 +67,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
             document.title = `${Math.trunc(remaining / 60)}`.padStart(2, '0') + ':' + `${remaining % 60}`.padStart(2, '0')
 
-          }, 1000),
+          }, 0),
         }
       })
 
