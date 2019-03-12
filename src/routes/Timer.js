@@ -103,8 +103,6 @@ const TimerComponent = ({ timer, todayLogs, timerDuration, setTimerDuration, sta
 
   const clock = useClock()
 
-  console.log(clock)
-
   useMemo(() => fetchAllTimeLogs(clock.taskKey), [clock.taskKey])
 
   useEffect(() => {
@@ -127,10 +125,6 @@ const TimerComponent = ({ timer, todayLogs, timerDuration, setTimerDuration, sta
     return (() => document.removeEventListener('keydown', handleKeyboardShortcuts, true))
   }, [timer])
 
-  useEffect(() => {
-
-  }, [timer])
-
   return (
     <>
       {createTopBar(timer, globalContext.theme)}
@@ -139,7 +133,7 @@ const TimerComponent = ({ timer, todayLogs, timerDuration, setTimerDuration, sta
           <div className='column'>
             <div className='columns is-multiline'>
               <div className='column is-12'>
-                {!timer ? <></> : <CountDown />}
+                {!timer ? <Clock clock={clock} /> : <CountDown />}
               </div>
               <div className='column is-flex-desktop is-flex-touch' style={{ alignItems: 'center' }}>
                 <svg viewBox={`0 0 ${MAX_SECONDS} 2320`} style={{ flex: '1 1 auto' }}>

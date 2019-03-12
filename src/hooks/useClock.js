@@ -45,7 +45,7 @@ export const useClock = () => {
     return (() => {
       timerWorker.terminate()
     })
-  })
+  }, [clock])
 
   return clock
 }
