@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import Slider from '../Slider'
 
-describe('App', () => {
+describe('Slider', () => {
 
   it('renders without crashing', () => {
     const div = document.createElement('div')
-    ReactDOM.render(<App />, div)
+    ReactDOM.render(<Slider onChange={jest.fn()} />, div)
     ReactDOM.unmountComponentAtNode(div)
   })
 

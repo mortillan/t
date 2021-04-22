@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import MinCount from '../MinCount'
 
-describe('App', () => {
+describe('MinCount', () => {
 
   it('renders without crashing', () => {
     const div = document.createElement('div')
-    ReactDOM.render(<App />, div)
+    ReactDOM.render(<MinCount />, div)
     ReactDOM.unmountComponentAtNode(div)
   })
 

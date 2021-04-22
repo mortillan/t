@@ -1,0 +1,54 @@
+{
+	me: Object,
+	
+	clock: {
+	 tickHours:
+	 tickMins:
+         tick: total seconds elapsed in day
+	},
+	taskLog: [{
+	 length: 
+         start:
+         color:
+         type:
+	}],
+        taskKey: current date,
+        currentTask: {
+	 length: length from slider,
+	 start: tick, 
+	 end: tick + length,
+	 color: 
+	 type:	break, work, play, learn
+	 tick: 0,
+	 remaining: computed remaining second based from length
+	 key: current date
+        },
+        slider: number,
+        focusMode: boolean,
+        taskTimer: an interval object (refactor to web worker)
+        showNotif: boolean,
+	mode: break, work, play, learn
+}
+
+
+actions
+1. string constants for doable things in app
+2. contains action creators that given specific parameters, returns an action.
+
+reducers
+1. functions that can be dispatched. expects current state, and action. and returns a new state based on action
+2. You can modularize actions and combine them using redux function combineReducers()
+
+containers
+1. components that map states to props, & dispatch to props. HOC. Contains the presentational component.
+2. if you use redux connect() function to map states and dispatch to props, part of the global state and reducers will be injected to your presentational component.
+
+stores
+1. the glue for reducers and actions. only created once for an app. usually use in the main component of react to inject the store all across components heirarchy.
+
+
+
+
+
+
+Per Route, Single Store, Single Reducer, 2 context (1 initialValue, 1 dispatch)

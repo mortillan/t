@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import Copyright from '../Copyright'
 
-describe('App', () => {
+describe('Copyright', () => {
 
   it('renders without crashing', () => {
     const div = document.createElement('div')
-    ReactDOM.render(<App />, div)
+    ReactDOM.render(<Copyright />, div)
     ReactDOM.unmountComponentAtNode(div)
   })
 

@@ -1,13 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import CircleButton from '../CircleButton'
 
-describe('App', () => {
+describe('CircleButton', () => {
 
   it('renders without crashing', () => {
     const div = document.createElement('div')
-    ReactDOM.render(<App />, div)
+    ReactDOM.render(<CircleButton />, div)
     ReactDOM.unmountComponentAtNode(div)
   })
+
 
 })
