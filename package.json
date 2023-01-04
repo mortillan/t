@@ -17,7 +17,7 @@
     "react-loadable": "^5.5.0",
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.5",
+    "react-scripts": "^5.0.1",
     "react-spring": "^7.2.1",
     "react-web-notification": "^0.5.0",
     "redux": "^4.0.1",
